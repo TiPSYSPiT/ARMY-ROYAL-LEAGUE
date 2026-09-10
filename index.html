@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ARMY ROYAL LEAGUE &mdash; Call of Duty 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script>
+/* Applies the saved theme before first paint so there is no flash of the
+   wrong colour scheme. Kept inline and dependency-free on purpose. */
+(function () {
+  var stored = null;
+  try { stored = localStorage.getItem('arl_theme'); } catch (e) {}
+  if (stored !== 'light' && stored !== 'dark') stored = null;
+
+  var root = document.documentElement;
+  if (stored) root.setAttribute('data-theme', stored);
+
+  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  root.setAttribute('data-effective', stored || (prefersDark ? 'dark' : 'light'));
+})();
+</script>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48" width="46" height="46">
+          <path d="M24 3 42 9v14c0 11-7.6 19-18 22C13.6 42 6 34 6 23V9L24 3z" fill="none" stroke="currentColor" stroke-width="2.2"/>
+          <path d="M24 11v22M15 19h18M15 25h18" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>ARMY ROYAL LEAGUE</h1>
+        <p><span>Call of Duty 4</span><i></i><span id="brandSeason">Season 1</span><i></i><span>Best of 3</span></p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="header-stats" id="headerStats"></div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch colour scheme" title="Switch colour scheme">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2"/>
+          <path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <nav class="tabs wrap" id="tabs">
+    <button class="tab is-active" data-tab="standings">Standings</button>
+    <button class="tab" data-tab="matches">Results</button>
+    <button class="tab" data-tab="teams">Teams</button>
+    <button class="tab" data-tab="fixtures">Schedule</button>
+    <button class="tab" data-tab="stats">Stats</button>
+  </nav>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ STANDINGS ============ -->
+  <section class="panel view is-active" id="view-standings">
+    <div class="panel-head">
+      <h2>Standings</h2>
+      <p class="hint">Win = 3 points &middot; Loss = 0 points &middot; Tiebreakers: map difference, then round difference</p>
+    </div>
+    <div class="table-scroll">
+      <table class="tbl standings">
+        <thead>
+          <tr>
+            <th class="c-rank">#</th>
+            <th class="c-team">Team</th>
+            <th title="Matches played">MP</th>
+            <th title="Wins">W</th>
+            <th title="Losses">L</th>
+            <th title="Maps won : lost">Maps</th>
+            <th title="Map difference">+/-</th>
+            <th title="Rounds won : lost">Rounds</th>
+            <th title="Round difference">+/-</th>
+            <th class="c-form">Form</th>
+            <th class="c-pts">PTS</th>
+          </tr>
+        </thead>
+        <tbody id="standingsBody"></tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <span><i class="dot dot-top"></i>Top 4</span>
+      <span><i class="dot dot-mid"></i>Playoff race</span>
+      <span><i class="dot dot-low"></i>Bottom half</span>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section class="panel view" id="view-matches">
+    <div class="panel-head">
+      <h2>Results</h2>
+      <div class="filters">
+        <select id="matchFilter" class="inp"></select>
+        <button class="btn btn-ghost" id="matchOrder" data-order="desc">Newest first</button>
+      </div>
+    </div>
+    <div id="matchList" class="match-list"></div>
+  </section>
+
+  <!-- ============ TEAMS ============ -->
+  <section class="panel view" id="view-teams">
+    <div class="panel-head">
+      <h2>Teams</h2>
+      <p class="hint">12 teams &middot; 7 players per roster &middot; 2 captains</p>
+    </div>
+    <div id="teamGrid" class="team-grid"></div>
+  </section>
+
+  <!-- ============ SCHEDULE ============ -->
+  <section class="panel view" id="view-fixtures">
+    <div class="panel-head">
+      <h2>Schedule</h2>
+      <p class="hint">Round robin &middot; 66 fixtures in total</p>
+    </div>
+    <div class="fixture-legend">
+      <span><i class="sq sq-w"></i>Win</span>
+      <span><i class="sq sq-l"></i>Loss</span>
+      <span><i class="sq sq-o"></i>Pending</span>
+    </div>
+    <div class="table-scroll">
+      <table class="tbl matrix" id="matrix"></table>
+    </div>
+    <h3 class="sub">Pending fixtures</h3>
+    <div id="openList" class="open-list"></div>
+  </section>
+
+  <!-- ============ STATS ============ -->
+  <section class="panel view" id="view-stats">
+    <div class="panel-head"><h2>Stats</h2></div>
+    <div id="statCards" class="stat-grid"></div>
+    <h3 class="sub">Round differential by team</h3>
+    <div id="roundChart" class="chart"></div>
+    <h3 class="sub">Records</h3>
+    <div id="records" class="record-list"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>ARMY ROYAL LEAGUE &middot; Call of Duty 4</span>
+    <span id="footNote"></span>
+  </div>
+</footer>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-box" role="dialog" aria-modal="true">
+    <button class="modal-close" data-close aria-label="Close">&times;</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
