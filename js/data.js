@@ -124,5 +124,6 @@ const MATCHES = [
   { id: 'm10', home: 'myquest',  away: 'cas1',     maps: [[13, 10], [13, 4]] },
   { id: 'm11', home: 'sag',      away: 'lafine',   maps: [[13, 7], [13, 10]] },
   { id: 'm12', home: 'sag',      away: 'myquest',  maps: [[13, 11], [22, 20]] },
-  { id: 'm13', home: 'infinity', away: 'lafine',   maps: [[13, 6], [11, 13], [13, 6]] }
+  { id: 'm13', home: 'infinity', away: 'lafine',   maps: [[13, 6], [11, 13], [13, 6]] },
+  { id: 'm14', home: 'nosweat',  away: 'bravo',    maps: [[10, 13], [13, 9], [13, 9]] }
 ];
