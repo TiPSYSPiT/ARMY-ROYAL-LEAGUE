@@ -13,7 +13,14 @@ const LEAGUE = {
 
   /* Date the results below were last updated (YYYY-MM-DD).
      Bump this whenever you add a match - it is shown in the header. */
-  updated: '2026-09-14'
+  updated: '2026-09-14',
+
+  /* Each pairing is played twice, with its own map pool per leg.
+     Leg 1 puts the alphabetically first team at home, leg 2 reverses that. */
+  legs: [
+    { name: 'First leg',  maps: ['Backlot', 'Cluster', 'Strike'] },
+    { name: 'Return leg', maps: ['Citystreets', 'Crash', 'Crossfire'] }
+  ]
 };
 
 const COUNTRIES = {
@@ -115,27 +122,30 @@ const TEAMS = [
 ];
 
 
-/* maps: [[homeRounds, awayRounds], ...]  -  Best of 3 */
+/* Every pairing is played twice.
+   Leg 1: the alphabetically first team is at home.
+   Leg 2: the same pairing with the sides reversed.
+   maps: [[homeRounds, awayRounds], ...]  -  Best of 3 */
 const MATCHES = [
   { id: 'm01', home: 'alpha',    away: 'cas1',     maps: [[13, 2], [13, 2]] },
-  { id: 'm02', home: 'lafine',   away: 'adhd',     maps: [[13, 9], [13, 10]] },
-  { id: 'm03', home: 'nosweat',  away: 'deox',     maps: [[13, 7], [13, 10]] },
+  { id: 'm02', home: 'adhd',     away: 'lafine',   maps: [[9, 13], [10, 13]] },
+  { id: 'm03', home: 'deox',     away: 'nosweat',  maps: [[7, 13], [10, 13]] },
   { id: 'm04', home: 'deox',     away: 'infinity', maps: [[13, 11], [3, 13], [16, 6]] },
   { id: 'm05', home: 'alpha',    away: 'sag',      maps: [[13, 5], [13, 7]] },
   { id: 'm06', home: 'myquest',  away: 'warz',     maps: [[13, 2], [13, 3]] },
   { id: 'm07', home: 'bravo',    away: 'deox',     maps: [[13, 2], [13, 10]] },
-  { id: 'm08', home: 'myquest',  away: 'deox',     maps: [[13, 7], [13, 5]] },
+  { id: 'm08', home: 'deox',     away: 'myquest',  maps: [[7, 13], [5, 13]] },
   { id: 'm09', home: 'bravo',    away: 'cas1',     maps: [[13, 2], [13, 3]] },
-  { id: 'm10', home: 'myquest',  away: 'cas1',     maps: [[13, 10], [13, 4]] },
-  { id: 'm11', home: 'sag',      away: 'lafine',   maps: [[13, 7], [13, 10]] },
-  { id: 'm12', home: 'sag',      away: 'myquest',  maps: [[13, 11], [22, 20]] },
+  { id: 'm10', home: 'cas1',     away: 'myquest',  maps: [[10, 13], [4, 13]] },
+  { id: 'm11', home: 'lafine',   away: 'sag',      maps: [[7, 13], [10, 13]] },
+  { id: 'm12', home: 'myquest',  away: 'sag',      maps: [[11, 13], [20, 22]] },
   { id: 'm13', home: 'infinity', away: 'lafine',   maps: [[13, 6], [11, 13], [13, 6]] },
-  { id: 'm14', home: 'nosweat',  away: 'bravo',    maps: [[10, 13], [13, 9], [13, 9]] },
-  { id: 'm15', home: 'bravo',  away: 'deox',    maps: [[13, 7], [13, 11]] },
-  { id: 'm16', home: 'alpha',  away: 'nosweat',    maps: [[13, 11], [13, 3]] },
-  { id: 'm17', home: 'revolt',  away: 'lafine',    maps: [[5, 13], [13, 9], [13, 4]] },
-  { id: 'm18', home: 'alpha',  away: 'bravo',    maps: [[13, 7], [13, 4]] },
-  { id: 'm19', home: 'revolt',  away: 'adhd',    maps: [[13, 5], [13, 6]] }
+  { id: 'm14', home: 'bravo',    away: 'nosweat',  maps: [[13, 10], [9, 13], [9, 13]] },
+  { id: 'm15', home: 'deox',     away: 'bravo',    maps: [[7, 13], [11, 13]] },
+  { id: 'm16', home: 'alpha',    away: 'nosweat',  maps: [[13, 11], [13, 3]] },
+  { id: 'm17', home: 'lafine',   away: 'revolt',   maps: [[13, 5], [9, 13], [4, 13]] },
+  { id: 'm18', home: 'alpha',    away: 'bravo',    maps: [[13, 7], [13, 4]] },
+  { id: 'm19', home: 'adhd',     away: 'revolt',   maps: [[5, 13], [6, 13]] }
 ];
 
 /* =========================================================================

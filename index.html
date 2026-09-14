@@ -132,18 +132,36 @@
   <section class="panel view" id="view-fixtures">
     <div class="panel-head">
       <h2>Schedule</h2>
-      <p class="hint">Round robin &middot; 66 fixtures in total</p>
+      <p class="hint" id="fixtureHint">Double round robin</p>
     </div>
     <div class="fixture-legend">
       <span><i class="sq sq-w"></i>Win</span>
       <span><i class="sq sq-l"></i>Loss</span>
       <span><i class="sq sq-o"></i>Pending</span>
+      <span class="fl-note">Each cell shows the row team's result</span>
     </div>
-    <div class="table-scroll">
-      <table class="tbl matrix" id="matrix"></table>
+
+    <div class="leg-block">
+      <h3 class="sub leg-title" id="legTitle1"></h3>
+      <div class="leg-meta">
+        <span class="leg-venue" id="legVenue1"></span>
+        <span class="map-pool" id="legMaps1"></span>
+      </div>
+      <div class="table-scroll">
+        <table class="tbl matrix" id="matrixLeg1"></table>
+      </div>
     </div>
-    <h3 class="sub">Pending fixtures</h3>
-    <div id="openList" class="open-list"></div>
+
+    <div class="leg-block">
+      <h3 class="sub leg-title" id="legTitle2"></h3>
+      <div class="leg-meta">
+        <span class="leg-venue" id="legVenue2"></span>
+        <span class="map-pool" id="legMaps2"></span>
+      </div>
+      <div class="table-scroll">
+        <table class="tbl matrix" id="matrixLeg2"></table>
+      </div>
+    </div>
   </section>
 
   <!-- ============ STATS ============ -->

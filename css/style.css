@@ -812,26 +812,50 @@ td.c-pts {
 .cell-o { color: var(--txt-mute); }
 .cell-x { background: var(--sunken); color: var(--matrix-x-fg); }
 
-.open-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 6px;
-}
 
-.open-item {
+
+/* one matrix per leg, each with its own map pool */
+
+.leg-block { margin-top: 26px; }
+
+.leg-title { margin-bottom: 10px; }
+
+.leg-meta {
   display: flex;
   align-items: center;
-  gap: 8px;
-  justify-content: center;
-  background: var(--tile);
-  border: 1px solid var(--line-soft);
-  border-radius: var(--radius);
-  padding: 8px 10px;
-  font-size: 13px;
-  color: var(--txt-dim);
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
 }
 
-.open-item em { font-style: normal; color: var(--txt-mute); font-size: 11px; }
+.leg-venue {
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--txt-mute);
+}
+
+.map-pool { display: flex; gap: 5px; flex-wrap: wrap; }
+
+.map-pool span {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  background: var(--sunken);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 3px 8px;
+}
+
+.fl-note {
+  margin-left: auto;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: var(--txt-mute);
+}
 
 /* ---------------- Stats ---------------- */
 
@@ -1210,4 +1234,20 @@ select.inp {
 @media (max-width: 520px) {
   .standings th:nth-child(6), .standings td:nth-child(6),
   .standings th:nth-child(8), .standings td:nth-child(8) { display: none; }
+}
+
+/* schedule matrix: rows are the home side, columns the away side */
+.matrix th.corner {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--txt-mute);
+  white-space: nowrap;
+}
+
+.m-open em {
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--gold-dim);
 }

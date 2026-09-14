@@ -45,6 +45,24 @@
     return ccChip(team) + '<span class="tname">' + esc(team.name) + '</span>';
   }
 
+  /* Alphabetical, case-insensitive. Names that do not begin with a letter or
+     digit - "[SaG]" for instance - are pushed to the end instead of sorting
+     first, which is where raw code-point order would put them. */
+  function startsWithSymbol(name) {
+    return !/^[\p{L}\p{N}]/u.test(String(name));
+  }
+
+  function byTeamName(a, b) {
+    var as = startsWithSymbol(a.name) ? 1 : 0;
+    var bs = startsWithSymbol(b.name) ? 1 : 0;
+    if (as !== bs) return as - bs;
+    return a.name.localeCompare(b.name, 'en', { sensitivity: 'base' });
+  }
+
+  function teamsAlphabetical() {
+    return TEAMS.slice().sort(byTeamName);
+  }
+
   /* ------------------------------------------------------- Data access */
 
   function validMatch(m) {
@@ -226,7 +244,7 @@
 
   function renderTeams() {
     var st = standingsById();
-    $('#teamGrid').innerHTML = TEAMS.map(function (t) {
+    $('#teamGrid').innerHTML = teamsAlphabetical().map(function (t) {
       var r = st[t.id];
       var roster = t.players.map(function (p) {
         return '<li class="' + (p.c ? 'cap' : '') + '">' +
@@ -255,50 +273,105 @@
 
   /* --------------------------------------------------------- Schedule */
 
+  /* Keyed by "home|away" only. Every pairing is played twice, so each ordered
+     pair is its own fixture: the matrix cell at (row = home, col = away)
+     shows that leg, and the mirrored cell shows the return leg. */
   function matchupIndex() {
     var idx = {};
     getMatches().forEach(function (m) {
       var r = evalMatch(m);
-      idx[m.home + '|' + m.away] = { maps: r.mapsHome + ':' + r.mapsAway, won: r.homeWon };
-      idx[m.away + '|' + m.home] = { maps: r.mapsAway + ':' + r.mapsHome, won: r.awayWon };
+      idx[m.home + '|' + m.away] = {
+        maps: r.mapsHome + ':' + r.mapsAway,
+        won: r.homeWon,
+        h: r.mapsHome,
+        a: r.mapsAway
+      };
     });
     return idx;
   }
 
-  function renderFixtures() {
-    var order = computeStandings().map(function (r) { return r.team; });
-    var idx = matchupIndex();
+  /* double round robin: every ordered pair is a fixture */
+  function totalFixtures() {
+    return TEAMS.length * (TEAMS.length - 1);
+  }
 
-    var head = '<thead><tr><th class="rowhead">Team</th>' +
+  /* The first leg puts the alphabetically first team at home; the return leg
+     reverses that. Which leg a match belongs to therefore follows from the
+     sides, without needing a flag in the data. */
+  function isFirstLeg(m) {
+    return byTeamName(TEAM_BY_ID[m.home], TEAM_BY_ID[m.away]) < 0;
+  }
+
+  /* Mirrored index for one leg: both cells of a pairing carry the result seen
+     from the row team, so a row can be read straight across. */
+  function legIndex(leg) {
+    var idx = {};
+    getMatches().forEach(function (m) {
+      if ((isFirstLeg(m) ? 1 : 2) !== leg) return;
+      var r = evalMatch(m);
+      idx[m.home + '|' + m.away] = { maps: r.mapsHome + ':' + r.mapsAway, won: r.homeWon, atHome: true };
+      idx[m.away + '|' + m.home] = { maps: r.mapsAway + ':' + r.mapsHome, won: r.awayWon, atHome: false };
+    });
+    return idx;
+  }
+
+  function matrixHTML(order, idx) {
+    var head = '<thead><tr><th class="rowhead corner">Team</th>' +
       order.map(function (t) { return '<th class="colhead">' + esc(t.name) + '</th>'; }).join('') +
       '</tr></thead>';
 
     var body = '<tbody>' + order.map(function (row) {
       var cells = order.map(function (col) {
         if (row.id === col.id) return '<td><div class="cellwrap cell-x">/</div></td>';
+
         var res = idx[row.id + '|' + col.id];
-        if (!res) return '<td><div class="cellwrap cell-o">-</div></td>';
-        return '<td><div class="cellwrap ' + (res.won ? 'cell-w' : 'cell-l') + '">' + res.maps + '</div></td>';
+        if (!res) {
+          return '<td><div class="cellwrap cell-o" title="' +
+            esc(row.name + ' vs ' + col.name + ' - not played yet') + '">-</div></td>';
+        }
+
+        var venue = res.atHome ? row.name : col.name;
+        var title = row.name + ' ' + res.maps + ' ' + col.name + ' | ' + venue + ' at home';
+        return '<td><div class="cellwrap ' + (res.won ? 'cell-w' : 'cell-l') +
+          '" title="' + esc(title) + '">' + res.maps + '</div></td>';
       }).join('');
       return '<tr><th class="rowhead">' + esc(row.name) + '</th>' + cells + '</tr>';
     }).join('') + '</tbody>';
 
-    $('#matrix').innerHTML = head + body;
+    return head + body;
+  }
 
-    var open = [];
-    for (var i = 0; i < TEAMS.length; i++) {
-      for (var j = i + 1; j < TEAMS.length; j++) {
-        if (!idx[TEAMS[i].id + '|' + TEAMS[j].id]) {
-          open.push([TEAMS[i], TEAMS[j]]);
-        }
-      }
-    }
+  function renderFixtures() {
+    var order = teamsAlphabetical();
 
-    $('#openList').innerHTML = open.length
-      ? open.map(function (p) {
-          return '<div class="open-item">' + esc(p[0].name) + ' <em>vs</em> ' + esc(p[1].name) + '</div>';
-        }).join('')
-      : '<p class="empty">All fixtures have been played.</p>';
+    var played = getMatches().length;
+    $('#fixtureHint').textContent =
+      'Double round robin · ' + played + ' of ' + totalFixtures() + ' fixtures played';
+
+    var legs = (LEAGUE.legs && LEAGUE.legs.length) ? LEAGUE.legs : [
+      { name: 'First leg', maps: [] },
+      { name: 'Return leg', maps: [] }
+    ];
+
+    var venue = [
+      'Alphabetically first team at home',
+      'Sides reversed - alphabetically second team at home'
+    ];
+
+    [1, 2].forEach(function (leg) {
+      var cfg = legs[leg - 1] || { name: 'Leg ' + leg, maps: [] };
+      var idx = legIndex(leg);
+      var done = Object.keys(idx).length / 2;
+
+      $('#legTitle' + leg).textContent =
+        cfg.name + ' (' + done + ' of ' + (totalFixtures() / 2) + ')';
+      $('#legVenue' + leg).textContent = venue[leg - 1];
+      $('#legMaps' + leg).innerHTML = (cfg.maps || []).map(function (m) {
+        return '<span>' + esc(m) + '</span>';
+      }).join('');
+
+      $('#matrixLeg' + leg).innerHTML = matrixHTML(order, idx);
+    });
   }
 
   /* -------------------------------------------------------- Stats */
@@ -315,7 +388,7 @@
     });
 
     var playedTeams = st.filter(function (r) { return r.played > 0; }).length;
-    var totalPairs = TEAMS.length * (TEAMS.length - 1) / 2;
+    var totalPairs = totalFixtures();
 
     var cards = [
       [matches.length + ' / ' + totalPairs, 'Matches played'],
@@ -404,7 +477,7 @@
       : '';
 
     $('#brandSeason').textContent = LEAGUE.season;
-    $('#footNote').textContent = matches.length + ' of 66 fixtures played';
+    $('#footNote').textContent = matches.length + ' of ' + totalFixtures() + ' fixtures played';
   }
 
   /* ------------------------------------------------- Player statistics */
@@ -562,12 +635,19 @@
         '<span class="res ' + (won ? 'w' : 'l') + '">' + mine + ':' + theirs + '</span></div>';
     }).join('') || '<p class="m-open">No matches played yet.</p>';
 
-    var playedIds = {};
-    own.forEach(function (m) { playedIds[m.home === id ? m.away : m.home] = true; });
-    var openOpp = TEAMS.filter(function (x) { return x.id !== id && !playedIds[x.id]; });
-    var openHTML = openOpp.length
-      ? '<div class="m-open">' + openOpp.map(function (x) { return esc(x.name); }).join('<br>') + '</div>'
-      : '<p class="m-open">All opponents faced.</p>';
+    /* each pairing has two legs, so list the missing legs rather than the
+       opponents - a team can owe only the home or only the away fixture */
+    var idx = matchupIndex();
+    var pending = [];
+    teamsAlphabetical().forEach(function (x) {
+      if (x.id === id) return;
+      if (!idx[id + '|' + x.id]) pending.push(esc(x.name) + ' <em>(home)</em>');
+      if (!idx[x.id + '|' + id]) pending.push(esc(x.name) + ' <em>(away)</em>');
+    });
+
+    var openHTML = pending.length
+      ? '<div class="m-open">' + pending.join('<br>') + '</div>'
+      : '<p class="m-open">All fixtures played.</p>';
 
     $('#modalContent').innerHTML =
       '<div class="m-head">' + ccChip(t) + '<h2>' + esc(t.name) + '</h2></div>' +
@@ -583,7 +663,7 @@
       '<div class="m-cols">' +
         '<div><h4>Roster</h4><ul class="roster">' + roster + '</ul></div>' +
         '<div><h4>Results</h4>' + matchRows +
-          '<h4 style="margin-top:16px;">Pending opponents</h4>' + openHTML + '</div>' +
+          '<h4 style="margin-top:16px;">Pending fixtures</h4>' + openHTML + '</div>' +
       '</div>' +
       playerStatsHTML(id);
 
@@ -661,7 +741,7 @@
   /* ------------------------------------------------------ Filter select */
 
   function fillSelects() {
-    var opts = TEAMS.slice().sort(function (a, b) { return a.name.localeCompare(b.name); })
+    var opts = teamsAlphabetical()
       .map(function (t) { return '<option value="' + t.id + '">' + esc(t.name) + '</option>'; }).join('');
 
     $('#matchFilter').innerHTML = '<option value="all">All teams</option>' + opts;
