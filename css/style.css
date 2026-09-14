@@ -1076,6 +1076,108 @@ select.inp {
 
 .m-open { font-size: 13px; color: var(--txt-mute); line-height: 1.9; }
 
+/* ---- player statistics inside the team modal ---- */
+
+.pstat-block { margin-top: 24px; }
+
+.pstat-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--txt-dim);
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.pstat-head-sub { margin-top: 22px; }
+
+.pstat-note {
+  font-family: "Barlow", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: var(--txt-mute);
+}
+
+.pstats { font-size: 13px; }
+
+.pstats thead th {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  padding: 6px 5px;
+}
+
+.pstats tbody td { padding: 6px 5px; }
+
+.pstats .c-player,
+.pstats td.c-player {
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pstat-group { margin-bottom: 16px; }
+
+.pstat-group h5 {
+  margin: 0 0 7px;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--txt-dim);
+}
+
+.pstat-map {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--tile);
+  margin-bottom: 5px;
+}
+
+.pstat-map > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--txt-dim);
+  list-style: none;
+  transition: color 0.15s;
+}
+
+.pstat-map > summary::-webkit-details-marker { display: none; }
+
+.pstat-map > summary:hover { color: var(--txt); }
+
+.pstat-map[open] > summary {
+  border-bottom: 1px solid var(--line-soft);
+  color: var(--txt);
+}
+
+.pm-name::before {
+  content: "\25B8";
+  display: inline-block;
+  width: 13px;
+  color: var(--gold-dim);
+  transition: transform 0.15s;
+}
+
+.pstat-map[open] .pm-name::before { transform: rotate(90deg); }
+
+.pm-score { font-family: var(--mono); font-size: 12px; }
+
+.pstat-map .table-scroll { padding: 4px 12px 10px; }
+
 /* ---------------- Footer ---------------- */
 
 .site-footer {

@@ -407,6 +407,136 @@
     $('#footNote').textContent = matches.length + ' of 66 fixtures played';
   }
 
+  /* ------------------------------------------------- Player statistics */
+
+  function allPlayerStats() {
+    return (typeof PLAYER_STATS !== 'undefined' && PLAYER_STATS) ? PLAYER_STATS : {};
+  }
+
+  /* every recorded match for one team, paired with its match entry */
+  function statsForTeam(teamId) {
+    var store = allPlayerStats();
+    return getMatches().filter(function (m) {
+      var e = store[m.id];
+      return e && e.team === teamId && e.maps && e.maps.length;
+    }).map(function (m) {
+      return { match: m, entry: store[m.id] };
+    });
+  }
+
+  /* map score seen from the team's side */
+  function mapScoreFor(match, teamId, i) {
+    var map = match.maps[i];
+    if (!map) return null;
+    var isHome = match.home === teamId;
+    var own = isHome ? map[0] : map[1];
+    var opp = isHome ? map[1] : map[0];
+    return { own: own, opp: opp, won: own > opp };
+  }
+
+  function aggregatePlayers(records) {
+    var byName = {};
+    var order = [];
+
+    records.forEach(function (rec) {
+      rec.entry.maps.forEach(function (map) {
+        map.players.forEach(function (p) {
+          if (!byName[p.n]) {
+            byName[p.n] = { n: p.n, maps: 0, s: 0, k: 0, a: 0, d: 0 };
+            order.push(p.n);
+          }
+          var t = byName[p.n];
+          t.maps++; t.s += p.s; t.k += p.k; t.a += p.a; t.d += p.d;
+        });
+      });
+    });
+
+    return order.map(function (n) { return byName[n]; })
+      .sort(function (a, b) { return b.s - a.s || b.k - a.k || a.n.localeCompare(b.n); });
+  }
+
+  function kd(k, d) {
+    return d > 0 ? (k / d).toFixed(2) : k.toFixed(2);
+  }
+
+  /* mapsCount is only passed for the aggregate table */
+  function playerRow(p, mapsCount) {
+    return '<tr>' +
+      '<td class="c-player">' + esc(p.n) + '</td>' +
+      (mapsCount != null ? '<td class="num-dim">' + mapsCount + '</td>' : '') +
+      '<td>' + p.s + '</td>' +
+      '<td>' + p.k + '</td>' +
+      '<td>' + p.a + '</td>' +
+      '<td>' + p.d + '</td>' +
+      '<td class="num-dim">' + kd(p.k, p.d) + '</td>' +
+      '</tr>';
+  }
+
+  function playerStatsHTML(teamId) {
+    var records = statsForTeam(teamId);
+    if (!records.length) return '';
+
+    var totals = aggregatePlayers(records);
+
+    var summary =
+      '<div class="table-scroll"><table class="tbl pstats">' +
+      '<thead><tr>' +
+        '<th class="c-player">Player</th>' +
+        '<th title="Maps played">MAPS</th>' +
+        '<th title="Score">SCORE</th>' +
+        '<th title="Kills">K</th>' +
+        '<th title="Assists">A</th>' +
+        '<th title="Deaths">D</th>' +
+        '<th title="Kill / death ratio">K/D</th>' +
+      '</tr></thead><tbody>' +
+      totals.map(function (p) { return playerRow(p, p.maps); }).join('') +
+      '</tbody></table></div>';
+
+    var detail = records.map(function (rec) {
+      var opp = TEAM_BY_ID[rec.match.home === teamId ? rec.match.away : rec.match.home];
+      var e = evalMatch(rec.match);
+      var isHome = rec.match.home === teamId;
+      var ownMaps = isHome ? e.mapsHome : e.mapsAway;
+      var oppMaps = isHome ? e.mapsAway : e.mapsHome;
+      var won = ownMaps > oppMaps;
+
+      var maps = rec.entry.maps.map(function (map, i) {
+        var sc = mapScoreFor(rec.match, teamId, i);
+        var scoreTxt = sc
+          ? '<span class="' + (sc.won ? 'pos' : 'neg') + '">' + sc.own + ':' + sc.opp + '</span>'
+          : '';
+
+        var rows = map.players.slice().sort(function (a, b) { return b.s - a.s; })
+          .map(function (p) { return playerRow(p); }).join('');
+
+        return '<details class="pstat-map">' +
+          '<summary><span class="pm-name">Map ' + (i + 1) + ': ' + esc(map.name) + '</span>' +
+          '<span class="pm-score">' + scoreTxt + '</span></summary>' +
+          '<div class="table-scroll"><table class="tbl pstats">' +
+          '<thead><tr>' +
+            '<th class="c-player">Player</th><th>SCORE</th><th>K</th><th>A</th><th>D</th><th>K/D</th>' +
+          '</tr></thead><tbody>' + rows + '</tbody></table></div>' +
+          '</details>';
+      }).join('');
+
+      return '<div class="pstat-group">' +
+        '<h5>vs ' + esc(opp.name) +
+          ' <span class="' + (won ? 'pos' : 'neg') + '">' + ownMaps + ':' + oppMaps + '</span></h5>' +
+        maps +
+        '</div>';
+    }).join('');
+
+    return '<div class="pstat-block">' +
+      '<h4 class="pstat-head">Player statistics' +
+        '<span class="pstat-note">' + records.length + ' of ' +
+        getMatches().filter(function (m) { return m.home === teamId || m.away === teamId; }).length +
+        ' matches recorded</span></h4>' +
+      summary +
+      '<h4 class="pstat-head pstat-head-sub">Per map</h4>' +
+      detail +
+      '</div>';
+  }
+
   /* -------------------------------------------------------------- Modal */
 
   function openTeam(id) {
@@ -454,7 +584,8 @@
         '<div><h4>Roster</h4><ul class="roster">' + roster + '</ul></div>' +
         '<div><h4>Results</h4>' + matchRows +
           '<h4 style="margin-top:16px;">Pending opponents</h4>' + openHTML + '</div>' +
-      '</div>';
+      '</div>' +
+      playerStatsHTML(id);
 
     $('#modal').hidden = false;
     document.body.style.overflow = 'hidden';

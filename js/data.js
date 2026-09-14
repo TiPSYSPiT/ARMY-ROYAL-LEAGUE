@@ -114,6 +114,7 @@ const TEAMS = [
   }
 ];
 
+
 /* maps: [[homeRounds, awayRounds], ...]  -  Best of 3 */
 const MATCHES = [
   { id: 'm01', home: 'alpha',    away: 'cas1',     maps: [[13, 2], [13, 2]] },
@@ -136,3 +137,86 @@ const MATCHES = [
   { id: 'm18', home: 'alpha',  away: 'bravo',    maps: [[13, 7], [13, 4]] },
   { id: 'm19', home: 'revolt',  away: 'adhd',    maps: [[13, 5], [13, 6]] }
 ];
+
+/* =========================================================================
+   Per-map player statistics
+
+   Keyed by match id. `team` says whose players are listed, `maps` follows the
+   same order as that match's `maps` array, so the map score can be looked up.
+   Values: s = score, k = kills, a = assists, d = deaths.
+   Matches without an entry here simply show no player stats.
+   ========================================================================= */
+
+const PLAYER_STATS = {
+  m04: {
+    team: 'infinity',
+    maps: [
+      {
+        name: 'Backlot',
+        players: [
+          { n: 'TiPSY',    s: 135, k: 27, a: 0, d: 17 },
+          { n: 'BOOBiO',   s:  89, k: 16, a: 1, d: 18 },
+          { n: 'Levitate', s:  83, k: 16, a: 1, d: 19 },
+          { n: 'NATHZN',   s:  75, k: 15, a: 0, d: 18 },
+          { n: 'paramore', s:  41, k:  8, a: 1, d: 18 }
+        ]
+      },
+      {
+        name: 'Strike',
+        players: [
+          { n: 'NATHZN',   s: 104, k: 19, a: 3, d: 10 },
+          { n: 'paramore', s: 103, k: 20, a: 1, d:  7 },
+          { n: 'Levitate', s:  81, k: 15, a: 2, d:  7 },
+          { n: 'TiPSY',    s:  79, k: 14, a: 2, d: 10 },
+          { n: 'BOOBiO',   s:  34, k:  5, a: 1, d:  6 }
+        ]
+      },
+      {
+        name: 'Cluster',
+        players: [
+          { n: 'paramore', s: 100, k: 21, a: 0, d: 15 },
+          { n: 'Levitate', s:  77, k: 13, a: 2, d: 15 },
+          { n: 'BOOBiO',   s:  73, k: 14, a: 1, d: 16 },
+          { n: 'TiPSY',    s:  60, k:  9, a: 3, d: 16 },
+          { n: 'NATHZN',   s:  57, k:  9, a: 2, d: 17 }
+        ]
+      }
+    ]
+  },
+
+  m13: {
+    team: 'infinity',
+    maps: [
+      {
+        name: 'Strike',
+        players: [
+          { n: 'NATHZN',   s: 118, k: 23, a: 1, d: 10 },
+          { n: 'paramore', s:  95, k: 19, a: 0, d: 11 },
+          { n: 'Basham',   s:  91, k: 17, a: 0, d:  9 },
+          { n: 'TiPSY',    s:  74, k: 14, a: 2, d: 14 },
+          { n: 'EMPzY',    s:  40, k:  8, a: 0, d: 14 }
+        ]
+      },
+      {
+        name: 'Backlot',
+        players: [
+          { n: 'NATHZN',   s: 148, k: 29, a: 0, d: 16 },
+          { n: 'paramore', s: 110, k: 22, a: 0, d: 17 },
+          { n: 'TiPSY',    s:  83, k: 16, a: 1, d: 19 },
+          { n: 'EMPzY',    s:  46, k:  8, a: 2, d: 19 },
+          { n: 'Basham',   s:  45, k:  9, a: 0, d: 16 }
+        ]
+      },
+      {
+        name: 'Cluster',
+        players: [
+          { n: 'paramore', s: 119, k: 22, a: 1, d: 10 },
+          { n: 'Basham',   s: 117, k: 18, a: 3, d: 14 },
+          { n: 'TiPSY',    s:  79, k: 14, a: 2, d: 12 },
+          { n: 'NATHZN',   s:  65, k: 13, a: 0, d: 13 },
+          { n: 'EMPzY',    s:  59, k: 10, a: 2, d: 15 }
+        ]
+      }
+    ]
+  }
+};
