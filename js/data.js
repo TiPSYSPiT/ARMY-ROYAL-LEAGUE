@@ -9,7 +9,11 @@ const LEAGUE = {
   season: 'Season 1',
   mode: 'Best of 3',
   pointsWin: 3,
-  pointsLoss: 0
+  pointsLoss: 0,
+
+  /* Date the results below were last updated (YYYY-MM-DD).
+     Bump this whenever you add a match - it is shown in the header. */
+  updated: '2026-09-14'
 };
 
 const COUNTRIES = {
@@ -102,10 +106,10 @@ const TEAMS = [
     ]
   },
   {
-    id: 'tba', name: 'TBA', cc: 'EU', flag: '\u{1F1EA}\u{1F1FA}',
+    id: 'revolt', name: 'Revolt', cc: 'EU', flag: '\u{1F1EA}\u{1F1FA}',
     players: [
-      { n: 'ninja', c: true }, { n: 'Saintz', c: true }, { n: 'daRK' },
-      { n: 'Atum' }, { n: 'Vahz' }, { n: 'Meep' }, { n: '+1' }
+      { n: 'ninja', c: true }, { n: 'Saintz', c: true }, { n: 'Atum' },
+      { n: 'Vahz' }, { n: 'Meep' }, { n: '+2' }
     ]
   }
 ];
@@ -125,5 +129,10 @@ const MATCHES = [
   { id: 'm11', home: 'sag',      away: 'lafine',   maps: [[13, 7], [13, 10]] },
   { id: 'm12', home: 'sag',      away: 'myquest',  maps: [[13, 11], [22, 20]] },
   { id: 'm13', home: 'infinity', away: 'lafine',   maps: [[13, 6], [11, 13], [13, 6]] },
-  { id: 'm14', home: 'nosweat',  away: 'bravo',    maps: [[10, 13], [13, 9], [13, 9]] }
+  { id: 'm14', home: 'nosweat',  away: 'bravo',    maps: [[10, 13], [13, 9], [13, 9]] },
+  { id: 'm15', home: 'bravo',  away: 'deox',    maps: [[13, 7], [13, 11]] },
+  { id: 'm16', home: 'alpha',  away: 'nosweat',    maps: [[13, 11], [13, 3]] },
+  { id: 'm17', home: 'revolt',  away: 'lafine',    maps: [[5, 13], [13, 9], [13, 4]] },
+  { id: 'm18', home: 'alpha',  away: 'bravo',    maps: [[13, 7], [13, 4]] },
+  { id: 'm19', home: 'revolt',  away: 'adhd',    maps: [[13, 5], [13, 6]] }
 ];

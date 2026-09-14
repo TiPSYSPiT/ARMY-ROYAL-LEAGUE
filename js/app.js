@@ -24,6 +24,19 @@
   function diffClass(n) { return n > 0 ? 'pos' : (n < 0 ? 'neg' : 'zero'); }
   function sign(n) { return (n > 0 ? '+' : '') + n; }
 
+  var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  /* 'YYYY-MM-DD' -> '14 Sep 2026'. Formatted by hand so the output does not
+     depend on the visitor's locale; anything unexpected is passed through. */
+  function formatDate(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso));
+    if (!m) return String(iso);
+    var month = MONTHS[parseInt(m[2], 10) - 1];
+    if (!month) return String(iso);
+    return parseInt(m[3], 10) + ' ' + month + ' ' + m[1];
+  }
+
   function ccChip(team) {
     return '<span class="cc cc-' + team.cc + '" title="' + esc(COUNTRIES[team.cc] || team.cc) + '">' + team.cc + '</span>';
   }
@@ -317,9 +330,15 @@
       return '<div class="stat-card"><b>' + c[0] + '</b><span>' + c[1] + '</span></div>';
     }).join('');
 
-    /* Round differential as centred bars */
+    /* Round differential as centred bars, best to worst (not table order) */
+    var byRoundDiff = st.slice().sort(function (a, b) {
+      return b.roundDiff - a.roundDiff ||
+             b.mapDiff - a.mapDiff ||
+             a.team.name.localeCompare(b.team.name);
+    });
+
     var maxAbs = Math.max.apply(null, st.map(function (r) { return Math.abs(r.roundDiff); }).concat([1]));
-    $('#roundChart').innerHTML = st.map(function (r) {
+    $('#roundChart').innerHTML = byRoundDiff.map(function (r) {
       var pct = Math.abs(r.roundDiff) / maxAbs * 50;
       var style = r.roundDiff >= 0
         ? 'left:50%;width:' + pct + '%;'
@@ -380,6 +399,10 @@
       '<div class="hstat"><b>' + TEAMS.length * 7 + '</b><span>Players</span></div>' +
       '<div class="hstat"><b>' + matches.length + '</b><span>Matches</span></div>' +
       '<div class="hstat"><b>' + maps + '</b><span>Maps</span></div>';
+    $('#headerUpdated').textContent = LEAGUE.updated
+      ? 'Last updated ' + formatDate(LEAGUE.updated)
+      : '';
+
     $('#brandSeason').textContent = LEAGUE.season;
     $('#footNote').textContent = matches.length + ' of 66 fixtures played';
   }
