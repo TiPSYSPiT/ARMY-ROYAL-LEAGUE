@@ -145,7 +145,13 @@ const MATCHES = [
   { id: 'm16', home: 'alpha',    away: 'nosweat',  maps: [[13, 11], [13, 3]] },
   { id: 'm17', home: 'lafine',   away: 'revolt',   maps: [[13, 5], [9, 13], [4, 13]] },
   { id: 'm18', home: 'alpha',    away: 'bravo',    maps: [[13, 7], [13, 4]] },
-  { id: 'm19', home: 'adhd',     away: 'revolt',   maps: [[5, 13], [6, 13]] }
+  { id: 'm19', home: 'adhd',     away: 'revolt',   maps: [[5, 13], [6, 13]] },
+  { id: 'm20', home: 'adhd',     away: 'warz',     maps: [[13, 5], [13, 3]] },
+  { id: 'm21', home: 'infinity', away: 'warz',     maps: [[13, 3], [13, 1]] },
+  { id: 'm22', home: 'nosweat',  away: 'bravo',    maps: [[25, 23], [13, 11]] },
+  { id: 'm23', home: 'sag',      away: 'myquest',  maps: [[16, 12], [9, 13], [13, 1]] },
+  { id: 'm24', home: 'adhd',     away: 'deox',     maps: [[13, 10], [11, 13], [13, 12]] },
+  { id: 'm25', home: 'sag',      away: 'revolt',   maps: [[11, 13], [7, 13]] }
 ];
 
 /* =========================================================================
@@ -225,6 +231,32 @@ const PLAYER_STATS = {
           { n: 'TiPSY',    s:  79, k: 14, a: 2, d: 12 },
           { n: 'NATHZN',   s:  65, k: 13, a: 0, d: 13 },
           { n: 'EMPzY',    s:  59, k: 10, a: 2, d: 15 }
+        ]
+      }
+    ]
+  },
+
+  m21: {
+    team: 'infinity',
+    maps: [
+      {
+        name: 'Strike',
+        players: [
+          { n: 'Levitate', s: 105, k: 21, a: 0, d:  9 },
+          { n: 'paramore', s:  94, k: 17, a: 2, d:  9 },
+          { n: 'Basham',   s:  70, k: 14, a: 0, d:  6 },
+          { n: 'TiPSY',    s:  66, k: 12, a: 1, d: 12 },
+          { n: 'EMPzY',    s:  51, k:  9, a: 1, d:  4 }
+        ]
+      },
+      {
+        name: 'Backlot',
+        players: [
+          { n: 'paramore', s:  35, k:  7, a: 0, d:  3 },
+          { n: 'Levitate', s:  30, k:  6, a: 0, d:  2 },
+          { n: 'Basham',   s:  29, k:  4, a: 3, d:  2 },
+          { n: 'EMPzY',    s:  28, k:  5, a: 1, d:  2 },
+          { n: 'TiPSY',    s:  28, k:  5, a: 1, d:  5 }
         ]
       }
     ]
