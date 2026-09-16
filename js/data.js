@@ -13,7 +13,7 @@ const LEAGUE = {
 
   /* Date the results below were last updated (YYYY-MM-DD).
      Bump this whenever you add a match - it is shown in the header. */
-  updated: '2026-09-14',
+  updated: '2026-09-15',
 
   /* Each pairing is played twice, with its own map pool per leg.
      Leg 1 puts the alphabetically first team at home, leg 2 reverses that. */
@@ -149,9 +149,14 @@ const MATCHES = [
   { id: 'm20', home: 'adhd',     away: 'warz',     maps: [[13, 5], [13, 3]] },
   { id: 'm21', home: 'infinity', away: 'warz',     maps: [[13, 3], [13, 1]] },
   { id: 'm22', home: 'nosweat',  away: 'bravo',    maps: [[25, 23], [13, 11]] },
-  { id: 'm23', home: 'sag',      away: 'myquest',  maps: [[16, 12], [9, 13], [13, 1]] },
+  { id: 'm23', home: 'sag',      away: 'myquest',  maps: [[16, 12], [9, 13], [1, 13]] },
   { id: 'm24', home: 'adhd',     away: 'deox',     maps: [[13, 10], [11, 13], [13, 12]] },
-  { id: 'm25', home: 'sag',      away: 'revolt',   maps: [[11, 13], [7, 13]] }
+  { id: 'm25', home: 'sag',      away: 'revolt',   maps: [[11, 13], [7, 13]] },
+  { id: 'm26', home: 'bravo',    away: 'warz',     maps: [[13, 5], [13, 7]] },
+  { id: 'm27', home: 'warz',     away: 'bravo',    maps: [[7, 13], [4, 13]] },
+  { id: 'm28', home: 'alpha',    away: 'infinity', maps: [[13, 8], [13, 8]] },
+  { id: 'm29', home: 'lafine',   away: 'cas1',     maps: [[13, 4], [16, 13]] },
+  { id: 'm30', home: 'infinity', away: 'revolt',   maps: [[13, 6], [13, 9]] }
 ];
 
 /* =========================================================================
@@ -257,6 +262,58 @@ const PLAYER_STATS = {
           { n: 'Basham',   s:  29, k:  4, a: 3, d:  2 },
           { n: 'EMPzY',    s:  28, k:  5, a: 1, d:  2 },
           { n: 'TiPSY',    s:  28, k:  5, a: 1, d:  5 }
+        ]
+      }
+    ]
+  },
+
+  m28: {
+    team: 'infinity',
+    maps: [
+      {
+        name: 'Cluster',
+        players: [
+          { n: 'Levitate', s: 124, k: 23, a: 0, d: 16 },
+          { n: 'BOOBiO',   s:  84, k: 15, a: 3, d: 18 },
+          { n: 'Basham',   s:  82, k: 14, a: 2, d: 15 },
+          { n: 'TiPSY',    s:  55, k: 11, a: 0, d: 16 },
+          { n: 'EMPzY',    s:  25, k:  5, a: 0, d: 19 }
+        ]
+      },
+      {
+        name: 'Strike',
+        players: [
+          { n: 'Basham',   s: 103, k: 20, a: 0, d: 18 },
+          { n: 'Levitate', s:  89, k: 16, a: 3, d: 15 },
+          { n: 'TiPSY',    s:  73, k: 14, a: 1, d: 18 },
+          { n: 'BOOBiO',   s:  64, k: 11, a: 2, d: 17 },
+          { n: 'EMPzY',    s:  50, k: 10, a: 0, d: 18 }
+        ]
+      }
+    ]
+  },
+
+  m30: {
+    team: 'infinity',
+    maps: [
+      {
+        name: 'Backlot',
+        players: [
+          { n: 'NATHZN',   s: 120, k: 21, a: 3, d: 14 },
+          { n: 'Basham',   s: 112, k: 20, a: 1, d: 12 },
+          { n: 'EMPzY',    s:  83, k: 16, a: 0, d: 17 },
+          { n: 'Levitate', s:  75, k: 15, a: 0, d: 17 },
+          { n: 'paramore', s:  71, k: 13, a: 2, d: 16 }
+        ]
+      },
+      {
+        name: 'Strike',
+        players: [
+          { n: 'Basham',   s: 101, k: 19, a: 2, d:  9 },
+          { n: 'NATHZN',   s:  98, k: 19, a: 1, d: 15 },
+          { n: 'paramore', s:  93, k: 19, a: 0, d: 10 },
+          { n: 'EMPzY',    s:  59, k: 10, a: 0, d: 12 },
+          { n: 'Levitate', s:  50, k: 10, a: 0, d: 15 }
         ]
       }
     ]
