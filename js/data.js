@@ -13,7 +13,7 @@ const LEAGUE = {
 
   /* Date the results below were last updated (YYYY-MM-DD).
      Bump this whenever you add a match - it is shown in the header. */
-  updated: '2026-09-21',
+  updated: '2026-09-22',
 
   /* Each pairing is played twice, with its own map pool per leg.
      Leg 1 puts the alphabetically first team at home, leg 2 reverses that. */
@@ -167,7 +167,8 @@ const MATCHES = [
   { id: 'm37', home: 'deox',     away: 'revolt',   maps: [[10, 13], [8, 13]] },
   { id: 'm38', home: 'revolt',   away: 'deox',     maps: [[13, 5], [13, 11]] },
   { id: 'm39', home: 'cas1',     away: 'infinity', maps: [[3, 13], [9, 13]] },
-  { id: 'm40', home: 'infinity', away: 'cas1',     maps: [[13, 7], [13, 6]] }
+  { id: 'm40', home: 'infinity', away: 'cas1',     maps: [[13, 7], [13, 6]] },
+  { id: 'm41', home: 'myquest',  away: 'nosweat',  maps: [[13, 11], [13, 8]] }
 ];
 
 /* =========================================================================
