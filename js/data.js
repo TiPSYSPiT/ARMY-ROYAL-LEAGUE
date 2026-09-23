@@ -168,7 +168,13 @@ const MATCHES = [
   { id: 'm38', home: 'revolt',   away: 'deox',     maps: [[13, 5], [13, 11]] },
   { id: 'm39', home: 'cas1',     away: 'infinity', maps: [[3, 13], [9, 13]] },
   { id: 'm40', home: 'infinity', away: 'cas1',     maps: [[13, 7], [13, 6]] },
-  { id: 'm41', home: 'myquest',  away: 'nosweat',  maps: [[13, 11], [13, 8]] }
+  { id: 'm41', home: 'myquest',  away: 'nosweat',  maps: [[13, 11], [13, 8]] },
+  { id: 'm42', home: 'cas1',     away: 'warz',     maps: [[13, 10], [13, 10]] },
+  { id: 'm43', home: 'myquest',  away: 'lafine',   maps: [[13, 7], [13, 5]] },
+  { id: 'm43', home: 'myquest',  away: 'cas1',     maps: [[13, 0], [13, 4]] },
+  { id: 'm44', home: 'alpha',    away: 'deox',     maps: [[13, 7], [13, 7]] },
+  { id: 'm45', home: 'deox',     away: 'alpha',    maps: [[10, 13], [9, 13]] },
+  { id: 'm46', home: 'infinity', away: 'sag',      maps: [[11, 13], [16, 13], [13, 9]] }
 ];
 
 /* =========================================================================
@@ -378,6 +384,42 @@ const PLAYER_STATS = {
           { n: 'EMPzY',    s:  83, k: 16, a: 1, d: 10 },
           { n: 'Basham',   s:  76, k: 14, a: 1, d:  9 },
           { n: 'paramore', s:  70, k: 14, a: 0, d: 11 }
+        ]
+      }
+    ]
+  },
+
+  m46: {
+    team: 'infinity',
+    maps: [
+      {
+        name: 'Strike',
+        players: [
+          { n: 'Levitate', s: 118, k: 23, a: 1, d: 16 },
+          { n: 'paramore', s: 116, k: 22, a: 1, d: 17 },
+          { n: 'Basham',   s: 115, k: 20, a: 3, d: 12 },
+          { n: 'NATHZN',   s:  88, k: 17, a: 1, d: 19 },
+          { n: 'TiPSY',    s:  47, k:  7, a: 2, d: 21 }
+        ]
+      },
+      {
+        name: 'Backlot',
+        players: [
+          { n: 'Levitate', s: 134, k: 25, a: 1, d: 21 },
+          { n: 'NATHZN',   s: 126, k: 25, a: 2, d: 23 },
+          { n: 'Basham',   s: 109, k: 20, a: 1, d: 17 },
+          { n: 'paramore', s: 100, k: 17, a: 0, d: 20 },
+          { n: 'TiPSY',    s:  99, k: 18, a: 2, d: 23 }
+        ]
+      },
+      {
+        name: 'Cluster',
+        players: [
+          { n: 'Basham',   s: 118, k: 23, a: 1, d: 14 },
+          { n: 'Levitate', s: 109, k: 20, a: 1, d: 13 },
+          { n: 'NATHZN',   s:  95, k: 16, a: 1, d: 17 },
+          { n: 'TiPSY',    s:  91, k: 17, a: 1, d: 13 },
+          { n: 'paramore', s:  80, k: 16, a: 0, d: 19 }
         ]
       }
     ]
