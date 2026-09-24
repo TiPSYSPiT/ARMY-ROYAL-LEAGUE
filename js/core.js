@@ -39,6 +39,71 @@ var ARL = (function () {
   function diffClass(n) { return n > 0 ? 'pos' : (n < 0 ? 'neg' : 'zero'); }
   function sign(n) { return (n > 0 ? '+' : '') + n; }
 
+  /* navigator.clipboard needs a secure context, which file:// is not, so fall
+     back to a throwaway textarea */
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      ok ? resolve() : reject();
+    });
+  }
+
+  /* ------------------------------------------------------ Section anchors */
+
+  /* Deep-linkable sections of the team page. The popup renders the same markup
+     without anchors, so index.html never grows these ids. */
+  var SECTIONS = [
+    { id: 'overview',    label: 'Overview' },
+    { id: 'roster',      label: 'Roster' },
+    { id: 'results',     label: 'Results' },
+    { id: 'fixtures',    label: 'Pending fixtures' },
+    { id: 'playerstats', label: 'Player statistics' },
+    { id: 'permap',      label: 'Per map' }
+  ];
+
+  var LINK_ICON =
+    '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" ' +
+    'stroke-width="2" stroke-linecap="round" aria-hidden="true">' +
+    '<path d="M10.3 13.7a4 4 0 0 0 5.7 0l2.8-2.8a4 4 0 1 0-5.7-5.7l-1.4 1.4"/>' +
+    '<path d="M13.7 10.3a4 4 0 0 0-5.7 0l-2.8 2.8a4 4 0 1 0 5.7 5.7l1.4-1.4"/>' +
+    '</svg>';
+
+  function anchorButton(id, label) {
+    return '<button type="button" class="anchor-link" data-anchor="' + id + '"' +
+      ' aria-label="Copy link to ' + esc(label) + '"' +
+      ' title="Copy link to this section">' + LINK_ICON + '</button>';
+  }
+
+  /* Builds a heading; without `anchors` the output is byte-for-byte what the
+     popup rendered before section links existed.
+
+     With anchors the title and its icon are wrapped in one span: .pstat-head is
+     a flex row with space-between, and a loose button would otherwise become a
+     third flex item and drift into the middle. */
+  function heading(tag, cls, style, id, label, text, trail, anchors) {
+    if (!anchors) {
+      return '<' + tag + (cls ? ' class="' + cls + '"' : '') +
+             (style ? ' style="' + style + '"' : '') + '>' +
+             text + (trail || '') + '</' + tag + '>';
+    }
+    return '<' + tag + ' class="' + (cls ? cls + ' ' : '') + 'has-anchor"' +
+           (style ? ' style="' + style + '"' : '') + ' id="' + id + '">' +
+           '<span class="h-title">' + text + anchorButton(id, label) + '</span>' +
+           (trail || '') + '</' + tag + '>';
+  }
+
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -476,7 +541,7 @@ var ARL = (function () {
       '</tr>';
   }
 
-  function playerStatsHTML(teamId) {
+  function playerStatsHTML(teamId, anchors) {
     var records = statsForTeam(teamId);
     if (!records.length) return '';
 
@@ -527,13 +592,16 @@ var ARL = (function () {
         '</div>';
     }).join('');
 
+    var note = '<span class="pstat-note">' + records.length + ' of ' +
+      getMatches().filter(function (m) { return m.home === teamId || m.away === teamId; }).length +
+      ' matches recorded</span>';
+
     return '<div class="pstat-block">' +
-      '<h4 class="pstat-head">Player statistics' +
-        '<span class="pstat-note">' + records.length + ' of ' +
-        getMatches().filter(function (m) { return m.home === teamId || m.away === teamId; }).length +
-        ' matches recorded</span></h4>' +
+      heading('h4', 'pstat-head', '', 'playerstats', 'Player statistics',
+              'Player statistics', note, anchors) +
       summary +
-      '<h4 class="pstat-head pstat-head-sub">Per map</h4>' +
+      heading('h4', 'pstat-head pstat-head-sub', '', 'permap', 'Per map',
+              'Per map', '', anchors) +
       detail +
       '</div>';
   }
@@ -542,7 +610,7 @@ var ARL = (function () {
 
   /* The single source of truth for a team's detail markup - rendered into the
      modal on the league page and into the page body on team.html. */
-  function teamDetailHTML(id) {
+  function teamDetailHTML(id, anchors) {
     var t = TEAM_BY_ID[id];
     if (!t) return '';
     var r = standingsById()[id];
@@ -579,7 +647,9 @@ var ARL = (function () {
       ? '<div class="m-open">' + pending.join('<br>') + '</div>'
       : '<p class="m-open">All fixtures played.</p>';
 
-    return '<div class="m-head">' + ccChip(t) + '<h2>' + esc(t.name) + '</h2></div>' +
+    return '<div class="m-head">' + ccChip(t) +
+        heading('h2', '', '', 'overview', t.name, esc(t.name), '', anchors) +
+      '</div>' +
       '<p class="m-sub">Rank ' + r.rank + ' &middot; ' + esc(COUNTRIES[t.cc] || t.cc) + '</p>' +
       '<div class="m-stats">' +
         '<div class="m-stat"><b>' + r.points + '</b><span>Points</span></div>' +
@@ -590,11 +660,13 @@ var ARL = (function () {
         '<div class="m-stat"><b>' + sign(r.roundDiff) + '</b><span>Rounds +/-</span></div>' +
       '</div>' +
       '<div class="m-cols">' +
-        '<div><h4>Roster</h4><ul class="roster">' + roster + '</ul></div>' +
-        '<div><h4>Results</h4>' + matchRows +
-          '<h4 style="margin-top:16px;">Pending fixtures</h4>' + openHTML + '</div>' +
+        '<div>' + heading('h4', '', '', 'roster', 'Roster', 'Roster', '', anchors) +
+          '<ul class="roster">' + roster + '</ul></div>' +
+        '<div>' + heading('h4', '', '', 'results', 'Results', 'Results', '', anchors) + matchRows +
+          heading('h4', '', 'margin-top:16px;', 'fixtures', 'Pending fixtures',
+                  'Pending fixtures', '', anchors) + openHTML + '</div>' +
       '</div>' +
-      playerStatsHTML(id);
+      playerStatsHTML(id, anchors);
   }
 
   /* ------------------------------------------------------------- Header */
@@ -685,14 +757,14 @@ var ARL = (function () {
   return {
     TEAM_BY_ID: TEAM_BY_ID,
     esc: esc, $: $, $$: $$, setText: setText, setHTML: setHTML,
-    diffClass: diffClass, sign: sign,
+    diffClass: diffClass, sign: sign, copyText: copyText,
     ccChip: ccChip, teamLabel: teamLabel, teamsAlphabetical: teamsAlphabetical,
     teamSlug: teamSlug, teamBySlug: teamBySlug, teamPageURL: teamPageURL,
     getMatches: getMatches, evalMatch: evalMatch,
     computeStandings: computeStandings, standingsById: standingsById,
     totalFixtures: totalFixtures, legIndex: legIndex,
     loadScoreboards: loadScoreboards,
-    teamDetailHTML: teamDetailHTML,
+    teamDetailHTML: teamDetailHTML, SECTIONS: SECTIONS,
     renderHeader: renderHeader, initTheme: initTheme
   };
 })();

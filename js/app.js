@@ -289,26 +289,6 @@
       '</div>';
   }
 
-  /* navigator.clipboard needs a secure context, which file:// is not, so fall
-     back to a throwaway textarea */
-  function copyText(text) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      return navigator.clipboard.writeText(text);
-    }
-    return new Promise(function (resolve, reject) {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.setAttribute('readonly', '');
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      var ok = false;
-      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
-      document.body.removeChild(ta);
-      ok ? resolve() : reject();
-    });
-  }
 
   function showModal(id) {
     var team = TEAM_BY_ID[id];
@@ -328,7 +308,7 @@
 
     $('#copyTeamLink').addEventListener('click', function () {
       var url = absoluteTeamURL(team);
-      copyText(url).then(function () {
+      C.copyText(url).then(function () {
         C.setText('#copyMsg', 'Link copied');
       }, function () {
         C.setText('#copyMsg', url);
