@@ -495,6 +495,7 @@ const STATS_FILES = {
   'json/20260914_infeS_vs_WrZ_backlot-x.json':    ['m21', 'Backlot'],
 
   /* m28 - ARMY ALPHA vs infinity eSports, 15 Sep 2026*/
+  'json/20260915_infeS_vs_ALPHA_cluster.json':     ['m28', 'Cluster'],
   'json/20260915_infeS_vs_ALPHA_strike.json':     ['m28', 'Strike'],
 
   /* m30 - infinity eSports vs Revolt, 16 Sep 2026*/
