@@ -1,0 +1,197 @@
+{
+  "map": "mp_backlot_x",
+  "recordDate": "20260914213204",
+  "recordDateSource": "g_mapStartTime",
+  "halves": [
+    {
+      "half": 1,
+      "score": "5:1",
+      "rounds": [
+        5,
+        1
+      ],
+      "complete": true
+    }
+  ],
+  "teams": [
+    {
+      "clan": "inf.eS",
+      "roundsWon": 5,
+      "players": [
+        {
+          "name": "inf.eS paramore",
+          "score": 35,
+          "kills": 7,
+          "assists": 0,
+          "deaths": 3,
+          "kd": 2.33,
+          "nadeKills": 1,
+          "nadeDeaths": 1,
+          "tk": 0,
+          "hsPercent": 29,
+          "plants": 0,
+          "defuses": 0,
+          "pov": true
+        },
+        {
+          "name": "inf.eS Lodie",
+          "score": 30,
+          "kills": 6,
+          "assists": 0,
+          "deaths": 2,
+          "kd": 3,
+          "nadeKills": 2,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "hsPercent": 33,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS Basham",
+          "score": 29,
+          "kills": 4,
+          "assists": 3,
+          "deaths": 2,
+          "kd": 2,
+          "nadeKills": 0,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "hsPercent": 0,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS TiPSY",
+          "score": 28,
+          "kills": 5,
+          "assists": 1,
+          "deaths": 5,
+          "kd": 1,
+          "nadeKills": 2,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "hsPercent": 0,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS NIGERian",
+          "score": 28,
+          "kills": 5,
+          "assists": 1,
+          "deaths": 2,
+          "kd": 2.5,
+          "nadeKills": 1,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "hsPercent": 20,
+          "plants": 0,
+          "defuses": 0
+        }
+      ],
+      "teamTotal": {
+        "score": 150,
+        "kills": 27,
+        "assists": 5,
+        "deaths": 14,
+        "kd": 1.93,
+        "nadeKills": 6,
+        "nadeDeaths": 1,
+        "tk": 0,
+        "hsPercent": 19,
+        "plants": 0,
+        "defuses": 0
+      }
+    },
+    {
+      "clan": "W@rZ",
+      "roundsWon": 1,
+      "players": [
+        {
+          "name": "W@rZ/Hawkotro",
+          "score": 43,
+          "kills": 8,
+          "assists": 0,
+          "deaths": 5,
+          "kd": 1.6,
+          "nadeKills": 0,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "hsPercent": 0,
+          "plants": 1,
+          "defuses": 0
+        },
+        {
+          "name": "W@rZ/Zetor_7245",
+          "score": 13,
+          "kills": 2,
+          "assists": 1,
+          "deaths": 6,
+          "kd": 0.33,
+          "nadeKills": 0,
+          "nadeDeaths": 1,
+          "tk": 0,
+          "hsPercent": 0,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "W@rZ/Koyak",
+          "score": 8,
+          "kills": 3,
+          "assists": 1,
+          "deaths": 6,
+          "kd": 0.5,
+          "nadeKills": 1,
+          "nadeDeaths": 2,
+          "tk": 2,
+          "hsPercent": 0,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "WarZ superb",
+          "score": 5,
+          "kills": 1,
+          "assists": 0,
+          "deaths": 6,
+          "kd": 0.17,
+          "nadeKills": 0,
+          "nadeDeaths": 3,
+          "tk": 0,
+          "hsPercent": 100,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "W@rZ/Sky",
+          "score": 0,
+          "kills": 0,
+          "assists": 0,
+          "deaths": 6,
+          "kd": 0,
+          "nadeKills": 0,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "hsPercent": null,
+          "plants": 0,
+          "defuses": 0
+        }
+      ],
+      "teamTotal": {
+        "score": 69,
+        "kills": 14,
+        "assists": 2,
+        "deaths": 29,
+        "kd": 0.48,
+        "nadeKills": 1,
+        "nadeDeaths": 6,
+        "tk": 2,
+        "hsPercent": 7,
+        "plants": 1,
+        "defuses": 0
+      }
+    }
+  ]
+}

@@ -13,7 +13,7 @@ const LEAGUE = {
 
   /* Date the results below were last updated (YYYY-MM-DD).
      Bump this whenever you add a match - it is shown in the header. */
-  updated: '2026-09-23',
+  updated: '2026-09-24',
 
   /* Each pairing is played twice, with its own map pool per leg.
      Leg 1 puts the alphabetically first team at home, leg 2 reverses that. */
@@ -490,23 +490,33 @@ const STATS_FILES = {
   'json/20260909_infeS_vs_LAFINE_backlot-x.json': ['m13', 'Backlot'],
   'json/20260909_LAFINE_vs_infeS_cluster.json':   ['m13', 'Cluster'],
 
-  /* m21 - infinity eSports vs W@rZ, 14 Sep 2026 (Backlot not recorded) */
+  /* m21 - infinity eSports vs W@rZ, 14 Sep 2026*/
   'json/20260914_infeS_vs_WrZ_strike.json':       ['m21', 'Strike'],
+  'json/20260914_infeS_vs_WrZ_backlot-x.json':    ['m21', 'Backlot'],
 
-  /* m28 - ARMY ALPHA vs infinity eSports, 15 Sep 2026 (Cluster not recorded) */
+  /* m28 - ARMY ALPHA vs infinity eSports, 15 Sep 2026*/
   'json/20260915_infeS_vs_ALPHA_strike.json':     ['m28', 'Strike'],
+
+  /* m30 - infinity eSports vs Revolt, 16 Sep 2026*/
+  'json/20260916_infeS_vs_RL_strike.json':        ['m30', 'Strike'],
+  'json/20260916_infeS_vs_RL_backlot.json':       ['m30', 'Backlot'],
 
   /* m47 - infinity eSports vs myQuest, 17 Sep 2026 */
   'json/20260917_myQuest_vs_infeS_strike.json':   ['m47', 'Strike'],
   'json/20260917_myQuest_vs_infeS_backlot-x.json':['m47', 'Backlot'],
 
-  /* m39 - CAS1 vs infinity eSports, 20 Sep 2026 (first leg) */
+  /* m39 - CAS1 vs infinity eSports, 20 Sep 2026*/
   'json/20260920_CAS1_vs_infeS_strike.json':      ['m39', 'Strike'],
   'json/20260920_CAS1_vs_infeS_backlot-x.json':   ['m39', 'Backlot'],
 
-  /* m40 - infinity eSports vs CAS1, 20 Sep 2026 (return leg, same evening) */
+  /* m40 - infinity eSports vs CAS1, 20 Sep 2026*/
   'json/20260920_CAS1_vs_infeS_citystreets.json': ['m40', 'Citystreets'],
-  'json/20260920_infeS_vs_CAS1_crash.json':       ['m40', 'Crash']
+  'json/20260920_infeS_vs_CAS1_crash.json':       ['m40', 'Crash'],
+
+  /* m46 - infinity eSports vs SaG, 24 Sep 2026*/
+  'json/20260922_SaG_vs_infeS_strike-x.json':     ['m46', 'Strike'],
+  'json/20260922_infeS_vs_SaG_backlot-x.json':    ['m46', 'Backlot'],
+  'json/20260922_SaG_vs_infeS_cluster.json':      ['m46', 'Cluster']
 };
 
 /* In-game names (clan tag included) mapped onto roster names. Every entry here
