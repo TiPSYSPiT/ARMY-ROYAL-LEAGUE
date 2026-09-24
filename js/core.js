@@ -392,6 +392,8 @@ var ARL = (function () {
             hs: (p.hsPercent === null || p.hsPercent === undefined) ? null : num(p.hsPercent),
             kills: num(p.kills),
             tk: num(p.tk),
+            nadeKills: num(p.nadeKills),
+            nadeDeaths: num(p.nadeDeaths),
             plants: num(p.plants),
             defuses: num(p.defuses)
           };
@@ -455,7 +457,8 @@ var ARL = (function () {
             byName[p.n] = {
               n: p.n, maps: 0, s: 0, k: 0, a: 0, d: 0,
               /* scoreboard extras are summed only over the maps that have one */
-              boards: 0, hsWeighted: 0, hsKills: 0, tk: 0, plants: 0, defuses: 0
+              boards: 0, hsWeighted: 0, hsKills: 0, tk: 0,
+              nadeKills: 0, nadeDeaths: 0, plants: 0, defuses: 0
             };
             order.push(p.n);
           }
@@ -466,6 +469,8 @@ var ARL = (function () {
           if (extra) {
             t.boards++;
             t.tk += extra.tk;
+            t.nadeKills += extra.nadeKills;
+            t.nadeDeaths += extra.nadeDeaths;
             t.plants += extra.plants;
             t.defuses += extra.defuses;
             if (extra.hs !== null) {
@@ -491,9 +496,11 @@ var ARL = (function () {
      rounded to a whole percent and there is no headshot-kill count to redo the
      division from. */
   function mapExtraCells(extra) {
-    if (!extra) return DASH + DASH + DASH + DASH;
+    if (!extra) return DASH + DASH + DASH + DASH + DASH + DASH;
     return '<td>' + (extra.hs === null ? '&ndash;' : extra.hs + '%') + '</td>' +
       '<td class="num-dim">' + extra.tk + '</td>' +
+      '<td class="num-dim">' + extra.nadeKills + '</td>' +
+      '<td class="num-dim">' + extra.nadeDeaths + '</td>' +
       '<td class="num-dim">' + extra.plants + '</td>' +
       '<td class="num-dim">' + extra.defuses + '</td>';
   }
@@ -501,10 +508,12 @@ var ARL = (function () {
   /* Across maps the percentage is weighted by kills, which is as close to the
      true figure as the pre-rounded source allows. */
   function totalExtraCells(p) {
-    if (!p.boards) return DASH + DASH + DASH + DASH;
+    if (!p.boards) return DASH + DASH + DASH + DASH + DASH + DASH;
     var hs = p.hsKills > 0 ? (p.hsWeighted / p.hsKills).toFixed(1) + '%' : '&ndash;';
     return '<td>' + hs + '</td>' +
       '<td class="num-dim">' + p.tk + '</td>' +
+      '<td class="num-dim">' + p.nadeKills + '</td>' +
+      '<td class="num-dim">' + p.nadeDeaths + '</td>' +
       '<td class="num-dim">' + p.plants + '</td>' +
       '<td class="num-dim">' + p.defuses + '</td>';
   }
@@ -521,6 +530,8 @@ var ARL = (function () {
       (withExtras
         ? '<th title="Share of kills that were headshots">HS%</th>' +
           '<th title="Team kills">TK</th>' +
+          '<th title="Grenade kills">NADE K</th>' +
+          '<th title="Deaths by grenade">NADE D</th>' +
           '<th title="Bombs planted">PLANTS</th>' +
           '<th title="Bombs defused">DEF</th>'
         : '') +

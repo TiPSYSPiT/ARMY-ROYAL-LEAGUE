@@ -1319,7 +1319,7 @@ a.tab { text-decoration: none; }
 
 /* the extra scoreboard columns make these tables wide - keep them swipeable
    instead of letting them squash on a phone */
-.pstats { min-width: 520px; }
+.pstats { min-width: 620px; }
 
 .pstat-block .table-scroll { -webkit-overflow-scrolling: touch; }
 
