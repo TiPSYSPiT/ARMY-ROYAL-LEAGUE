@@ -1,0 +1,206 @@
+{
+  "map": "mp_strike",
+  "recordDate": "20260914211012",
+  "recordDateSource": "g_mapStartTime",
+  "halves": [
+    {
+      "half": 1,
+      "score": "9:3",
+      "rounds": [
+        9,
+        3
+      ],
+      "complete": true
+    },
+    {
+      "half": 2,
+      "score": "4:0",
+      "rounds": [
+        4,
+        0
+      ],
+      "complete": true
+    }
+  ],
+  "teams": [
+    {
+      "clan": "inf.eS",
+      "roundsWon": 13,
+      "players": [
+        {
+          "name": "inf.eS Lodie",
+          "score": 105,
+          "kills": 21,
+          "assists": 0,
+          "deaths": 9,
+          "kd": 2.33,
+          "nadeKills": 1,
+          "nadeDeaths": 1,
+          "tk": 0,
+          "hsPercent": 19,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS paramore",
+          "score": 94,
+          "kills": 17,
+          "assists": 2,
+          "deaths": 9,
+          "kd": 1.89,
+          "nadeKills": 0,
+          "nadeDeaths": 1,
+          "tk": 0,
+          "hsPercent": 24,
+          "plants": 0,
+          "defuses": 1
+        },
+        {
+          "name": "inf.eS Basham",
+          "score": 70,
+          "kills": 14,
+          "assists": 0,
+          "deaths": 6,
+          "kd": 2.33,
+          "nadeKills": 0,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "hsPercent": 0,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS TiPSY",
+          "score": 66,
+          "kills": 12,
+          "assists": 1,
+          "deaths": 12,
+          "kd": 1,
+          "nadeKills": 0,
+          "nadeDeaths": 2,
+          "tk": 0,
+          "hsPercent": 25,
+          "plants": 1,
+          "defuses": 0,
+          "pov": true
+        },
+        {
+          "name": "inf.eS NIGERian",
+          "score": 51,
+          "kills": 9,
+          "assists": 1,
+          "deaths": 4,
+          "kd": 2.25,
+          "nadeKills": 1,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "hsPercent": 33,
+          "plants": 1,
+          "defuses": 0
+        }
+      ],
+      "teamTotal": {
+        "score": 386,
+        "kills": 73,
+        "assists": 4,
+        "deaths": 40,
+        "kd": 1.83,
+        "nadeKills": 2,
+        "nadeDeaths": 4,
+        "tk": 0,
+        "hsPercent": 19,
+        "plants": 2,
+        "defuses": 1
+      }
+    },
+    {
+      "clan": "W@rZ",
+      "roundsWon": 3,
+      "players": [
+        {
+          "name": "W@rZ/Zetor_7245",
+          "score": 74,
+          "kills": 13,
+          "assists": 2,
+          "deaths": 16,
+          "kd": 0.81,
+          "nadeKills": 0,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "hsPercent": 15,
+          "plants": 1,
+          "defuses": 0
+        },
+        {
+          "name": "WarZ superb",
+          "score": 54,
+          "kills": 9,
+          "assists": 3,
+          "deaths": 15,
+          "kd": 0.6,
+          "nadeKills": 1,
+          "nadeDeaths": 1,
+          "tk": 0,
+          "hsPercent": 22,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "W@rZ/Sky",
+          "score": 47,
+          "kills": 7,
+          "assists": 1,
+          "deaths": 14,
+          "kd": 0.5,
+          "nadeKills": 0,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "hsPercent": 0,
+          "plants": 3,
+          "defuses": 0
+        },
+        {
+          "name": "W@rZ/Koyak",
+          "score": 40,
+          "kills": 8,
+          "assists": 0,
+          "deaths": 13,
+          "kd": 0.62,
+          "nadeKills": 2,
+          "nadeDeaths": 1,
+          "tk": 0,
+          "hsPercent": 13,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "W@rZ/Hawkotro",
+          "score": 24,
+          "kills": 3,
+          "assists": 3,
+          "deaths": 15,
+          "kd": 0.2,
+          "nadeKills": 1,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "hsPercent": 0,
+          "plants": 0,
+          "defuses": 0
+        }
+      ],
+      "teamTotal": {
+        "score": 239,
+        "kills": 40,
+        "assists": 9,
+        "deaths": 73,
+        "kd": 0.55,
+        "nadeKills": 4,
+        "nadeDeaths": 2,
+        "tk": 0,
+        "hsPercent": 13,
+        "plants": 4,
+        "defuses": 0
+      }
+    }
+  ]
+}

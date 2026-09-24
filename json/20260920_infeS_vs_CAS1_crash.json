@@ -1,0 +1,220 @@
+{
+  "map": "mp_crash",
+  "recordDate": "20260920222403",
+  "recordDateSource": "g_mapStartTime",
+  "halves": [
+    {
+      "half": 1,
+      "score": "8:4",
+      "rounds": [
+        8,
+        4
+      ],
+      "complete": true
+    },
+    {
+      "half": 2,
+      "score": "5:2",
+      "rounds": [
+        5,
+        2
+      ],
+      "complete": true
+    }
+  ],
+  "teams": [
+    {
+      "clan": "inf.eS",
+      "roundsWon": 13,
+      "players": [
+        {
+          "name": "inf.eS TiPSY",
+          "score": 96,
+          "kills": 18,
+          "assists": 2,
+          "deaths": 13,
+          "kd": 1.38,
+          "nadeKills": 3,
+          "nadeDeaths": 2,
+          "tk": 0,
+          "hsPercent": 17,
+          "plants": 0,
+          "defuses": 0,
+          "pov": true
+        },
+        {
+          "name": "inf.eS NATHZN",
+          "score": 95,
+          "kills": 19,
+          "assists": 0,
+          "deaths": 14,
+          "kd": 1.36,
+          "nadeKills": 4,
+          "nadeDeaths": 2,
+          "tk": 0,
+          "hsPercent": 11,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS NIGERian",
+          "score": 83,
+          "kills": 16,
+          "assists": 1,
+          "deaths": 10,
+          "kd": 1.6,
+          "nadeKills": 7,
+          "nadeDeaths": 1,
+          "tk": 0,
+          "hsPercent": 6,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS Basham",
+          "score": 76,
+          "kills": 14,
+          "assists": 1,
+          "deaths": 9,
+          "kd": 1.56,
+          "nadeKills": 1,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "hsPercent": 0,
+          "plants": 1,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS paramore",
+          "score": 70,
+          "kills": 14,
+          "assists": 0,
+          "deaths": 11,
+          "kd": 1.27,
+          "nadeKills": 1,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "hsPercent": 29,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS b o ' AA",
+          "score": 0,
+          "kills": 0,
+          "assists": 0,
+          "deaths": 0,
+          "kd": 0,
+          "nadeKills": 0,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "hsPercent": null,
+          "plants": 0,
+          "defuses": 0
+        }
+      ],
+      "teamTotal": {
+        "score": 420,
+        "kills": 81,
+        "assists": 4,
+        "deaths": 57,
+        "kd": 1.42,
+        "nadeKills": 16,
+        "nadeDeaths": 5,
+        "tk": 0,
+        "hsPercent": 12,
+        "plants": 1,
+        "defuses": 0
+      }
+    },
+    {
+      "clan": "CAS1",
+      "roundsWon": 6,
+      "players": [
+        {
+          "name": "CAS1 TOCSKA",
+          "score": 127,
+          "kills": 23,
+          "assists": 1,
+          "deaths": 15,
+          "kd": 1.53,
+          "nadeKills": 3,
+          "nadeDeaths": 3,
+          "tk": 0,
+          "hsPercent": 4,
+          "plants": 3,
+          "defuses": 0
+        },
+        {
+          "name": "CAS1 buci.",
+          "score": 81,
+          "kills": 15,
+          "assists": 2,
+          "deaths": 16,
+          "kd": 0.94,
+          "nadeKills": 1,
+          "nadeDeaths": 6,
+          "tk": 0,
+          "hsPercent": 0,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "CAS1 abc",
+          "score": 43,
+          "kills": 8,
+          "assists": 1,
+          "deaths": 16,
+          "kd": 0.5,
+          "nadeKills": 1,
+          "nadeDeaths": 3,
+          "tk": 0,
+          "hsPercent": 0,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "CAS1 YSL",
+          "score": 33,
+          "kills": 6,
+          "assists": 1,
+          "deaths": 17,
+          "kd": 0.35,
+          "nadeKills": 0,
+          "nadeDeaths": 4,
+          "tk": 0,
+          "hsPercent": 0,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "CAS1 FORS3Y",
+          "score": 29,
+          "kills": 5,
+          "assists": 3,
+          "deaths": 19,
+          "kd": 0.26,
+          "nadeKills": 0,
+          "nadeDeaths": 2,
+          "tk": 1,
+          "hsPercent": 20,
+          "plants": 0,
+          "defuses": 0
+        }
+      ],
+      "teamTotal": {
+        "score": 313,
+        "kills": 57,
+        "assists": 8,
+        "deaths": 83,
+        "kd": 0.69,
+        "nadeKills": 5,
+        "nadeDeaths": 18,
+        "tk": 1,
+        "hsPercent": 4,
+        "plants": 3,
+        "defuses": 0
+      }
+    }
+  ]
+}

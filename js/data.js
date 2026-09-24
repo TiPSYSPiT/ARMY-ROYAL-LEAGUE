@@ -92,7 +92,7 @@ const TEAMS = [
     ]
   },
   {
-    id: 'warz', name: 'W@rZ', cc: 'SK', flag: '\u{1F1F8}\u{1F1F0}',
+    id: 'warz', name: 'W@rZ', slug: 'warz', cc: 'SK', flag: '\u{1F1F8}\u{1F1F0}',
     players: [
       { n: 'Zetor_7245', c: true }, { n: 'delete', c: true }, { n: 'imperial' },
       { n: 'superb' }, { n: 'koyak' }, { n: 'hawkotro' }, { n: 'zAzA' }
@@ -160,7 +160,7 @@ const MATCHES = [
   { id: 'm31', home: 'myquest',  away: 'deox',     maps: [[13, 11], [13, 7]] },
   { id: 'm32', home: 'nosweat',  away: 'myquest',  maps: [[5, 13], [9, 13]] },
   { id: 'm33', home: 'adhd',     away: 'bravo',    maps: [[13, 5], [13, 10]] },
-  { id: 'm33', home: 'infinity', away: 'myquest',  maps: [[3, 13], [10, 13]] },
+  { id: 'm47', home: 'infinity', away: 'myquest',  maps: [[3, 13], [10, 13]] },
   { id: 'm34', home: 'alpha',    away: 'revolt',   maps: [[9, 13], [13, 2], [13, 7]] },
   { id: 'm35', home: 'alpha',    away: 'lafine',   maps: [[13, 7], [13, 4]] },
   { id: 'm36', home: 'revolt',   away: 'lafine',   maps: [[13, 10], [13, 9]] },
@@ -171,7 +171,7 @@ const MATCHES = [
   { id: 'm41', home: 'myquest',  away: 'nosweat',  maps: [[13, 11], [13, 8]] },
   { id: 'm42', home: 'cas1',     away: 'warz',     maps: [[10, 13], [10, 13]] },
   { id: 'm43', home: 'myquest',  away: 'lafine',   maps: [[13, 7], [13, 5]] },
-  { id: 'm43', home: 'myquest',  away: 'cas1',     maps: [[13, 0], [13, 4]] },
+  { id: 'm48', home: 'myquest',  away: 'cas1',     maps: [[13, 0], [13, 4]] },
   { id: 'm44', home: 'alpha',    away: 'deox',     maps: [[13, 7], [13, 7]] },
   { id: 'm45', home: 'deox',     away: 'alpha',    maps: [[10, 13], [9, 13]] },
   { id: 'm46', home: 'infinity', away: 'sag',      maps: [[11, 13], [16, 13], [13, 9]] }
@@ -423,5 +423,103 @@ const PLAYER_STATS = {
         ]
       }
     ]
+  },
+
+  /* Derived from json/inf_myquest_strike.json and json/inf_myquest_backlot.json.
+     Map order follows the match score [[3, 13], [10, 13]]; in-game aliases were
+     resolved via PLAYER_ALIASES. Players with an all-zero line did not play and
+     are left out. */
+  m47: {
+    team: 'infinity',
+    maps: [
+      {
+        name: 'Strike',
+        players: [
+          { n: 'Levitate', s:  66, k: 12, a: 1, d: 13 },
+          { n: 'paramore', s:  58, k: 11, a: 0, d: 14 },
+          { n: 'BOOBiO',   s:  48, k:  9, a: 0, d: 14 },
+          { n: 'Basham',   s:  40, k:  8, a: 0, d: 15 },
+          { n: 'TiPSY',    s:  33, k:  6, a: 1, d: 15 }
+        ]
+      },
+      {
+        name: 'Backlot',
+        players: [
+          { n: 'Levitate', s: 104, k: 19, a: 0, d: 17 },
+          { n: 'Basham',   s:  92, k: 16, a: 3, d: 18 },
+          { n: 'NATHZN',   s:  88, k: 17, a: 0, d: 17 },
+          { n: 'BOOBiO',   s:  56, k: 10, a: 0, d: 17 },
+          { n: 'TiPSY',    s:  51, k:  9, a: 2, d: 21 },
+          { n: 'paramore', s:   5, k:  1, a: 0, d:  3 }
+        ]
+      }
+    ]
   }
+};
+
+/* =========================================================================
+   Scoreboard sources  <<< ADD NEW MATCHES HERE
+
+   Every scoreboard is fetched at runtime straight from json/ - the files are
+   never converted or duplicated into JavaScript.
+
+   Paths are relative on purpose: GitHub Pages serves the site from
+   username.github.io/repo-name/, where a leading slash would break. Paths are
+   also case sensitive there, so each one must match the file on disk exactly -
+   note the mixed case in CAS1, LAFINE, WrZ, myQuest and infeS.
+
+   File names follow  <date>_<clan>_vs_<clan>_<map>.json  but that order is the
+   scoreboard's, NOT home vs away: 20260920_CAS1_vs_infeS_citystreets.json and
+   20260920_infeS_vs_CAS1_crash.json are two maps of the SAME match (m40). The
+   league match a file belongs to therefore stays spelled out here.
+
+   Listed in the order the maps were played, taken from each file's recordDate.
+
+   To add a match: drop the file into json/ and add one line here. A new
+   in-game spelling also needs an entry in PLAYER_ALIASES below.
+   ========================================================================= */
+
+const STATS_FILES = {
+  /* m04 - deox vs infinity eSports, 3 Sep 2026 */
+  'json/20260903_deox_vs_infeS_backlot-x.json':   ['m04', 'Backlot'],
+  'json/20260903_infeS_vs_deox_strike.json':      ['m04', 'Strike'],
+  'json/20260903_deox_vs_infeS_cluster.json':     ['m04', 'Cluster'],
+
+  /* m13 - infinity eSports vs LAFINE Corp, 9 Sep 2026 */
+  'json/20260909_LAFINE_vs_infeS_strike.json':    ['m13', 'Strike'],
+  'json/20260909_infeS_vs_LAFINE_backlot-x.json': ['m13', 'Backlot'],
+  'json/20260909_LAFINE_vs_infeS_cluster.json':   ['m13', 'Cluster'],
+
+  /* m21 - infinity eSports vs W@rZ, 14 Sep 2026 (Backlot not recorded) */
+  'json/20260914_infeS_vs_WrZ_strike.json':       ['m21', 'Strike'],
+
+  /* m28 - ARMY ALPHA vs infinity eSports, 15 Sep 2026 (Cluster not recorded) */
+  'json/20260915_infeS_vs_ALPHA_strike.json':     ['m28', 'Strike'],
+
+  /* m47 - infinity eSports vs myQuest, 17 Sep 2026 */
+  'json/20260917_myQuest_vs_infeS_strike.json':   ['m47', 'Strike'],
+  'json/20260917_myQuest_vs_infeS_backlot-x.json':['m47', 'Backlot'],
+
+  /* m39 - CAS1 vs infinity eSports, 20 Sep 2026 (first leg) */
+  'json/20260920_CAS1_vs_infeS_strike.json':      ['m39', 'Strike'],
+  'json/20260920_CAS1_vs_infeS_backlot-x.json':   ['m39', 'Backlot'],
+
+  /* m40 - infinity eSports vs CAS1, 20 Sep 2026 (return leg, same evening) */
+  'json/20260920_CAS1_vs_infeS_citystreets.json': ['m40', 'Citystreets'],
+  'json/20260920_infeS_vs_CAS1_crash.json':       ['m40', 'Crash']
+};
+
+/* In-game names (clan tag included) mapped onto roster names. Every entry here
+   was verified by matching the scoreboard's score/kills/assists/deaths against
+   PLAYER_STATS, except the two BOBiO lines, which were confirmed manually. */
+const PLAYER_ALIASES = {
+  'inf.eS TiPSY':    'TiPSY',
+  '-o__/ TiPSY':     'TiPSY',
+  'inf.eS paramore': 'paramore',
+  'inf.eS NATHZN':   'NATHZN',
+  'inf.eS Basham':   'Basham',
+  'inf.eS Lodie':    'Levitate',
+  'inf.eS NIGERian': 'EMPzY',
+  "inf.eS b o ' AA": 'BOOBiO',
+  'inf.eS BOBiO':    'BOOBiO'
 };
