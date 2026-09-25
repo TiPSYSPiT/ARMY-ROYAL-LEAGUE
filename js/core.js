@@ -359,7 +359,6 @@ var ARL = (function () {
       var leg = isFirstLeg(m) ? 1 : 2;
       var pool = (legs[leg - 1] && legs[leg - 1].maps) || [];
       var seen = {};
-      var recorded = allPlayerStats()[m.id];
 
       m.maps.forEach(function (map, i) {
         if (map.length < 3) return;
@@ -383,25 +382,13 @@ var ARL = (function () {
 
         if (seen[name]) warn(m, i, '"' + name + '" is listed twice in this match');
         seen[name] = true;
-
-        /* player stats carry their own map names - they must tell the same story */
-        var ps = recorded && recorded.maps && recorded.maps[i];
-        if (ps && ps.name && ps.name !== name) {
-          warn(m, i, '"' + name + '" differs from PLAYER_STATS, which says "' + ps.name + '"');
-        }
       });
     });
   }
 
   /* --------------------------------------------------------- Scoreboards */
 
-  function allPlayerStats() {
-    return (typeof PLAYER_STATS !== 'undefined' && PLAYER_STATS) ? PLAYER_STATS : {};
-  }
-
   function num(v) { return typeof v === 'number' && isFinite(v) ? v : 0; }
-
-  var scoreboardCache = null;
 
   /* Raw scoreboards keyed by path, filled in by loadScoreboards(). */
   var loadedBoards = {};
@@ -435,93 +422,130 @@ var ARL = (function () {
           console.warn('[ARL] skipping scoreboard "' + path + '": ' + err.message);
         });
     })).then(function () {
-      scoreboardCache = null;   /* rebuilt on next access */
+      statsCache = null;   /* rebuilt on next access */
       return loadedBoards;
     });
 
     return loadPromise;
   }
 
-  /* Resolves the fetched scoreboards onto match + map + roster name. Player
-     names carry clan tags and in-game spellings, so they go through
-     PLAYER_ALIASES; only names belonging to the roster of the team that
-     PLAYER_STATS records for that match are kept, which keeps two teams with a
-     same-named player apart. */
-  function scoreboardIndex() {
-    if (scoreboardCache) return scoreboardCache;
-    scoreboardCache = {};
-
-    if (typeof STATS_FILES === 'undefined') return scoreboardCache;
-
-    var aliases = (typeof PLAYER_ALIASES !== 'undefined' && PLAYER_ALIASES) ? PLAYER_ALIASES : {};
-
-    Object.keys(STATS_FILES).forEach(function (key) {
-      var raw = loadedBoards[key];
-      var spec = STATS_FILES[key];
-      if (!raw || !raw.teams || !spec) return;
-
-      var matchId = spec[0], mapName = spec[1];
-      var entry = allPlayerStats()[matchId];
-      if (!entry) return;
-
-      var team = TEAM_BY_ID[entry.team];
-      if (!team) return;
-
-      var roster = {};
-      team.players.forEach(function (p) { roster[p.n] = true; });
-
-      var bucket = {};
-      raw.teams.forEach(function (side) {
-        (side.players || []).forEach(function (p) {
-          var name = aliases[p.name] || p.name;
-          if (!roster[name]) return;
-          /* an all-zero line means the player sat the map out */
-          if (!num(p.score) && !num(p.kills) && !num(p.deaths)) return;
-
-          bucket[name] = {
-            hs: (p.hsPercent === null || p.hsPercent === undefined) ? null : num(p.hsPercent),
-            kills: num(p.kills),
-            tk: num(p.tk),
-            nadeKills: num(p.nadeKills),
-            nadeDeaths: num(p.nadeDeaths),
-            plants: num(p.plants),
-            defuses: num(p.defuses)
-          };
-        });
-      });
-
-      scoreboardCache[matchId + '|' + mapName] = bucket;
-    });
-
-    return scoreboardCache;
-  }
-
-  function scoreboardFor(matchId, mapName) {
-    return scoreboardIndex()[matchId + '|' + mapName] || null;
-  }
-
-  /* only teams that actually have scoreboards get the extra columns */
-  function teamHasScoreboards(teamId) {
-    var idx = scoreboardIndex();
-    var stats = allPlayerStats();
-    return Object.keys(idx).some(function (key) {
-      var matchId = key.split('|')[0];
-      var entry = stats[matchId];
-      return entry && entry.team === teamId && Object.keys(idx[key]).length > 0;
-    });
-  }
-
   /* ------------------------------------------------- Player statistics */
 
-  /* every recorded match for one team, paired with its match entry */
-  function statsForTeam(teamId) {
-    var store = allPlayerStats();
-    return getMatches().filter(function (m) {
-      var e = store[m.id];
-      return e && e.team === teamId && e.maps && e.maps.length;
-    }).map(function (m) {
-      return { match: m, entry: store[m.id] };
+  var statsCache = null;
+
+  /* Player statistics come straight from the fetched scoreboards - nothing is
+     kept by hand in data.js. For each file in STATS_FILES, the scoreboard side
+     whose in-game names resolve (via PLAYER_ALIASES) to the home or the away
+     roster becomes that team's record of the map; a side nobody can be matched
+     on is simply not shown. So a new match needs only its JSON file and its
+     line in STATS_FILES.
+
+     Result: teamId -> matchId -> { maps: [{ index, name, players, partial }] },
+     each player row carrying score/K/A/D and the scoreboard extras together. */
+  function playerStatsIndex() {
+    if (statsCache) return statsCache;
+    statsCache = {};
+    if (typeof STATS_FILES === 'undefined') return statsCache;
+
+    var aliases = (typeof PLAYER_ALIASES !== 'undefined' && PLAYER_ALIASES) ? PLAYER_ALIASES : {};
+    var byId = {};
+    getMatches().forEach(function (m) { byId[m.id] = m; });
+
+    function warn(path, text) { console.warn('[ARL] ' + path + ': ' + text); }
+
+    function rosterOf(teamId) {
+      var r = {};
+      TEAM_BY_ID[teamId].players.forEach(function (p) { r[p.n] = true; });
+      return r;
+    }
+
+    /* one roster name can appear twice on a map (a reconnect under another
+       name) - those lines are merged, the headshot share weighted by kills */
+    function addRow(rows, name, p) {
+      var hs = (p.hsPercent === null || p.hsPercent === undefined) ? null : num(p.hsPercent);
+      var r = rows[name];
+      if (!r) {
+        rows[name] = { n: name, s: num(p.score), k: num(p.kills), a: num(p.assists), d: num(p.deaths),
+                       hs: hs, tk: num(p.tk), nadeKills: num(p.nadeKills), nadeDeaths: num(p.nadeDeaths),
+                       plants: num(p.plants), defuses: num(p.defuses) };
+        return;
+      }
+      if (hs !== null || r.hs !== null) {
+        var k1 = r.hs === null ? 0 : r.k, k2 = hs === null ? 0 : num(p.kills);
+        r.hs = (k1 + k2) ? ((r.hs || 0) * k1 + (hs || 0) * k2) / (k1 + k2) : null;
+      }
+      r.s += num(p.score); r.k += num(p.kills); r.a += num(p.assists); r.d += num(p.deaths);
+      r.tk += num(p.tk); r.nadeKills += num(p.nadeKills); r.nadeDeaths += num(p.nadeDeaths);
+      r.plants += num(p.plants); r.defuses += num(p.defuses);
+    }
+
+    Object.keys(STATS_FILES).forEach(function (path) {
+      var raw = loadedBoards[path];
+      var spec = STATS_FILES[path];
+      if (!raw || !spec) return;
+
+      var m = byId[spec[0]];
+      if (!m) { warn(path, 'match ' + spec[0] + ' does not exist in MATCHES'); return; }
+
+      var label = normalizeMapName(spec[1]);
+      var index = -1;
+      m.maps.forEach(function (mp, i) { if (index < 0 && mapName(mp) === label) index = i; });
+      if (index < 0) { warn(path, spec[0] + ' has no map named "' + label + '"'); return; }
+
+      /* the recording names its own map - it should agree with STATS_FILES */
+      if (raw.map && normalizeMapName(raw.map) !== label) {
+        warn(path, 'listed as ' + label + ', but the recording itself says "' + raw.map + '"');
+      }
+
+      var best = null;
+      raw.teams.forEach(function (side) {
+        [m.home, m.away].forEach(function (teamId) {
+          var roster = rosterOf(teamId);
+          var rows = {};
+          (side.players || []).forEach(function (p) {
+            var name = aliases[p.name] || p.name;
+            if (!roster[name]) return;
+            /* an all-zero line means the player sat the map out */
+            if (!num(p.score) && !num(p.kills) && !num(p.deaths)) return;
+            addRow(rows, name, p);
+          });
+          var list = Object.keys(rows).map(function (n) { return rows[n]; });
+          if (list.length && (!best || list.length > best.players.length)) {
+            best = { team: teamId, players: list };
+          }
+        });
+      });
+      if (!best) return;
+
+      /* a recording started late or cut short has fewer rounds than the result */
+      var recorded = raw.teams.reduce(function (n, t) { return n + num(t.roundsWon); }, 0);
+      var official = m.maps[index][0] + m.maps[index][1];
+
+      var team = statsCache[best.team] || (statsCache[best.team] = {});
+      var entry = team[m.id] || (team[m.id] = { maps: [] });
+      entry.maps.push({
+        index: index,
+        name: label,
+        players: best.players,
+        partial: (recorded && recorded < official) ? { recorded: recorded, official: official } : null
+      });
     });
+
+    /* maps in the order they were played */
+    Object.keys(statsCache).forEach(function (teamId) {
+      Object.keys(statsCache[teamId]).forEach(function (matchId) {
+        statsCache[teamId][matchId].maps.sort(function (a, b) { return a.index - b.index; });
+      });
+    });
+
+    return statsCache;
+  }
+
+  /* every recorded match of one team, in the order of MATCHES */
+  function statsForTeam(teamId) {
+    var byMatch = playerStatsIndex()[teamId] || {};
+    return getMatches().filter(function (m) { return byMatch[m.id]; })
+      .map(function (m) { return { match: m, entry: byMatch[m.id] }; });
   }
 
   /* map score seen from the team's side */
@@ -540,33 +564,25 @@ var ARL = (function () {
 
     records.forEach(function (rec) {
       rec.entry.maps.forEach(function (map) {
-        var board = scoreboardFor(rec.match.id, map.name);
-
         map.players.forEach(function (p) {
           if (!byName[p.n]) {
             byName[p.n] = {
               n: p.n, maps: 0, s: 0, k: 0, a: 0, d: 0,
-              /* scoreboard extras are summed only over the maps that have one */
-              boards: 0, hsWeighted: 0, hsKills: 0, tk: 0,
+              hsWeighted: 0, hsKills: 0, tk: 0,
               nadeKills: 0, nadeDeaths: 0, plants: 0, defuses: 0
             };
             order.push(p.n);
           }
           var t = byName[p.n];
           t.maps++; t.s += p.s; t.k += p.k; t.a += p.a; t.d += p.d;
-
-          var extra = board ? board[p.n] : null;
-          if (extra) {
-            t.boards++;
-            t.tk += extra.tk;
-            t.nadeKills += extra.nadeKills;
-            t.nadeDeaths += extra.nadeDeaths;
-            t.plants += extra.plants;
-            t.defuses += extra.defuses;
-            if (extra.hs !== null) {
-              t.hsWeighted += extra.hs * extra.kills;
-              t.hsKills += extra.kills;
-            }
+          t.tk += p.tk;
+          t.nadeKills += p.nadeKills;
+          t.nadeDeaths += p.nadeDeaths;
+          t.plants += p.plants;
+          t.defuses += p.defuses;
+          if (p.hs !== null) {
+            t.hsWeighted += p.hs * p.k;
+            t.hsKills += p.k;
           }
         });
       });
@@ -580,25 +596,21 @@ var ARL = (function () {
     return d > 0 ? (k / d).toFixed(2) : k.toFixed(2);
   }
 
-  var DASH = '<td class="num-dim">&ndash;</td>';
-
   /* Per map the source percentage is shown unchanged - it arrives already
      rounded to a whole percent and there is no headshot-kill count to redo the
      division from. */
-  function mapExtraCells(extra) {
-    if (!extra) return DASH + DASH + DASH + DASH + DASH + DASH;
-    return '<td>' + (extra.hs === null ? '&ndash;' : extra.hs + '%') + '</td>' +
-      '<td class="num-dim">' + extra.tk + '</td>' +
-      '<td class="num-dim">' + extra.nadeKills + '</td>' +
-      '<td class="num-dim">' + extra.nadeDeaths + '</td>' +
-      '<td class="num-dim">' + extra.plants + '</td>' +
-      '<td class="num-dim">' + extra.defuses + '</td>';
+  function mapExtraCells(p) {
+    return '<td>' + (p.hs === null ? '&ndash;' : Math.round(p.hs) + '%') + '</td>' +
+      '<td class="num-dim">' + p.tk + '</td>' +
+      '<td class="num-dim">' + p.nadeKills + '</td>' +
+      '<td class="num-dim">' + p.nadeDeaths + '</td>' +
+      '<td class="num-dim">' + p.plants + '</td>' +
+      '<td class="num-dim">' + p.defuses + '</td>';
   }
 
   /* Across maps the percentage is weighted by kills, which is as close to the
      true figure as the pre-rounded source allows. */
   function totalExtraCells(p) {
-    if (!p.boards) return DASH + DASH + DASH + DASH + DASH + DASH;
     var hs = p.hsKills > 0 ? (p.hsWeighted / p.hsKills).toFixed(1) + '%' : '&ndash;';
     return '<td>' + hs + '</td>' +
       '<td class="num-dim">' + p.tk + '</td>' +
@@ -608,7 +620,7 @@ var ARL = (function () {
       '<td class="num-dim">' + p.defuses + '</td>';
   }
 
-  function statHead(withMaps, withExtras) {
+  function statHead(withMaps) {
     return '<thead><tr>' +
       '<th class="c-player">Player</th>' +
       (withMaps ? '<th title="Maps played">MAPS</th>' : '') +
@@ -617,14 +629,12 @@ var ARL = (function () {
       '<th title="Assists">A</th>' +
       '<th title="Deaths">D</th>' +
       '<th title="Kill / death ratio">K/D</th>' +
-      (withExtras
-        ? '<th title="Share of kills that were headshots">HS%</th>' +
-          '<th title="Team kills">TK</th>' +
-          '<th title="Grenade kills">NADE K</th>' +
-          '<th title="Deaths by grenade">NADE D</th>' +
-          '<th title="Bombs planted">PLANTS</th>' +
-          '<th title="Bombs defused">DEF</th>'
-        : '') +
+      '<th title="Share of kills that were headshots">HS%</th>' +
+      '<th title="Team kills">TK</th>' +
+      '<th title="Grenade kills">NADE K</th>' +
+      '<th title="Deaths by grenade">NADE D</th>' +
+      '<th title="Bombs planted">PLANTS</th>' +
+      '<th title="Bombs defused">DEF</th>' +
       '</tr></thead>';
   }
 
@@ -646,15 +656,13 @@ var ARL = (function () {
     var records = statsForTeam(teamId);
     if (!records.length) return '';
 
-    var withExtras = teamHasScoreboards(teamId);
     var totals = aggregatePlayers(records);
+    var partialMaps = 0;
 
     var summary =
       '<div class="table-scroll"><table class="tbl pstats">' +
-      statHead(true, withExtras) + '<tbody>' +
-      totals.map(function (p) {
-        return playerRow(p, p.maps, withExtras ? totalExtraCells(p) : '');
-      }).join('') +
+      statHead(true) + '<tbody>' +
+      totals.map(function (p) { return playerRow(p, p.maps, totalExtraCells(p)); }).join('') +
       '</tbody></table></div>';
 
     var detail = records.map(function (rec) {
@@ -665,24 +673,29 @@ var ARL = (function () {
       var oppMaps = isHome ? e.mapsAway : e.mapsHome;
       var won = ownMaps > oppMaps;
 
-      var maps = rec.entry.maps.map(function (map, i) {
-        var sc = mapScoreFor(rec.match, teamId, i);
+      var maps = rec.entry.maps.map(function (map) {
+        var sc = mapScoreFor(rec.match, teamId, map.index);
         var scoreTxt = sc
           ? '<span class="' + (sc.won ? 'pos' : 'neg') + '">' + sc.own + ':' + sc.opp + '</span>'
           : '';
 
-        var board = scoreboardFor(rec.match.id, map.name);
+        var partial = '';
+        if (map.partial) {
+          partialMaps++;
+          partial = '<span class="pm-partial" title="The recording holds ' + map.partial.recorded +
+            ' of the ' + map.partial.official + ' rounds played - these numbers are incomplete">' +
+            'partial: ' + map.partial.recorded + ' of ' + map.partial.official + ' rounds</span>';
+        }
 
         var rows = map.players.slice().sort(function (a, b) { return b.s - a.s; })
-          .map(function (p) {
-            return playerRow(p, null, withExtras ? mapExtraCells(board ? board[p.n] : null) : '');
-          }).join('');
+          .map(function (p) { return playerRow(p, null, mapExtraCells(p)); }).join('');
 
         return '<details class="pstat-map">' +
-          '<summary><span class="pm-name">Map ' + (i + 1) + ': ' + esc(map.name) + '</span>' +
+          '<summary><span class="pm-name">Map ' + (map.index + 1) + ': ' + esc(map.name) + '</span>' +
+          partial +
           '<span class="pm-score">' + scoreTxt + '</span></summary>' +
           '<div class="table-scroll"><table class="tbl pstats">' +
-          statHead(false, withExtras) + '<tbody>' + rows + '</tbody></table></div>' +
+          statHead(false) + '<tbody>' + rows + '</tbody></table></div>' +
           '</details>';
       }).join('');
 
@@ -695,7 +708,9 @@ var ARL = (function () {
 
     var note = '<span class="pstat-note">' + records.length + ' of ' +
       getMatches().filter(function (m) { return m.home === teamId || m.away === teamId; }).length +
-      ' matches recorded</span>';
+      ' matches recorded' +
+      (partialMaps ? ' &middot; ' + partialMaps + ' map' + (partialMaps > 1 ? 's' : '') + ' only partly' : '') +
+      '</span>';
 
     return '<div class="pstat-block">' +
       heading('h4', 'pstat-head', '', 'playerstats', 'Player statistics',
