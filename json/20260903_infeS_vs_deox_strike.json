@@ -37,6 +37,7 @@
           "nadeKills": 3,
           "nadeDeaths": 0,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 21,
           "plants": 0,
           "defuses": 0
@@ -51,6 +52,7 @@
           "nadeKills": 0,
           "nadeDeaths": 0,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 0,
           "plants": 0,
           "defuses": 0
@@ -65,6 +67,7 @@
           "nadeKills": 2,
           "nadeDeaths": 2,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 13,
           "plants": 0,
           "defuses": 0
@@ -79,6 +82,7 @@
           "nadeKills": 2,
           "nadeDeaths": 2,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 0,
           "plants": 0,
           "defuses": 1,
@@ -94,6 +98,7 @@
           "nadeKills": 1,
           "nadeDeaths": 1,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 0,
           "plants": 2,
           "defuses": 0
@@ -108,6 +113,7 @@
         "nadeKills": 8,
         "nadeDeaths": 5,
         "tk": 0,
+        "teamKilled": 0,
         "hsPercent": 8,
         "plants": 2,
         "defuses": 1
@@ -127,6 +133,7 @@
           "nadeKills": 4,
           "nadeDeaths": 0,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 12,
           "plants": 2,
           "defuses": 0
@@ -141,6 +148,7 @@
           "nadeKills": 1,
           "nadeDeaths": 3,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 0,
           "plants": 0,
           "defuses": 0
@@ -155,6 +163,7 @@
           "nadeKills": 0,
           "nadeDeaths": 0,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 33,
           "plants": 1,
           "defuses": 0
@@ -169,6 +178,7 @@
           "nadeKills": 0,
           "nadeDeaths": 1,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 50,
           "plants": 1,
           "defuses": 0
@@ -183,6 +193,7 @@
           "nadeKills": 0,
           "nadeDeaths": 4,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 25,
           "plants": 0,
           "defuses": 0
@@ -197,6 +208,7 @@
         "nadeKills": 5,
         "nadeDeaths": 8,
         "tk": 0,
+        "teamKilled": 0,
         "hsPercent": 20,
         "plants": 4,
         "defuses": 0

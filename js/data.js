@@ -13,7 +13,7 @@ const LEAGUE = {
 
   /* Date the results below were last updated (YYYY-MM-DD).
      Bump this whenever you add a match - it is shown in the header. */
-  updated: '2026-09-24',
+  updated: '2026-09-25',
 
   /* Each pairing is played twice, with its own map pool per leg.
      Leg 1 puts the alphabetically first team at home, leg 2 reverses that. */
@@ -125,337 +125,67 @@ const TEAMS = [
 /* Every pairing is played twice.
    Leg 1: the alphabetically first team is at home.
    Leg 2: the same pairing with the sides reversed.
-   maps: [[homeRounds, awayRounds], ...]  -  Best of 3 */
+   maps: [[homeRounds, awayRounds, 'MapName'], ...]  -  Best of 3
+
+   The map name is optional - [13, 2] and [13, 2, 'Cluster'] are both fine.
+   Use the spelling from LEAGUE.legs (Backlot, Cluster, Strike, Citystreets,
+   Crash, Crossfire); anything else is reported in the browser console. */
 const MATCHES = [
-  { id: 'm01', home: 'alpha',    away: 'cas1',     maps: [[13, 2], [13, 2]] },
-  { id: 'm02', home: 'adhd',     away: 'lafine',   maps: [[9, 13], [10, 13]] },
-  { id: 'm03', home: 'deox',     away: 'nosweat',  maps: [[7, 13], [10, 13]] },
-  { id: 'm04', home: 'deox',     away: 'infinity', maps: [[13, 11], [3, 13], [16, 6]] },
-  { id: 'm05', home: 'alpha',    away: 'sag',      maps: [[13, 5], [13, 7]] },
-  { id: 'm06', home: 'myquest',  away: 'warz',     maps: [[13, 2], [13, 3]] },
-  { id: 'm07', home: 'bravo',    away: 'deox',     maps: [[13, 2], [13, 10]] },
-  { id: 'm08', home: 'deox',     away: 'myquest',  maps: [[7, 13], [5, 13]] },
-  { id: 'm09', home: 'bravo',    away: 'cas1',     maps: [[13, 2], [13, 3]] },
-  { id: 'm10', home: 'cas1',     away: 'myquest',  maps: [[10, 13], [4, 13]] },
-  { id: 'm11', home: 'lafine',   away: 'sag',      maps: [[7, 13], [10, 13]] },
-  { id: 'm12', home: 'myquest',  away: 'sag',      maps: [[11, 13], [20, 22]] },
-  { id: 'm13', home: 'infinity', away: 'lafine',   maps: [[13, 6], [11, 13], [13, 6]] },
-  { id: 'm14', home: 'bravo',    away: 'nosweat',  maps: [[13, 10], [9, 13], [9, 13]] },
-  { id: 'm15', home: 'deox',     away: 'bravo',    maps: [[7, 13], [11, 13]] },
-  { id: 'm16', home: 'alpha',    away: 'nosweat',  maps: [[13, 11], [13, 3]] },
-  { id: 'm17', home: 'lafine',   away: 'revolt',   maps: [[13, 5], [9, 13], [4, 13]] },
-  { id: 'm18', home: 'alpha',    away: 'bravo',    maps: [[13, 7], [13, 4]] },
-  { id: 'm19', home: 'adhd',     away: 'revolt',   maps: [[5, 13], [6, 13]] },
-  { id: 'm20', home: 'adhd',     away: 'warz',     maps: [[13, 5], [13, 3]] },
-  { id: 'm21', home: 'infinity', away: 'warz',     maps: [[13, 3], [13, 1]] },
-  { id: 'm22', home: 'nosweat',  away: 'bravo',    maps: [[25, 23], [13, 11]] },
-  { id: 'm23', home: 'sag',      away: 'myquest',  maps: [[16, 12], [9, 13], [1, 13]] },
-  { id: 'm24', home: 'adhd',     away: 'deox',     maps: [[13, 10], [11, 13], [13, 12]] },
-  { id: 'm25', home: 'sag',      away: 'revolt',   maps: [[11, 13], [7, 13]] },
-  { id: 'm26', home: 'bravo',    away: 'warz',     maps: [[13, 5], [13, 7]] },
-  { id: 'm27', home: 'warz',     away: 'bravo',    maps: [[7, 13], [4, 13]] },
-  { id: 'm28', home: 'alpha',    away: 'infinity', maps: [[13, 8], [13, 8]] },
-  { id: 'm29', home: 'lafine',   away: 'cas1',     maps: [[13, 4], [16, 13]] },
-  { id: 'm30', home: 'infinity', away: 'revolt',   maps: [[13, 6], [13, 9]] },
-  { id: 'm31', home: 'myquest',  away: 'deox',     maps: [[13, 11], [13, 7]] },
-  { id: 'm32', home: 'nosweat',  away: 'myquest',  maps: [[5, 13], [9, 13]] },
-  { id: 'm33', home: 'adhd',     away: 'bravo',    maps: [[13, 5], [13, 10]] },
-  { id: 'm47', home: 'infinity', away: 'myquest',  maps: [[3, 13], [10, 13]] },
-  { id: 'm34', home: 'alpha',    away: 'revolt',   maps: [[9, 13], [13, 2], [13, 7]] },
-  { id: 'm35', home: 'alpha',    away: 'lafine',   maps: [[13, 7], [13, 4]] },
-  { id: 'm36', home: 'revolt',   away: 'lafine',   maps: [[13, 10], [13, 9]] },
-  { id: 'm37', home: 'deox',     away: 'revolt',   maps: [[10, 13], [8, 13]] },
-  { id: 'm38', home: 'revolt',   away: 'deox',     maps: [[13, 5], [13, 11]] },
-  { id: 'm39', home: 'cas1',     away: 'infinity', maps: [[3, 13], [9, 13]] },
-  { id: 'm40', home: 'infinity', away: 'cas1',     maps: [[13, 7], [13, 6]] },
-  { id: 'm41', home: 'myquest',  away: 'nosweat',  maps: [[13, 11], [13, 8]] },
-  { id: 'm42', home: 'cas1',     away: 'warz',     maps: [[10, 13], [10, 13]] },
-  { id: 'm43', home: 'myquest',  away: 'lafine',   maps: [[13, 7], [13, 5]] },
-  { id: 'm48', home: 'myquest',  away: 'cas1',     maps: [[13, 0], [13, 4]] },
-  { id: 'm44', home: 'alpha',    away: 'deox',     maps: [[13, 7], [13, 7]] },
-  { id: 'm45', home: 'deox',     away: 'alpha',    maps: [[10, 13], [9, 13]] },
-  { id: 'm46', home: 'infinity', away: 'sag',      maps: [[11, 13], [16, 13], [13, 9]] }
+  { id: 'm01', home: 'alpha',    away: 'cas1',     maps: [[13, 2, 'Cluster'], [13, 2, 'Backlot']] },
+  { id: 'm02', home: 'adhd',     away: 'lafine',   maps: [[9, 13, 'Strike'], [10, 13, 'Backlot']] },
+  { id: 'm03', home: 'deox',     away: 'nosweat',  maps: [[7, 13, 'Backlot'], [10, 13, 'Cluster']] },
+  { id: 'm04', home: 'deox',     away: 'infinity', maps: [[13, 11, 'Backlot'], [3, 13, 'Strike'], [13, 6, 'Cluster']] },
+  { id: 'm05', home: 'alpha',    away: 'sag',      maps: [[13, 5, 'Strike'], [13, 7, 'Cluster']] },
+  { id: 'm06', home: 'myquest',  away: 'warz',     maps: [[13, 2, 'Strike'], [13, 3, 'Backlot']] },
+  { id: 'm07', home: 'bravo',    away: 'deox',     maps: [[13, 2, 'Backlot'], [13, 10, 'Strike']] },
+  { id: 'm08', home: 'deox',     away: 'myquest',  maps: [[7, 13, 'Cluster'], [5, 13, 'Strike']] },
+  { id: 'm09', home: 'bravo',    away: 'cas1',     maps: [[13, 2, 'Backlot'], [13, 3, 'Strike']] },
+  { id: 'm10', home: 'cas1',     away: 'myquest',  maps: [[10, 13, 'Strike'], [4, 13, 'Backlot']] },
+  { id: 'm11', home: 'lafine',   away: 'sag',      maps: [[7, 13, 'Strike'], [10, 13, 'Backlot']] },
+  { id: 'm12', home: 'myquest',  away: 'sag',      maps: [[11, 13, 'Strike'], [20, 22, 'Backlot']] },
+  { id: 'm13', home: 'infinity', away: 'lafine',   maps: [[13, 6, 'Strike'], [11, 13, 'Backlot'], [13, 6, 'Cluster']] },
+  { id: 'm14', home: 'bravo',    away: 'nosweat',  maps: [[13, 10, 'Backlot'], [9, 13, 'Strike'], [9, 13, 'Cluster']] },
+  { id: 'm15', home: 'deox',     away: 'bravo',    maps: [[7, 13, 'Citystreets'], [11, 13, 'Crossfire']] },
+  { id: 'm16', home: 'alpha',    away: 'nosweat',  maps: [[13, 11, 'Cluster'], [13, 3, 'Strike']] },
+  { id: 'm17', home: 'lafine',   away: 'revolt',   maps: [[13, 5, 'Strike'], [9, 13, 'Backlot'], [4, 13, 'Cluster']] },
+  { id: 'm18', home: 'alpha',    away: 'bravo',    maps: [[13, 7, 'Backlot'], [13, 4, 'Cluster']] },
+  { id: 'm19', home: 'adhd',     away: 'revolt',   maps: [[5, 13, 'Strike'], [6, 13, 'Backlot']] },
+  { id: 'm20', home: 'adhd',     away: 'warz',     maps: [[13, 5, 'Strike'], [13, 3, 'Cluster']] },
+  { id: 'm21', home: 'infinity', away: 'warz',     maps: [[13, 3, 'Strike'], [13, 1, 'Backlot']] },
+  { id: 'm22', home: 'nosweat',  away: 'bravo',    maps: [[25, 23, 'Crash'], [13, 11, 'Citystreets']] },
+  { id: 'm23', home: 'sag',      away: 'myquest',  maps: [[16, 12, 'Crash'], [9, 13, 'Crossfire'], [1, 13, 'Citystreets']] },
+  { id: 'm24', home: 'adhd',     away: 'deox',     maps: [[13, 10, 'Cluster'], [11, 13, 'Backlot'], [13, 12, 'Strike']] },
+  { id: 'm25', home: 'sag',      away: 'revolt',   maps: [[11, 13, 'Backlot'], [7, 13, 'Strike']] },
+  { id: 'm26', home: 'bravo',    away: 'warz',     maps: [[13, 5, 'Strike'], [13, 7, 'Backlot']] },
+  { id: 'm27', home: 'warz',     away: 'bravo',    maps: [[7, 13, 'Crossfire'], [4, 13, 'Citystreets']] },
+  { id: 'm28', home: 'alpha',    away: 'infinity', maps: [[13, 8, 'Cluster'], [13, 8, 'Strike']] },
+  { id: 'm29', home: 'lafine',   away: 'cas1',     maps: [[13, 4, 'Backlot'], [16, 13, 'Strike']] },
+  { id: 'm30', home: 'infinity', away: 'revolt',   maps: [[13, 6, 'Strike'], [13, 9, 'Backlot']] },
+  { id: 'm31', home: 'myquest',  away: 'deox',     maps: [[13, 11, 'Crash'], [13, 7, 'Citystreets']] },
+  { id: 'm32', home: 'nosweat',  away: 'myquest',  maps: [[5, 13, 'Strike'], [9, 13, 'Cluster']] },
+  { id: 'm33', home: 'adhd',     away: 'bravo',    maps: [[13, 5, 'Cluster'], [13, 10, 'Backlot']] },
+  { id: 'm34', home: 'sag',      away: 'alpha',    maps: [[4, 13, 'Crossfire'], [10, 13, 'Crash']] },
+  { id: 'm35', home: 'infinity', away: 'myquest',  maps: [[3, 13, 'Strike'], [10, 13, 'Backlot']] },
+  { id: 'm36', home: 'alpha',    away: 'revolt',   maps: [[9, 13, 'Backlot'], [13, 2, 'Cluster'], [13, 7, 'Strike']] },
+  { id: 'm37', home: 'alpha',    away: 'lafine',   maps: [[13, 7, 'Strike'], [13, 4, 'Cluster']] },
+  { id: 'm38', home: 'revolt',   away: 'lafine',   maps: [[13, 10, 'Crash'], [13, 9, 'Crossfire']] },
+  { id: 'm39', home: 'deox',     away: 'revolt',   maps: [[10, 13, 'Cluster'], [8, 13, 'Backlot']] },
+  { id: 'm40', home: 'revolt',   away: 'deox',     maps: [[13, 5, 'Citystreets'], [13, 11, 'Crossfire']] },
+  { id: 'm41', home: 'cas1',     away: 'infinity', maps: [[3, 13, 'Strike'], [9, 13, 'Backlot']] },
+  { id: 'm42', home: 'infinity', away: 'cas1',     maps: [[13, 7, 'Citystreets'], [13, 6, 'Crash']] },
+  { id: 'm43', home: 'myquest',  away: 'nosweat',  maps: [[13, 11, 'Crossfire'], [13, 8, 'Crash']] },
+  { id: 'm44', home: 'cas1',     away: 'warz',     maps: [[10, 13, 'Strike'], [10, 13, 'Backlot']] },
+  { id: 'm45', home: 'myquest',  away: 'lafine',   maps: [[13, 7, 'Strike'], [13, 5, 'Backlot']] },
+  { id: 'm46', home: 'myquest',  away: 'cas1',     maps: [[13, 0, 'Crash'], [13, 4, 'Citystreets']] },
+  { id: 'm47', home: 'alpha',    away: 'deox',     maps: [[13, 7, 'Cluster'], [13, 7, 'Strike']] },
+  { id: 'm48', home: 'deox',     away: 'alpha',    maps: [[10, 13, 'Crossfire'], [9, 13, 'Crash']] },
+  { id: 'm49', home: 'infinity', away: 'sag',      maps: [[11, 13, 'Strike'], [16, 13, 'Backlot'], [13, 9, 'Cluster']] },
+  { id: 'm50', home: 'warz',     away: 'adhd',     maps: [[6, 13, 'Crash'], [6, 13, 'Crossfire']] },
+  { id: 'm51', home: 'nosweat',  away: 'sag',      maps: [[2, 13, 'Strike'], [9, 13, 'Cluster']] },
+  { id: 'm52', home: 'cas1',     away: 'sag',      maps: [[7, 13, 'Strike'], [7, 13, 'Backlot']] },
+  { id: 'm53', home: 'bravo',    away: 'infinity', maps: [[17, 19, 'Backlot'], [19, 17, 'Strike']] }
 ];
 
-/* =========================================================================
-   Per-map player statistics
-
-   Keyed by match id. `team` says whose players are listed, `maps` follows the
-   same order as that match's `maps` array, so the map score can be looked up.
-   Values: s = score, k = kills, a = assists, d = deaths.
-   Matches without an entry here simply show no player stats.
-   ========================================================================= */
-
-const PLAYER_STATS = {
-  m04: {
-    team: 'infinity',
-    maps: [
-      {
-        name: 'Backlot',
-        players: [
-          { n: 'TiPSY',    s: 135, k: 27, a: 0, d: 17 },
-          { n: 'BOOBiO',   s:  89, k: 16, a: 1, d: 18 },
-          { n: 'Levitate', s:  83, k: 16, a: 1, d: 19 },
-          { n: 'NATHZN',   s:  75, k: 15, a: 0, d: 18 },
-          { n: 'paramore', s:  41, k:  8, a: 1, d: 18 }
-        ]
-      },
-      {
-        name: 'Strike',
-        players: [
-          { n: 'NATHZN',   s: 104, k: 19, a: 3, d: 10 },
-          { n: 'paramore', s: 103, k: 20, a: 1, d:  7 },
-          { n: 'Levitate', s:  81, k: 15, a: 2, d:  7 },
-          { n: 'TiPSY',    s:  79, k: 14, a: 2, d: 10 },
-          { n: 'BOOBiO',   s:  34, k:  5, a: 1, d:  6 }
-        ]
-      },
-      {
-        name: 'Cluster',
-        players: [
-          { n: 'paramore', s: 100, k: 21, a: 0, d: 15 },
-          { n: 'Levitate', s:  77, k: 13, a: 2, d: 15 },
-          { n: 'BOOBiO',   s:  73, k: 14, a: 1, d: 16 },
-          { n: 'TiPSY',    s:  60, k:  9, a: 3, d: 16 },
-          { n: 'NATHZN',   s:  57, k:  9, a: 2, d: 17 }
-        ]
-      }
-    ]
-  },
-
-  m13: {
-    team: 'infinity',
-    maps: [
-      {
-        name: 'Strike',
-        players: [
-          { n: 'NATHZN',   s: 118, k: 23, a: 1, d: 10 },
-          { n: 'paramore', s:  95, k: 19, a: 0, d: 11 },
-          { n: 'Basham',   s:  91, k: 17, a: 0, d:  9 },
-          { n: 'TiPSY',    s:  74, k: 14, a: 2, d: 14 },
-          { n: 'EMPzY',    s:  40, k:  8, a: 0, d: 14 }
-        ]
-      },
-      {
-        name: 'Backlot',
-        players: [
-          { n: 'NATHZN',   s: 148, k: 29, a: 0, d: 16 },
-          { n: 'paramore', s: 110, k: 22, a: 0, d: 17 },
-          { n: 'TiPSY',    s:  83, k: 16, a: 1, d: 19 },
-          { n: 'EMPzY',    s:  46, k:  8, a: 2, d: 19 },
-          { n: 'Basham',   s:  45, k:  9, a: 0, d: 16 }
-        ]
-      },
-      {
-        name: 'Cluster',
-        players: [
-          { n: 'paramore', s: 119, k: 22, a: 1, d: 10 },
-          { n: 'Basham',   s: 117, k: 18, a: 3, d: 14 },
-          { n: 'TiPSY',    s:  79, k: 14, a: 2, d: 12 },
-          { n: 'NATHZN',   s:  65, k: 13, a: 0, d: 13 },
-          { n: 'EMPzY',    s:  59, k: 10, a: 2, d: 15 }
-        ]
-      }
-    ]
-  },
-
-  m21: {
-    team: 'infinity',
-    maps: [
-      {
-        name: 'Strike',
-        players: [
-          { n: 'Levitate', s: 105, k: 21, a: 0, d:  9 },
-          { n: 'paramore', s:  94, k: 17, a: 2, d:  9 },
-          { n: 'Basham',   s:  70, k: 14, a: 0, d:  6 },
-          { n: 'TiPSY',    s:  66, k: 12, a: 1, d: 12 },
-          { n: 'EMPzY',    s:  51, k:  9, a: 1, d:  4 }
-        ]
-      },
-      {
-        name: 'Backlot',
-        players: [
-          { n: 'paramore', s:  35, k:  7, a: 0, d:  3 },
-          { n: 'Levitate', s:  30, k:  6, a: 0, d:  2 },
-          { n: 'Basham',   s:  29, k:  4, a: 3, d:  2 },
-          { n: 'EMPzY',    s:  28, k:  5, a: 1, d:  2 },
-          { n: 'TiPSY',    s:  28, k:  5, a: 1, d:  5 }
-        ]
-      }
-    ]
-  },
-
-  m28: {
-    team: 'infinity',
-    maps: [
-      {
-        name: 'Cluster',
-        players: [
-          { n: 'Levitate', s: 124, k: 23, a: 0, d: 16 },
-          { n: 'BOOBiO',   s:  84, k: 15, a: 3, d: 18 },
-          { n: 'Basham',   s:  82, k: 14, a: 2, d: 15 },
-          { n: 'TiPSY',    s:  55, k: 11, a: 0, d: 16 },
-          { n: 'EMPzY',    s:  25, k:  5, a: 0, d: 19 }
-        ]
-      },
-      {
-        name: 'Strike',
-        players: [
-          { n: 'Basham',   s: 103, k: 20, a: 0, d: 18 },
-          { n: 'Levitate', s:  89, k: 16, a: 3, d: 15 },
-          { n: 'TiPSY',    s:  73, k: 14, a: 1, d: 18 },
-          { n: 'BOOBiO',   s:  64, k: 11, a: 2, d: 17 },
-          { n: 'EMPzY',    s:  50, k: 10, a: 0, d: 18 }
-        ]
-      }
-    ]
-  },
-
-  m30: {
-    team: 'infinity',
-    maps: [
-      {
-        name: 'Backlot',
-        players: [
-          { n: 'NATHZN',   s: 120, k: 21, a: 3, d: 14 },
-          { n: 'Basham',   s: 112, k: 20, a: 1, d: 12 },
-          { n: 'EMPzY',    s:  83, k: 16, a: 0, d: 17 },
-          { n: 'Levitate', s:  75, k: 15, a: 0, d: 17 },
-          { n: 'paramore', s:  71, k: 13, a: 2, d: 16 }
-        ]
-      },
-      {
-        name: 'Strike',
-        players: [
-          { n: 'Basham',   s: 101, k: 19, a: 2, d:  9 },
-          { n: 'NATHZN',   s:  98, k: 19, a: 1, d: 15 },
-          { n: 'paramore', s:  93, k: 19, a: 0, d: 10 },
-          { n: 'EMPzY',    s:  59, k: 10, a: 0, d: 12 },
-          { n: 'Levitate', s:  50, k: 10, a: 0, d: 15 }
-        ]
-      }
-    ]
-  },
-
-  m39: {
-    team: 'infinity',
-    maps: [
-      {
-        name: 'Strike',
-        players: [
-          { n: 'Basham',   s: 110, k: 22, a: 0, d:  5 },
-          { n: 'NATHZN',   s:  98, k: 19, a: 1, d: 11 },
-          { n: 'TiPSY',    s:  83, k: 16, a: 1, d:  9 },
-          { n: 'paramore', s:  50, k: 10, a: 0, d:  8 },
-          { n: 'BOOBiO',   s:  39, k:  7, a: 0, d:  9 }
-        ]
-      },
-      {
-        name: 'Backlot',
-        players: [
-          { n: 'Basham',   s: 121, k: 20, a: 5, d: 11 },
-          { n: 'NATHZN',   s: 120, k: 21, a: 3, d: 16 },
-          { n: 'TiPSY',    s:  96, k: 18, a: 1, d: 15 },
-          { n: 'BOOBiO',   s:  79, k: 14, a: 3, d: 17 },
-          { n: 'paramore', s:  58, k: 11, a: 1, d: 13 }
-        ]
-      }
-    ]
-  },
-
-  m40: {
-    team: 'infinity',
-    maps: [
-      {
-        name: 'Citystreets',
-        players: [
-          { n: 'paramore', s: 113, k: 22, a: 0, d: 10 },
-          { n: 'NATHZN',   s:  95, k: 19, a: 0, d: 15 },
-          { n: 'TiPSY',    s:  94, k: 17, a: 2, d: 12 },
-          { n: 'BOOBiO',   s:  80, k: 13, a: 1, d: 15 },
-          { n: 'Basham',   s:  74, k: 13, a: 2, d: 10 }
-        ]
-      },
-      {
-        name: 'Crash',
-        players: [
-          { n: 'TiPSY',    s:  96, k: 18, a: 2, d: 13 },
-          { n: 'NATHZN',   s:  95, k: 19, a: 0, d: 14 },
-          { n: 'EMPzY',    s:  83, k: 16, a: 1, d: 10 },
-          { n: 'Basham',   s:  76, k: 14, a: 1, d:  9 },
-          { n: 'paramore', s:  70, k: 14, a: 0, d: 11 }
-        ]
-      }
-    ]
-  },
-
-  m46: {
-    team: 'infinity',
-    maps: [
-      {
-        name: 'Strike',
-        players: [
-          { n: 'Levitate', s: 118, k: 23, a: 1, d: 16 },
-          { n: 'paramore', s: 116, k: 22, a: 1, d: 17 },
-          { n: 'Basham',   s: 115, k: 20, a: 3, d: 12 },
-          { n: 'NATHZN',   s:  88, k: 17, a: 1, d: 19 },
-          { n: 'TiPSY',    s:  47, k:  7, a: 2, d: 21 }
-        ]
-      },
-      {
-        name: 'Backlot',
-        players: [
-          { n: 'Levitate', s: 134, k: 25, a: 1, d: 21 },
-          { n: 'NATHZN',   s: 126, k: 25, a: 2, d: 23 },
-          { n: 'Basham',   s: 109, k: 20, a: 1, d: 17 },
-          { n: 'paramore', s: 100, k: 17, a: 0, d: 20 },
-          { n: 'TiPSY',    s:  99, k: 18, a: 2, d: 23 }
-        ]
-      },
-      {
-        name: 'Cluster',
-        players: [
-          { n: 'Basham',   s: 118, k: 23, a: 1, d: 14 },
-          { n: 'Levitate', s: 109, k: 20, a: 1, d: 13 },
-          { n: 'NATHZN',   s:  95, k: 16, a: 1, d: 17 },
-          { n: 'TiPSY',    s:  91, k: 17, a: 1, d: 13 },
-          { n: 'paramore', s:  80, k: 16, a: 0, d: 19 }
-        ]
-      }
-    ]
-  },
-
-  /* Derived from json/inf_myquest_strike.json and json/inf_myquest_backlot.json.
-     Map order follows the match score [[3, 13], [10, 13]]; in-game aliases were
-     resolved via PLAYER_ALIASES. Players with an all-zero line did not play and
-     are left out. */
-  m47: {
-    team: 'infinity',
-    maps: [
-      {
-        name: 'Strike',
-        players: [
-          { n: 'Levitate', s:  66, k: 12, a: 1, d: 13 },
-          { n: 'paramore', s:  58, k: 11, a: 0, d: 14 },
-          { n: 'BOOBiO',   s:  48, k:  9, a: 0, d: 14 },
-          { n: 'Basham',   s:  40, k:  8, a: 0, d: 15 },
-          { n: 'TiPSY',    s:  33, k:  6, a: 1, d: 15 }
-        ]
-      },
-      {
-        name: 'Backlot',
-        players: [
-          { n: 'Levitate', s: 104, k: 19, a: 0, d: 17 },
-          { n: 'Basham',   s:  92, k: 16, a: 3, d: 18 },
-          { n: 'NATHZN',   s:  88, k: 17, a: 0, d: 17 },
-          { n: 'BOOBiO',   s:  56, k: 10, a: 0, d: 17 },
-          { n: 'TiPSY',    s:  51, k:  9, a: 2, d: 21 },
-          { n: 'paramore', s:   5, k:  1, a: 0, d:  3 }
-        ]
-      }
-    ]
-  }
-};
 
 /* =========================================================================
    Scoreboard sources  <<< ADD NEW MATCHES HERE
@@ -495,29 +225,33 @@ const STATS_FILES = {
   'json/20260914_infeS_vs_WrZ_backlot-x.json':    ['m21', 'Backlot'],
 
   /* m28 - ARMY ALPHA vs infinity eSports, 15 Sep 2026*/
-  'json/20260915_infeS_vs_ALPHA_cluster.json':     ['m28', 'Cluster'],
+  'json/20260915_infeS_vs_ALPHA_cluster.json':    ['m28', 'Cluster'],
   'json/20260915_infeS_vs_ALPHA_strike.json':     ['m28', 'Strike'],
 
   /* m30 - infinity eSports vs Revolt, 16 Sep 2026*/
-  'json/20260916_infeS_vs_RL_strike.json':        ['m30', 'Strike'],
-  'json/20260916_infeS_vs_RL_backlot.json':       ['m30', 'Backlot'],
+  'json/20260916_RL_vs_infeS_strike.json':        ['m30', 'Strike'],
+  'json/20260916_RL_vs_infeS_backlot.json':       ['m30', 'Backlot'],
 
-  /* m47 - infinity eSports vs myQuest, 17 Sep 2026 */
-  'json/20260917_myQuest_vs_infeS_strike.json':   ['m47', 'Strike'],
-  'json/20260917_myQuest_vs_infeS_backlot-x.json':['m47', 'Backlot'],
+  /* m35 - infinity eSports vs myQuest, 17 Sep 2026 */
+  'json/20260917_myQuest_vs_infeS_strike.json':   ['m35', 'Strike'],
+  'json/20260917_myQuest_vs_infeS_backlot-x.json':['m35', 'Backlot'],
 
-  /* m39 - CAS1 vs infinity eSports, 20 Sep 2026*/
-  'json/20260920_CAS1_vs_infeS_strike.json':      ['m39', 'Strike'],
-  'json/20260920_CAS1_vs_infeS_backlot-x.json':   ['m39', 'Backlot'],
+  /* m41 - CAS1 vs infinity eSports, 20 Sep 2026*/
+  'json/20260920_CAS1_vs_infeS_strike.json':      ['m41', 'Strike'],
+  'json/20260920_CAS1_vs_infeS_backlot-x.json':   ['m41', 'Backlot'],
 
-  /* m40 - infinity eSports vs CAS1, 20 Sep 2026*/
-  'json/20260920_CAS1_vs_infeS_citystreets.json': ['m40', 'Citystreets'],
-  'json/20260920_infeS_vs_CAS1_crash.json':       ['m40', 'Crash'],
+  /* m42 - infinity eSports vs CAS1, 20 Sep 2026*/
+  'json/20260920_CAS1_vs_infeS_citystreets.json': ['m42', 'Citystreets'],
+  'json/20260920_infeS_vs_CAS1_crash.json':       ['m42', 'Crash'],
 
-  /* m46 - infinity eSports vs SaG, 24 Sep 2026*/
-  'json/20260922_SaG_vs_infeS_strike-x.json':     ['m46', 'Strike'],
-  'json/20260922_infeS_vs_SaG_backlot-x.json':    ['m46', 'Backlot'],
-  'json/20260922_SaG_vs_infeS_cluster.json':      ['m46', 'Cluster']
+  /* m49 - infinity eSports vs SaG, 22 Sep 2026*/
+  'json/20260922_SaG_vs_infeS_strike.json':       ['m49', 'Strike'],
+  'json/20260922_infeS_vs_SaG_backlot-x.json':    ['m49', 'Backlot'],
+  'json/20260922_SaG_vs_infeS_cluster.json':      ['m49', 'Cluster'],
+
+  /* m53 - ARMY BRAVO vs infinity eSports, 24 Sep 2026*/
+  'json/20260924_BRAVO_vs_infeS_backlot-x.json':  ['m53', 'Backlot'],
+  'json/20260924_BRAVO_vs_infeS_strike.json':     ['m53', 'Strike']
 };
 
 /* In-game names (clan tag included) mapped onto roster names. Every entry here

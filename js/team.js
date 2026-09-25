@@ -95,6 +95,7 @@
   function render(team) {
     document.title = team.name + ' — ARMY ROYAL LEAGUE';
     C.setHTML('#teamContent', C.teamDetailHTML(team.id, true));
+    C.enableSorting(C.$('#teamContent'));
     wireAnchors();
     jumpToAnchor();
   }

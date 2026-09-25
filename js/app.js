@@ -56,7 +56,10 @@
 
     var maps = m.maps.map(function (map) {
       var cls = map[0] > map[1] ? 'mw' : 'ml';
-      return '<span class="' + cls + '">' + map[0] + ':' + map[1] + '</span>';
+      var name = C.mapName(map);
+      return '<span class="' + cls + '">' +
+        (name ? '<i class="mn">' + esc(name) + '</i>' : '') +
+        map[0] + ':' + map[1] + '</span>';
     }).join('');
 
     return '<article class="match">' +
@@ -295,6 +298,7 @@
     if (!team) return;
 
     $('#modalContent').innerHTML = C.teamDetailHTML(id);
+    C.enableSorting($('#modalContent'));
 
     /* placed right below the stat tiles rather than appended: at the very end
        they would sit behind every collapsible map and be easy to miss */
@@ -348,8 +352,9 @@
       pushedEntry = false;
       try { history.back(); return; } catch (e) { /* fall through */ }
     }
+    /* back to the tab the popup was opened from, not to a bare index.html */
     if (location.hash.indexOf('#team=') === 0) {
-      try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+      try { history.replaceState(null, '', tabURL()); } catch (e) {}
     }
   }
 
@@ -372,6 +377,69 @@
     $('#matchFilter').innerHTML = '<option value="all">All teams</option>' + opts;
   }
 
+  /* --------------------------------------------------------------- Maps */
+
+  /* five steps, symmetric around 50 %: <20 | 20-49 | 50 | 51-80 | >80 */
+  function heatClass(p) {
+    if (p === null || p === undefined) return 'heat-na';
+    if (p < 20) return 'heat-0';
+    if (p < 50) return 'heat-1';
+    if (p === 50) return 'heat-2';
+    if (p <= 80) return 'heat-3';
+    return 'heat-4';
+  }
+
+  function legOf(name) {
+    var legs = (LEAGUE.legs || []);
+    for (var i = 0; i < legs.length; i++) {
+      if ((legs[i].maps || []).indexOf(name) > -1) return legs[i].name;
+    }
+    return '';
+  }
+
+  function teamMapLink(team) {
+    return esc(C.teamPageURL(team)) + '#mapstats';
+  }
+
+  function renderMaps() {
+    var maps = C.mapOrder();
+    var teams = C.teamsAlphabetical();
+    var min = C.MIN_MAPS_RANKED;
+
+    $('#mapsHint').textContent =
+      maps.length + ' maps · ' + maps.reduce(function (n, m) { return n + C.mapTimesPlayed(m); }, 0) + ' played in total';
+
+    $('#mapCards').innerHTML = maps.map(function (name) {
+      var top = C.mapLeader(name);
+      var topHTML = top
+        ? '<a href="' + teamMapLink(top.team) + '">' + esc(top.team.name) + '</a>' +
+          '<span class="mc-rec">' + top.w + '&ndash;' + top.l + ' &middot; ' + C.pct(top.winPct) + '</span>'
+        : '<span class="mc-none">no team with ' + min + '+ maps yet</span>';
+      return '<div class="map-card">' +
+        '<div class="mc-head"><h4>' + esc(name) + '</h4><span class="mc-leg">' + esc(legOf(name)) + '</span></div>' +
+        '<p class="mc-played"><b>' + C.mapTimesPlayed(name) + '</b> times played</p>' +
+        '<p class="mc-top"><span class="mc-label">Top team</span>' + topHTML + '</p>' +
+        '</div>';
+    }).join('') || '<p class="empty">No map names entered yet.</p>';
+
+    var head = '<thead><tr><th class="rowhead corner">Team</th>' +
+      maps.map(function (n) { return '<th>' + esc(n) + '</th>'; }).join('') + '</tr></thead>';
+
+    var body = '<tbody>' + teams.map(function (t) {
+      var cells = maps.map(function (n) {
+        var r = C.teamMapRecord(t.id, n);
+        if (!r) return '<td><div class="mcell heat-na" title="' + esc(t.name + ' has not played ' + n) + '">&ndash;</div></td>';
+        var title = t.name + ' on ' + n + ': ' + r.w + ' W, ' + (r.d ? r.d + ' D, ' : '') + r.l + ' L' +
+                    ' of ' + r.played + ' played | rounds ' + r.rw + ':' + r.rl;
+        return '<td><div class="mcell ' + heatClass(r.winPct) + '" title="' + esc(title) + '">' +
+          '<b>' + C.pct(r.winPct) + '</b><small>' + r.played + ' played</small></div></td>';
+      }).join('');
+      return '<tr><th class="rowhead"><a href="' + teamMapLink(t) + '">' + esc(t.name) + '</a></th>' + cells + '</tr>';
+    }).join('') + '</tbody>';
+
+    $('#mapMatrix').innerHTML = head + body;
+  }
+
   /* --------------------------------------------------------------- Init */
 
   function renderAll() {
@@ -380,17 +448,58 @@
     renderTeams();
     renderFixtures();
     renderStats();
+    renderMaps();
+  }
+
+  /* Tabs are addressable: index.html#maps opens the Maps tab. The popup owns
+     #team=..., every other fragment is read as a tab name. The URL names follow
+     the visible labels, which differ from two internal view ids. */
+  var TAB_HASH = { standings: 'standings', matches: 'results', teams: 'teams',
+                   fixtures: 'schedule', stats: 'stats', maps: 'maps' };
+  var currentTab = 'standings';
+
+  function tabFromHash(hash) {
+    var h = String(hash || '').replace(/^#/, '').toLowerCase();
+    for (var k in TAB_HASH) {
+      if (TAB_HASH.hasOwnProperty(k) && TAB_HASH[k] === h) return k;
+    }
+    return null;
+  }
+
+  /* the address of the current tab - also where a closed popup returns to */
+  function tabURL() {
+    return location.pathname + location.search +
+      (currentTab === 'standings' ? '' : '#' + TAB_HASH[currentTab]);
+  }
+
+  function activateTab(tab) {
+    var btn = $('#tabs .tab[data-tab="' + tab + '"]');
+    if (!btn) return;
+    currentTab = tab;
+    $$('#tabs .tab').forEach(function (b) { b.classList.toggle('is-active', b === btn); });
+    $$('.view').forEach(function (v) {
+      v.classList.toggle('is-active', v.id === 'view-' + tab);
+    });
   }
 
   function initTabs() {
     $$('#tabs .tab').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        $$('#tabs .tab').forEach(function (b) { b.classList.toggle('is-active', b === btn); });
-        $$('.view').forEach(function (v) {
-          v.classList.toggle('is-active', v.id === 'view-' + btn.dataset.tab);
-        });
+        activateTab(btn.dataset.tab);
+        /* replace rather than push: flicking through tabs should not fill the
+           back button, but the address bar always shows a shareable link */
+        try { history.replaceState(null, '', tabURL()); } catch (e) {}
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
+    });
+
+    var fromHash = tabFromHash(location.hash);
+    if (fromHash) activateTab(fromHash);
+
+    /* someone typing #maps into the address bar of an open page */
+    window.addEventListener('hashchange', function () {
+      var t = tabFromHash(location.hash);
+      if (t) activateTab(t);
     });
   }
 

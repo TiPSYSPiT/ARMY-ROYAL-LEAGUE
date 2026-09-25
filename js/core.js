@@ -69,6 +69,7 @@ var ARL = (function () {
     { id: 'roster',      label: 'Roster' },
     { id: 'results',     label: 'Results' },
     { id: 'fixtures',    label: 'Pending fixtures' },
+    { id: 'mapstats',    label: 'Map stats' },
     { id: 'playerstats', label: 'Player statistics' },
     { id: 'permap',      label: 'Per map' }
   ];
@@ -169,10 +170,45 @@ var ARL = (function () {
 
   /* ------------------------------------------------------- Data access */
 
+  /* A map is [home, away] or [home, away, 'Name']. The name is deliberately not
+     validated here: a typo in it must never drop the whole match from the
+     standings. checkMapNames() reports such problems in the console instead. */
   function validMatch(m) {
     return m && TEAM_BY_ID[m.home] && TEAM_BY_ID[m.away] &&
            Array.isArray(m.maps) && m.maps.length >= 2 &&
-           m.maps.every(function (x) { return Array.isArray(x) && x.length === 2; });
+           m.maps.every(function (x) { return Array.isArray(x) && (x.length === 2 || x.length === 3); });
+  }
+
+  /* the name exactly as typed - '' when there is no usable one */
+  function rawMapName(map) {
+    return (map && typeof map[2] === 'string') ? map[2].trim() : '';
+  }
+
+  /* Canonical map names: the pools in LEAGUE.legs, in that order. */
+  function knownMaps() {
+    var list = [];
+    ((typeof LEAGUE !== 'undefined' && LEAGUE.legs) || []).forEach(function (l) {
+      (l.maps || []).forEach(function (n) { if (list.indexOf(n) === -1) list.push(n); });
+    });
+    return list;
+  }
+
+  /* 'mp_backlot_x', 'backlot', ' BACKLOT ' -> 'Backlot'. The scoreboards use the
+     engine names (mp_*), data.js the display names; both end up the same here.
+     Anything not in LEAGUE.legs is kept as typed, so a new map still shows up
+     without a code change (and checkMapNames() flags it). */
+  function normalizeMapName(raw) {
+    var s = String(raw || '').trim();
+    if (!s) return '';
+    var squash = function (x) { return x.toLowerCase().replace(/[\s_-]+/g, ''); };
+    var key = squash(s.replace(/^mp_/i, '').replace(/_x$/i, ''));
+    var hit = knownMaps().filter(function (n) { return squash(n) === key; });
+    return hit.length ? hit[0] : s;
+  }
+
+  /* display name of a map entry - '' when none was entered */
+  function mapName(map) {
+    return normalizeMapName(rawMapName(map));
   }
 
   function getMatches() {
@@ -301,6 +337,60 @@ var ARL = (function () {
       idx[m.away + '|' + m.home] = { maps: r.mapsAway + ':' + r.mapsHome, won: r.awayWon, atHome: false };
     });
     return idx;
+  }
+
+  /* ------------------------------------------------------- Map name check */
+
+  /* Map names are typed in by hand, so every problem is reported once in the
+     console with the match id - nothing here ever hides a result. */
+  function checkMapNames() {
+    var legs = (LEAGUE.legs && LEAGUE.legs.length) ? LEAGUE.legs : [];
+    if (!legs.length) return;
+
+    var known = {};
+    legs.forEach(function (l) { (l.maps || []).forEach(function (n) { known[n] = true; }); });
+    var knownList = Object.keys(known);
+
+    function warn(m, i, text) {
+      console.warn('[ARL] ' + m.id + ' map ' + (i + 1) + ': ' + text);
+    }
+
+    getMatches().forEach(function (m) {
+      var leg = isFirstLeg(m) ? 1 : 2;
+      var pool = (legs[leg - 1] && legs[leg - 1].maps) || [];
+      var seen = {};
+      var recorded = allPlayerStats()[m.id];
+
+      m.maps.forEach(function (map, i) {
+        if (map.length < 3) return;
+
+        /* the raw spelling on purpose: display normalises 'backlot' quietly,
+           but the entry in data.js should still be fixed */
+        var name = rawMapName(map);
+        if (!name) {
+          warn(m, i, 'the map name must be a quoted text, e.g. \'Cluster\'');
+          return;
+        }
+
+        if (!known[name]) {
+          var near = knownList.filter(function (k) { return k.toLowerCase() === name.toLowerCase(); });
+          warn(m, i, 'unknown map "' + name + '"' +
+                     (near.length ? ' - did you mean "' + near[0] + '"?' : ' - expected one of ' + knownList.join(', ')));
+        } else if (pool.indexOf(name) === -1) {
+          warn(m, i, '"' + name + '" is not in the ' + (legs[leg - 1].name || 'leg ' + leg) +
+                     ' pool (' + pool.join(', ') + ')');
+        }
+
+        if (seen[name]) warn(m, i, '"' + name + '" is listed twice in this match');
+        seen[name] = true;
+
+        /* player stats carry their own map names - they must tell the same story */
+        var ps = recorded && recorded.maps && recorded.maps[i];
+        if (ps && ps.name && ps.name !== name) {
+          warn(m, i, '"' + name + '" differs from PLAYER_STATS, which says "' + ps.name + '"');
+        }
+      });
+    });
   }
 
   /* --------------------------------------------------------- Scoreboards */
@@ -617,6 +707,204 @@ var ARL = (function () {
       '</div>';
   }
 
+  /* ------------------------------------------------------------ Map stats */
+
+  /* A team needs this many maps on a map before it can be called its best or
+     weakest map, or the league leader there - one lucky game says little. */
+  var MIN_MAPS_RANKED = 2;
+
+  var mapStatsCache = null;
+
+  /* The single calculation behind the team section, the popup and the league
+     tab. One pass over MATCHES, so new matches and new maps flow in by
+     themselves. Maps without a name cannot be attributed and are skipped. */
+  function mapStatsIndex() {
+    if (mapStatsCache) return mapStatsCache;
+
+    var byTeam = {};
+    var timesPlayed = {};
+    TEAMS.forEach(function (t) { byTeam[t.id] = {}; });
+
+    getMatches().forEach(function (m) {
+      m.maps.forEach(function (map) {
+        var name = mapName(map);
+        if (!name) return;
+        timesPlayed[name] = (timesPlayed[name] || 0) + 1;
+
+        [[m.home, map[0], map[1]], [m.away, map[1], map[0]]].forEach(function (side) {
+          var team = byTeam[side[0]];
+          if (!team) return;
+          var r = team[name] || (team[name] = { map: name, played: 0, w: 0, d: 0, l: 0, rw: 0, rl: 0 });
+          r.played++;
+          r.rw += side[1];
+          r.rl += side[2];
+          if (side[1] > side[2]) r.w++;
+          else if (side[1] < side[2]) r.l++;
+          else r.d++;
+        });
+      });
+    });
+
+    Object.keys(byTeam).forEach(function (id) {
+      Object.keys(byTeam[id]).forEach(function (n) {
+        var r = byTeam[id][n];
+        r.diff = r.rw - r.rl;
+        r.winPct = r.played ? r.w * 100 / r.played : null;
+      });
+    });
+
+    mapStatsCache = { byTeam: byTeam, timesPlayed: timesPlayed };
+    return mapStatsCache;
+  }
+
+  /* maps that were actually played: the league pools first, then any other name */
+  function mapOrder() {
+    var played = mapStatsIndex().timesPlayed;
+    var known = knownMaps();
+    return known.filter(function (n) { return played[n]; })
+      .concat(Object.keys(played).filter(function (n) { return known.indexOf(n) === -1; }).sort());
+  }
+
+  function mapTimesPlayed(name) {
+    return mapStatsIndex().timesPlayed[name] || 0;
+  }
+
+  function teamMapRecord(teamId, name) {
+    var t = mapStatsIndex().byTeam[teamId];
+    return (t && t[name]) || null;
+  }
+
+  /* default order: most played first */
+  function teamMapRows(teamId) {
+    var t = mapStatsIndex().byTeam[teamId] || {};
+    var order = mapOrder();
+    return Object.keys(t).map(function (n) { return t[n]; }).sort(function (a, b) {
+      return b.played - a.played || b.winPct - a.winPct || b.diff - a.diff ||
+             order.indexOf(a.map) - order.indexOf(b.map);
+    });
+  }
+
+  function byStrength(a, b) {
+    return b.winPct - a.winPct || b.diff - a.diff || b.played - a.played;
+  }
+
+  /* best and weakest map of a team; nothing when fewer than two maps qualify
+     or when all qualifying maps are level */
+  function teamBestWorst(rows) {
+    var ok = rows.filter(function (r) { return r.played >= MIN_MAPS_RANKED; }).sort(byStrength);
+    if (ok.length < 2) return {};
+    var best = ok[0], worst = ok[ok.length - 1];
+    if (best.winPct === worst.winPct && best.diff === worst.diff) return {};
+    return { best: best.map, worst: worst.map };
+  }
+
+  /* the strongest team on one map, among teams with enough games there */
+  function mapLeader(name) {
+    var rows = TEAMS.map(function (t) {
+      var r = teamMapRecord(t.id, name);
+      return r ? { team: t, played: r.played, w: r.w, d: r.d, l: r.l,
+                   winPct: r.winPct, diff: r.diff, rw: r.rw, rl: r.rl } : null;
+    }).filter(function (r) { return r && r.played >= MIN_MAPS_RANKED; }).sort(byStrength);
+    return rows.length ? rows[0] : null;
+  }
+
+  function pct(v) {
+    return v === null || v === undefined ? '&ndash;' : Math.round(v) + '%';
+  }
+
+  function mapStatsHTML(teamId, anchors) {
+    var rows = teamMapRows(teamId);
+    var note = rows.length
+      ? '<span class="pstat-note">best / weakest need ' + MIN_MAPS_RANKED + '+ maps</span>'
+      : '';
+    var head = heading('h4', 'pstat-head', '', 'mapstats', 'Map stats', 'Map stats', note, anchors);
+
+    if (!rows.length) {
+      return '<div class="mstat-block">' + head + '<p class="m-open">No maps played yet.</p></div>';
+    }
+
+    var bw = teamBestWorst(rows);
+
+    var body = rows.map(function (r) {
+      var tag = r.map === bw.best ? '<span class="mtag mtag-best">best</span>'
+              : r.map === bw.worst ? '<span class="mtag mtag-worst">weakest</span>' : '';
+      var cls = r.map === bw.best ? ' class="mst-best"' : r.map === bw.worst ? ' class="mst-worst"' : '';
+      return '<tr' + cls + '>' +
+        '<td class="c-player" data-v="' + esc(r.map) + '">' + esc(r.map) + tag + '</td>' +
+        '<td data-v="' + r.played + '">' + r.played + '</td>' +
+        '<td data-v="' + r.w + '">' + r.w + '</td>' +
+        '<td class="num-dim" data-v="' + r.d + '">' + r.d + '</td>' +
+        '<td data-v="' + r.l + '">' + r.l + '</td>' +
+        '<td data-v="' + (r.winPct === null ? '' : r.winPct) + '"><b>' + pct(r.winPct) + '</b></td>' +
+        '<td class="num-dim" data-v="' + r.rw + '">' + r.rw + '</td>' +
+        '<td class="num-dim" data-v="' + r.rl + '">' + r.rl + '</td>' +
+        '<td class="' + diffClass(r.diff) + '" data-v="' + r.diff + '">' + sign(r.diff) + '</td>' +
+        '</tr>';
+    }).join('');
+
+    return '<div class="mstat-block">' + head +
+      '<div class="table-scroll"><table class="tbl pstats mstats sortable">' +
+      '<thead><tr>' +
+        '<th class="c-player" data-sort="text" title="Map">MAP</th>' +
+        '<th data-sort="num" aria-sort="descending" title="Maps played">PLAYED</th>' +
+        '<th data-sort="num" title="Maps won">W</th>' +
+        '<th data-sort="num" title="Maps drawn">D</th>' +
+        '<th data-sort="num" title="Maps lost">L</th>' +
+        '<th data-sort="num" title="Share of maps won">WIN%</th>' +
+        '<th data-sort="num" title="Rounds won on this map">ROUNDS WON</th>' +
+        '<th data-sort="num" title="Rounds lost on this map">ROUNDS LOST</th>' +
+        '<th data-sort="num" title="Rounds won minus rounds lost">ROUND DIFF</th>' +
+      '</tr></thead><tbody>' + body + '</tbody></table></div></div>';
+  }
+
+  /* ------------------------------------------------------ Table sorting */
+
+  /* Makes every table.sortable under `root` sortable by clicking a header with
+     data-sort="num" or "text". Cells may carry the raw value in data-v; an
+     empty value (a dash) always sorts last. Safe to call again after a
+     re-render - each table is wired only once. */
+  function enableSorting(root) {
+    $$('table.sortable', root).forEach(function (table) {
+      if (table.getAttribute('data-sort-ready')) return;
+      table.setAttribute('data-sort-ready', '1');
+
+      var ths = $$('thead th[data-sort]', table);
+      ths.forEach(function (th) {
+        th.tabIndex = 0;
+
+        function sortBy() {
+          var cur = th.getAttribute('aria-sort');
+          var dir = cur ? (cur === 'descending' ? 'ascending' : 'descending')
+                        : (th.getAttribute('data-sort') === 'text' ? 'ascending' : 'descending');
+          ths.forEach(function (o) { o.removeAttribute('aria-sort'); });
+          th.setAttribute('aria-sort', dir);
+
+          var col = Array.prototype.indexOf.call(th.parentNode.children, th);
+          var numeric = th.getAttribute('data-sort') === 'num';
+          var body = table.tBodies[0];
+          var rows = Array.prototype.slice.call(body.rows);
+
+          rows.sort(function (a, b) {
+            var x = a.cells[col].getAttribute('data-v');
+            var y = b.cells[col].getAttribute('data-v');
+            if (x === null) x = a.cells[col].textContent;
+            if (y === null) y = b.cells[col].textContent;
+            if (x === '' || y === '') return (x === '') - (y === '');   /* dashes last */
+            var c = numeric ? parseFloat(x) - parseFloat(y)
+                            : String(x).localeCompare(String(y), 'en', { sensitivity: 'base' });
+            return dir === 'ascending' ? c : -c;
+          });
+          rows.forEach(function (r) { body.appendChild(r); });
+        }
+
+        th.addEventListener('click', sortBy);
+        th.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sortBy(); }
+        });
+      });
+    });
+  }
+
   /* --------------------------------------------------- Team detail view */
 
   /* The single source of truth for a team's detail markup - rendered into the
@@ -677,6 +965,7 @@ var ARL = (function () {
           heading('h4', '', 'margin-top:16px;', 'fixtures', 'Pending fixtures',
                   'Pending fixtures', '', anchors) + openHTML + '</div>' +
       '</div>' +
+      mapStatsHTML(id, anchors) +
       playerStatsHTML(id, anchors);
   }
 
@@ -763,6 +1052,9 @@ var ARL = (function () {
 
   /* -------------------------------------------------------------- Export */
 
+  /* once per page load - every declaration above is in place by now */
+  checkMapNames();
+
   /* Only what js/app.js and js/team.js actually call - everything else stays
      private to this module. */
   return {
@@ -771,7 +1063,10 @@ var ARL = (function () {
     diffClass: diffClass, sign: sign, copyText: copyText,
     ccChip: ccChip, teamLabel: teamLabel, teamsAlphabetical: teamsAlphabetical,
     teamSlug: teamSlug, teamBySlug: teamBySlug, teamPageURL: teamPageURL,
-    getMatches: getMatches, evalMatch: evalMatch,
+    getMatches: getMatches, evalMatch: evalMatch, mapName: mapName,
+    mapOrder: mapOrder, mapTimesPlayed: mapTimesPlayed, teamMapRecord: teamMapRecord,
+    mapLeader: mapLeader, MIN_MAPS_RANKED: MIN_MAPS_RANKED, pct: pct,
+    enableSorting: enableSorting,
     computeStandings: computeStandings, standingsById: standingsById,
     totalFixtures: totalFixtures, legIndex: legIndex,
     loadScoreboards: loadScoreboards,

@@ -14,9 +14,9 @@
     },
     {
       "half": 2,
-      "score": "6:2",
+      "score": "5:2",
       "rounds": [
-        6,
+        5,
         2
       ],
       "complete": true
@@ -25,7 +25,7 @@
   "teams": [
     {
       "clan": "inf.eS",
-      "roundsWon": 14,
+      "roundsWon": 13,
       "players": [
         {
           "name": "inf.eS Basham",
@@ -37,6 +37,7 @@
           "nadeKills": 0,
           "nadeDeaths": 0,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 11,
           "plants": 0,
           "defuses": 0
@@ -51,6 +52,7 @@
           "nadeKills": 1,
           "nadeDeaths": 2,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 0,
           "plants": 0,
           "defuses": 0
@@ -65,6 +67,7 @@
           "nadeKills": 2,
           "nadeDeaths": 0,
           "tk": 1,
+          "teamKilled": 0,
           "hsPercent": 5,
           "plants": 0,
           "defuses": 1,
@@ -80,6 +83,7 @@
           "nadeKills": 3,
           "nadeDeaths": 2,
           "tk": 0,
+          "teamKilled": 1,
           "hsPercent": 0,
           "plants": 3,
           "defuses": 0
@@ -94,6 +98,7 @@
           "nadeKills": 0,
           "nadeDeaths": 5,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 10,
           "plants": 0,
           "defuses": 0
@@ -108,6 +113,7 @@
         "nadeKills": 6,
         "nadeDeaths": 9,
         "tk": 1,
+        "teamKilled": 1,
         "hsPercent": 5,
         "plants": 3,
         "defuses": 1
@@ -127,6 +133,7 @@
           "nadeKills": 2,
           "nadeDeaths": 2,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 6,
           "plants": 0,
           "defuses": 0
@@ -141,6 +148,7 @@
           "nadeKills": 3,
           "nadeDeaths": 1,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 0,
           "plants": 2,
           "defuses": 0
@@ -155,6 +163,7 @@
           "nadeKills": 1,
           "nadeDeaths": 0,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 7,
           "plants": 1,
           "defuses": 0
@@ -169,34 +178,37 @@
           "nadeKills": 2,
           "nadeDeaths": 2,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 13,
           "plants": 1,
           "defuses": 0
         },
         {
           "name": "RL Meep </3",
-          "score": 23,
-          "kills": 4,
-          "assists": 1,
-          "deaths": 6,
-          "kd": 0.67,
+          "score": 41,
+          "kills": 7,
+          "assists": 2,
+          "deaths": 17,
+          "kd": 0.41,
           "nadeKills": 1,
           "nadeDeaths": 1,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 0,
           "plants": 0,
           "defuses": 0
         }
       ],
       "teamTotal": {
-        "score": 309,
-        "kills": 57,
-        "assists": 4,
-        "deaths": 66,
-        "kd": 0.86,
+        "score": 327,
+        "kills": 60,
+        "assists": 5,
+        "deaths": 77,
+        "kd": 0.78,
         "nadeKills": 9,
         "nadeDeaths": 6,
         "tk": 0,
+        "teamKilled": 0,
         "hsPercent": 5,
         "plants": 4,
         "defuses": 0

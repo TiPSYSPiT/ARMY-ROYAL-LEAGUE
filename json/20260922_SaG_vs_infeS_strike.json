@@ -37,6 +37,7 @@
           "nadeKills": 8,
           "nadeDeaths": 1,
           "tk": 1,
+          "teamKilled": 0,
           "hsPercent": 19,
           "plants": 2,
           "defuses": 0
@@ -51,6 +52,7 @@
           "nadeKills": 6,
           "nadeDeaths": 0,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 0,
           "plants": 0,
           "defuses": 0
@@ -65,8 +67,24 @@
           "nadeKills": 2,
           "nadeDeaths": 1,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 7,
           "plants": 3,
+          "defuses": 0
+        },
+        {
+          "name": "[SaG]sasatory",
+          "score": 81,
+          "kills": 15,
+          "assists": 2,
+          "deaths": 21,
+          "kd": 0.71,
+          "nadeKills": 4,
+          "nadeDeaths": 2,
+          "tk": 0,
+          "teamKilled": 1,
+          "hsPercent": 27,
+          "plants": 0,
           "defuses": 0
         },
         {
@@ -79,34 +97,22 @@
           "nadeKills": 3,
           "nadeDeaths": 4,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 7,
-          "plants": 0,
-          "defuses": 0
-        },
-        {
-          "name": "[SaG]sasatory",
-          "score": 61,
-          "kills": 11,
-          "assists": 2,
-          "deaths": 12,
-          "kd": 0.92,
-          "nadeKills": 4,
-          "nadeDeaths": 2,
-          "tk": 0,
-          "hsPercent": 27,
           "plants": 0,
           "defuses": 0
         }
       ],
       "teamTotal": {
-        "score": 439,
-        "kills": 81,
+        "score": 459,
+        "kills": 85,
         "assists": 8,
-        "deaths": 81,
-        "kd": 1,
+        "deaths": 90,
+        "kd": 0.94,
         "nadeKills": 23,
         "nadeDeaths": 8,
         "tk": 1,
+        "teamKilled": 1,
         "hsPercent": 12,
         "plants": 5,
         "defuses": 0
@@ -126,6 +132,7 @@
           "nadeKills": 1,
           "nadeDeaths": 2,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 4,
           "plants": 0,
           "defuses": 0
@@ -140,6 +147,7 @@
           "nadeKills": 1,
           "nadeDeaths": 3,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 9,
           "plants": 1,
           "defuses": 0,
@@ -155,6 +163,7 @@
           "nadeKills": 0,
           "nadeDeaths": 2,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 10,
           "plants": 2,
           "defuses": 0
@@ -169,6 +178,7 @@
           "nadeKills": 3,
           "nadeDeaths": 8,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 12,
           "plants": 0,
           "defuses": 0
@@ -183,6 +193,7 @@
           "nadeKills": 2,
           "nadeDeaths": 8,
           "tk": 0,
+          "teamKilled": 0,
           "hsPercent": 14,
           "plants": 2,
           "defuses": 0
@@ -197,6 +208,7 @@
         "nadeKills": 7,
         "nadeDeaths": 23,
         "tk": 0,
+        "teamKilled": 0,
         "hsPercent": 9,
         "plants": 5,
         "defuses": 0

@@ -1406,3 +1406,194 @@ body.is-loading main .view { display: none !important; }
 
 /* the confirmation sits after the title span, not inside it */
 .has-anchor { flex-wrap: wrap; }
+
+/* ---------------- Map names in the result chips ---------------- */
+
+/* three named maps no longer fit on one line on a phone */
+.maps { flex-wrap: wrap; }
+
+.maps .mn {
+  font-family: "Barlow", sans-serif;
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--txt-dim);
+  margin-right: 5px;
+}
+
+/* ---------------- Map stats (team page + popup) ---------------- */
+
+.mstat-block { margin-top: 24px; }
+
+/* nine columns with spelled-out round headers need a little more room */
+.mstats { min-width: 640px; }
+
+.mstats tr.mst-best td  { background: var(--win-bg-soft); }
+.mstats tr.mst-worst td { background: var(--loss-bg-soft); }
+
+.mtag {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 0 5px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 14px;
+  vertical-align: 1px;
+  border: 1px solid;
+  border-radius: 2px;
+}
+
+.mtag-best  { color: var(--win);  border-color: var(--win-bd); }
+.mtag-worst { color: var(--loss); border-color: var(--loss-bd); }
+
+/* ---------------- Sortable tables ---------------- */
+
+.sortable thead th[data-sort] {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+
+.sortable thead th[data-sort]:hover { color: var(--txt); }
+.sortable thead th[aria-sort] { color: var(--gold); }
+.sortable thead th[aria-sort="descending"]::after { content: " \25BE"; }
+.sortable thead th[aria-sort="ascending"]::after  { content: " \25B4"; }
+
+.sortable thead th[data-sort]:focus-visible {
+  outline: 2px solid var(--gold-dim);
+  outline-offset: -2px;
+}
+
+/* ---------------- Maps tab ---------------- */
+
+.map-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.map-card {
+  background: var(--tile);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  padding: 13px 14px;
+}
+
+.mc-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.mc-head h4 {
+  margin: 0;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--txt);
+}
+
+.mc-leg {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--txt-mute);
+}
+
+.mc-played { margin: 0 0 8px; font-size: 12.5px; color: var(--txt-dim); }
+
+.mc-played b {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 20px;
+  color: var(--gold);
+  margin-right: 3px;
+}
+
+.mc-top {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  font-size: 13px;
+}
+
+.mc-label {
+  width: 100%;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--txt-mute);
+}
+
+.mc-top a { color: var(--txt); font-weight: 600; text-decoration: none; }
+.mc-top a:hover { color: var(--gold); }
+.mc-rec  { font-family: var(--mono); font-size: 11.5px; color: var(--win); }
+.mc-none { font-size: 12px; color: var(--txt-mute); }
+
+.heat-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 12px;
+  font-size: 11.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--txt-mute);
+}
+
+.heat-legend span { display: flex; align-items: center; gap: 6px; }
+
+.mapmatrix { font-size: 12px; min-width: 560px; }
+.mapmatrix thead th { padding: 7px 4px; }
+.mapmatrix td { padding: 3px; border-bottom: 1px solid var(--line-soft); }
+
+.mapmatrix th.rowhead {
+  text-align: left;
+  padding: 4px 12px 4px 0;
+  font-family: "Barlow", sans-serif;
+  font-size: 12.5px;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.mapmatrix th.corner {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--txt-mute);
+}
+
+.mapmatrix th.rowhead a { color: var(--txt-dim); font-weight: 600; text-decoration: none; }
+.mapmatrix th.rowhead a:hover { color: var(--gold); }
+
+.mcell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 66px;
+  height: 42px;
+  border-radius: 3px;
+  line-height: 1.15;
+}
+
+.mcell b { font-family: "Barlow Condensed", sans-serif; font-size: 15px; font-weight: 700; }
+.mcell small { font-size: 10px; opacity: 0.8; }
+
+/* win-rate scale - the same tokens as the rest of the site, so both themes work */
+.heat-0  { background: var(--loss-bd-soft); color: var(--txt); }
+.heat-1  { background: var(--loss-bg);      color: var(--loss); }
+.heat-2  { background: var(--tile-hover);   color: var(--txt-dim); }
+.heat-3  { background: var(--win-bg);       color: var(--win-strong); }
+.heat-4  { background: var(--win-bd-soft);  color: var(--txt); }
+.heat-na { color: var(--txt-mute); }

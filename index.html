@@ -69,6 +69,7 @@
     <button class="tab" data-tab="teams">Teams</button>
     <button class="tab" data-tab="fixtures">Schedule</button>
     <button class="tab" data-tab="stats">Stats</button>
+    <button class="tab" data-tab="maps">Maps</button>
   </nav>
 </header>
 
@@ -174,6 +175,28 @@
     <div id="roundChart" class="chart"></div>
     <h3 class="sub">Records</h3>
     <div id="records" class="record-list"></div>
+  </section>
+
+  <!-- ============ MAPS ============ -->
+  <section class="panel view" id="view-maps">
+    <div class="panel-head">
+      <h2>Maps</h2>
+      <p class="hint" id="mapsHint">How every team fares on every map</p>
+    </div>
+    <div id="mapCards" class="map-cards"></div>
+
+    <h3 class="sub">Win rate by team and map</h3>
+    <div class="heat-legend">
+      <span><i class="sq heat-0"></i>&lt; 20%</span>
+      <span><i class="sq heat-1"></i>20&ndash;49%</span>
+      <span><i class="sq heat-2"></i>50%</span>
+      <span><i class="sq heat-3"></i>51&ndash;80%</span>
+      <span><i class="sq heat-4"></i>&gt; 80%</span>
+      <span class="fl-note">Click a team for its map stats</span>
+    </div>
+    <div class="table-scroll">
+      <table class="tbl mapmatrix" id="mapMatrix"></table>
+    </div>
   </section>
 
 </main>
