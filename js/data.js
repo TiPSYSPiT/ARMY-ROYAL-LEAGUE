@@ -13,7 +13,7 @@ const LEAGUE = {
 
   /* Date the results below were last updated (YYYY-MM-DD).
      Bump this whenever you add a match - it is shown in the header. */
-  updated: '2026-09-25',
+  updated: '2026-09-28',
 
   /* Each pairing is played twice, with its own map pool per leg.
      Leg 1 puts the alphabetically first team at home, leg 2 reverses that. */
@@ -183,7 +183,13 @@ const MATCHES = [
   { id: 'm50', home: 'warz',     away: 'adhd',     maps: [[6, 13, 'Crash'], [6, 13, 'Crossfire']] },
   { id: 'm51', home: 'nosweat',  away: 'sag',      maps: [[2, 13, 'Strike'], [9, 13, 'Cluster']] },
   { id: 'm52', home: 'cas1',     away: 'sag',      maps: [[7, 13, 'Strike'], [7, 13, 'Backlot']] },
-  { id: 'm53', home: 'bravo',    away: 'infinity', maps: [[17, 19, 'Backlot'], [19, 17, 'Strike']] }
+  { id: 'm53', home: 'bravo',    away: 'infinity', maps: [[17, 19, 'Backlot'], [19, 17, 'Strike']] },
+  { id: 'm54', home: 'deox',     away: 'lafine',   maps: [[10, 13, 'Strike'], [7, 13, 'Backlot']] },
+  { id: 'm55', home: 'revolt',   away: 'alpha',    maps: [[8, 13, 'Citystreets'], [12, 16, 'Crossfire']] },
+  { id: 'm56', home: 'cas1',     away: 'revolt',   maps: [[3, 13, 'Strike'], [3, 13, 'Backlot']] },
+  { id: 'm57', home: 'bravo',    away: 'lafine',   maps: [[14, 16, 'Strike'], [8, 13, 'Backlot']] },
+  { id: 'm58', home: 'nosweat',  away: 'infinity', maps: [[13, 5, 'Backlot'], [13, 11, 'Strike']] },
+  { id: 'm59', home: 'lafine',   away: 'cas1',     maps: [[13, 7, 'Crossfire'], [13, 7, 'Citystreets']] }
 ];
 
 
@@ -211,18 +217,18 @@ const MATCHES = [
 
 const STATS_FILES = {
   /* m04 - deox vs infinity eSports, 3 Sep 2026 */
-  'json/20260903_deox_vs_infeS_backlot-x.json':   ['m04', 'Backlot'],
+  'json/20260903_deox_vs_infeS_backlot.json':     ['m04', 'Backlot'],
   'json/20260903_infeS_vs_deox_strike.json':      ['m04', 'Strike'],
   'json/20260903_deox_vs_infeS_cluster.json':     ['m04', 'Cluster'],
 
   /* m13 - infinity eSports vs LAFINE Corp, 9 Sep 2026 */
   'json/20260909_LAFINE_vs_infeS_strike.json':    ['m13', 'Strike'],
-  'json/20260909_infeS_vs_LAFINE_backlot-x.json': ['m13', 'Backlot'],
+  'json/20260909_infeS_vs_LAFINE_backlot.json':   ['m13', 'Backlot'],
   'json/20260909_LAFINE_vs_infeS_cluster.json':   ['m13', 'Cluster'],
 
   /* m21 - infinity eSports vs W@rZ, 14 Sep 2026*/
   'json/20260914_infeS_vs_WrZ_strike.json':       ['m21', 'Strike'],
-  'json/20260914_infeS_vs_WrZ_backlot-x.json':    ['m21', 'Backlot'],
+  'json/20260914_infeS_vs_WrZ_backlot.json':      ['m21', 'Backlot'],
 
   /* m28 - ARMY ALPHA vs infinity eSports, 15 Sep 2026*/
   'json/20260915_infeS_vs_ALPHA_cluster.json':    ['m28', 'Cluster'],
@@ -234,11 +240,11 @@ const STATS_FILES = {
 
   /* m35 - infinity eSports vs myQuest, 17 Sep 2026 */
   'json/20260917_myQuest_vs_infeS_strike.json':   ['m35', 'Strike'],
-  'json/20260917_myQuest_vs_infeS_backlot-x.json':['m35', 'Backlot'],
+  'json/20260917_myQuest_vs_infeS_backlot.json':  ['m35', 'Backlot'],
 
   /* m41 - CAS1 vs infinity eSports, 20 Sep 2026*/
   'json/20260920_CAS1_vs_infeS_strike.json':      ['m41', 'Strike'],
-  'json/20260920_CAS1_vs_infeS_backlot-x.json':   ['m41', 'Backlot'],
+  'json/20260920_CAS1_vs_infeS_backlot.json':     ['m41', 'Backlot'],
 
   /* m42 - infinity eSports vs CAS1, 20 Sep 2026*/
   'json/20260920_CAS1_vs_infeS_citystreets.json': ['m42', 'Citystreets'],
@@ -246,12 +252,16 @@ const STATS_FILES = {
 
   /* m49 - infinity eSports vs SaG, 22 Sep 2026*/
   'json/20260922_SaG_vs_infeS_strike.json':       ['m49', 'Strike'],
-  'json/20260922_infeS_vs_SaG_backlot-x.json':    ['m49', 'Backlot'],
+  'json/20260922_infeS_vs_SaG_backlot.json':      ['m49', 'Backlot'],
   'json/20260922_SaG_vs_infeS_cluster.json':      ['m49', 'Cluster'],
 
   /* m53 - ARMY BRAVO vs infinity eSports, 24 Sep 2026*/
-  'json/20260924_BRAVO_vs_infeS_backlot-x.json':  ['m53', 'Backlot'],
-  'json/20260924_BRAVO_vs_infeS_strike.json':     ['m53', 'Strike']
+  'json/20260924_BRAVO_vs_infeS_backlot.json':    ['m53', 'Backlot'],
+  'json/20260924_BRAVO_vs_infeS_strike.json':     ['m53', 'Strike'],
+
+  /* m58 - infinity eSports vs NoSweat, 27 Sep 2026*/
+  'json/20260927_nosweat_vs_infeS_backlot.json':  ['m58', 'Backlot'],
+  'json/20260927_infeS_vs_nosweat_strike.json':   ['m58', 'Strike']
 };
 
 /* In-game names (clan tag included) mapped onto roster names. Every entry here

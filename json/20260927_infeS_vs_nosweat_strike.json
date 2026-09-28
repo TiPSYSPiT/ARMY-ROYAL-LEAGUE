@@ -1,0 +1,218 @@
+{
+  "map": "mp_strike",
+  "recordDate": "20260927213918",
+  "recordDateSource": "g_mapStartTime",
+  "halves": [
+    {
+      "half": 1,
+      "score": "5:7",
+      "rounds": [
+        5,
+        7
+      ],
+      "complete": true
+    },
+    {
+      "half": 2,
+      "score": "6:6",
+      "rounds": [
+        6,
+        6
+      ],
+      "complete": true
+    }
+  ],
+  "teams": [
+    {
+      "clan": "inf.eS",
+      "roundsWon": 11,
+      "players": [
+        {
+          "name": "inf.eS TiPSY",
+          "score": 127,
+          "kills": 23,
+          "assists": 3,
+          "deaths": 18,
+          "kd": 1.28,
+          "nadeKills": 4,
+          "nadeDeaths": 3,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 13,
+          "plants": 1,
+          "defuses": 0,
+          "pov": true
+        },
+        {
+          "name": "inf.eS Basham",
+          "score": 89,
+          "kills": 16,
+          "assists": 3,
+          "deaths": 18,
+          "kd": 0.89,
+          "nadeKills": 2,
+          "nadeDeaths": 3,
+          "tk": 0,
+          "teamKilled": 1,
+          "hsPercent": 6,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS paramore",
+          "score": 88,
+          "kills": 18,
+          "assists": 0,
+          "deaths": 17,
+          "kd": 1.06,
+          "nadeKills": 0,
+          "nadeDeaths": 3,
+          "tk": 1,
+          "teamKilled": 0,
+          "hsPercent": 11,
+          "plants": 0,
+          "defuses": 1
+        },
+        {
+          "name": "inf.eS NATHZN",
+          "score": 81,
+          "kills": 15,
+          "assists": 2,
+          "deaths": 20,
+          "kd": 0.75,
+          "nadeKills": 2,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 7,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS NIGERian",
+          "score": 54,
+          "kills": 9,
+          "assists": 2,
+          "deaths": 19,
+          "kd": 0.47,
+          "nadeKills": 1,
+          "nadeDeaths": 3,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 0,
+          "plants": 1,
+          "defuses": 0
+        }
+      ],
+      "teamTotal": {
+        "score": 439,
+        "kills": 81,
+        "assists": 10,
+        "deaths": 92,
+        "kd": 0.88,
+        "nadeKills": 9,
+        "nadeDeaths": 12,
+        "tk": 1,
+        "teamKilled": 1,
+        "hsPercent": 9,
+        "plants": 2,
+        "defuses": 1
+      }
+    },
+    {
+      "clan": "nosweat",
+      "roundsWon": 13,
+      "players": [
+        {
+          "name": "nosweat zen",
+          "score": 149,
+          "kills": 25,
+          "assists": 8,
+          "deaths": 15,
+          "kd": 1.67,
+          "nadeKills": 3,
+          "nadeDeaths": 3,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 4,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "nosweat dUST'",
+          "score": 113,
+          "kills": 22,
+          "assists": 1,
+          "deaths": 17,
+          "kd": 1.29,
+          "nadeKills": 5,
+          "nadeDeaths": 2,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 23,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "nosweat DUZMAAN",
+          "score": 101,
+          "kills": 20,
+          "assists": 1,
+          "deaths": 19,
+          "kd": 1.05,
+          "nadeKills": 1,
+          "nadeDeaths": 2,
+          "tk": 1,
+          "teamKilled": 0,
+          "hsPercent": 10,
+          "plants": 1,
+          "defuses": 0
+        },
+        {
+          "name": "nosweat ibes",
+          "score": 94,
+          "kills": 14,
+          "assists": 3,
+          "deaths": 13,
+          "kd": 1.08,
+          "nadeKills": 3,
+          "nadeDeaths": 1,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 14,
+          "plants": 5,
+          "defuses": 0
+        },
+        {
+          "name": "nosweat MRSU",
+          "score": 59,
+          "kills": 10,
+          "assists": 3,
+          "deaths": 18,
+          "kd": 0.56,
+          "nadeKills": 0,
+          "nadeDeaths": 1,
+          "tk": 0,
+          "teamKilled": 1,
+          "hsPercent": 10,
+          "plants": 0,
+          "defuses": 0
+        }
+      ],
+      "teamTotal": {
+        "score": 516,
+        "kills": 91,
+        "assists": 16,
+        "deaths": 82,
+        "kd": 1.11,
+        "nadeKills": 12,
+        "nadeDeaths": 9,
+        "tk": 1,
+        "teamKilled": 1,
+        "hsPercent": 12,
+        "plants": 6,
+        "defuses": 0
+      }
+    }
+  ]
+}
