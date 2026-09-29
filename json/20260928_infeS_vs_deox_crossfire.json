@@ -1,0 +1,218 @@
+{
+  "map": "mp_crossfire",
+  "recordDate": "20260928214627",
+  "recordDateSource": "g_mapStartTime",
+  "halves": [
+    {
+      "half": 1,
+      "score": "7:5",
+      "rounds": [
+        7,
+        5
+      ],
+      "complete": true
+    },
+    {
+      "half": 2,
+      "score": "6:4",
+      "rounds": [
+        6,
+        4
+      ],
+      "complete": true
+    }
+  ],
+  "teams": [
+    {
+      "clan": "inf.eS",
+      "roundsWon": 13,
+      "players": [
+        {
+          "name": "inf.eS Lodie",
+          "score": 112,
+          "kills": 20,
+          "assists": 3,
+          "deaths": 12,
+          "kd": 1.67,
+          "nadeKills": 0,
+          "nadeDeaths": 4,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 10,
+          "plants": 0,
+          "defuses": 1
+        },
+        {
+          "name": "inf.eS TiPSY",
+          "score": 107,
+          "kills": 19,
+          "assists": 1,
+          "deaths": 14,
+          "kd": 1.36,
+          "nadeKills": 1,
+          "nadeDeaths": 2,
+          "tk": 1,
+          "teamKilled": 0,
+          "hsPercent": 11,
+          "plants": 3,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS NATHZN",
+          "score": 90,
+          "kills": 15,
+          "assists": 0,
+          "deaths": 16,
+          "kd": 0.94,
+          "nadeKills": 4,
+          "nadeDeaths": 3,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 7,
+          "plants": 4,
+          "defuses": 1,
+          "pov": true
+        },
+        {
+          "name": "inf.eS paramore",
+          "score": 78,
+          "kills": 15,
+          "assists": 1,
+          "deaths": 16,
+          "kd": 0.94,
+          "nadeKills": 2,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 13,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS Basham",
+          "score": 69,
+          "kills": 12,
+          "assists": 3,
+          "deaths": 15,
+          "kd": 0.8,
+          "nadeKills": 1,
+          "nadeDeaths": 1,
+          "tk": 0,
+          "teamKilled": 1,
+          "hsPercent": 17,
+          "plants": 0,
+          "defuses": 0
+        }
+      ],
+      "teamTotal": {
+        "score": 456,
+        "kills": 81,
+        "assists": 8,
+        "deaths": 73,
+        "kd": 1.11,
+        "nadeKills": 8,
+        "nadeDeaths": 10,
+        "tk": 1,
+        "teamKilled": 1,
+        "hsPercent": 11,
+        "plants": 7,
+        "defuses": 2
+      }
+    },
+    {
+      "clan": "deox",
+      "roundsWon": 9,
+      "players": [
+        {
+          "name": "deox fdDx",
+          "score": 141,
+          "kills": 27,
+          "assists": 2,
+          "deaths": 15,
+          "kd": 1.8,
+          "nadeKills": 4,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 15,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "deox nOObz0r",
+          "score": 97,
+          "kills": 17,
+          "assists": 1,
+          "deaths": 14,
+          "kd": 1.21,
+          "nadeKills": 3,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 12,
+          "plants": 3,
+          "defuses": 0
+        },
+        {
+          "name": "deox reflex-",
+          "score": 89,
+          "kills": 16,
+          "assists": 0,
+          "deaths": 15,
+          "kd": 1.07,
+          "nadeKills": 0,
+          "nadeDeaths": 3,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 31,
+          "plants": 2,
+          "defuses": 1
+        },
+        {
+          "name": "deox brosky",
+          "score": 33,
+          "kills": 6,
+          "assists": 1,
+          "deaths": 18,
+          "kd": 0.33,
+          "nadeKills": 2,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 0,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "deox m1taR",
+          "score": 33,
+          "kills": 6,
+          "assists": 0,
+          "deaths": 20,
+          "kd": 0.3,
+          "nadeKills": 1,
+          "nadeDeaths": 5,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 17,
+          "plants": 1,
+          "defuses": 0
+        }
+      ],
+      "teamTotal": {
+        "score": 393,
+        "kills": 72,
+        "assists": 4,
+        "deaths": 82,
+        "kd": 0.88,
+        "nadeKills": 10,
+        "nadeDeaths": 8,
+        "tk": 0,
+        "teamKilled": 0,
+        "hsPercent": 17,
+        "plants": 6,
+        "defuses": 1
+      }
+    }
+  ]
+}

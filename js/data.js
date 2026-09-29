@@ -13,7 +13,7 @@ const LEAGUE = {
 
   /* Date the results below were last updated (YYYY-MM-DD).
      Bump this whenever you add a match - it is shown in the header. */
-  updated: '2026-09-28',
+  updated: '2026-09-29',
 
   /* Each pairing is played twice, with its own map pool per leg.
      Leg 1 puts the alphabetically first team at home, leg 2 reverses that. */
@@ -189,7 +189,8 @@ const MATCHES = [
   { id: 'm56', home: 'cas1',     away: 'revolt',   maps: [[3, 13, 'Strike'], [3, 13, 'Backlot']] },
   { id: 'm57', home: 'bravo',    away: 'lafine',   maps: [[14, 16, 'Strike'], [8, 13, 'Backlot']] },
   { id: 'm58', home: 'nosweat',  away: 'infinity', maps: [[13, 5, 'Backlot'], [13, 11, 'Strike']] },
-  { id: 'm59', home: 'lafine',   away: 'cas1',     maps: [[13, 7, 'Crossfire'], [13, 7, 'Citystreets']] }
+  { id: 'm59', home: 'lafine',   away: 'cas1',     maps: [[13, 7, 'Crossfire'], [13, 7, 'Citystreets']] },
+  { id: 'm60', home: 'infinity', away: 'deox',     maps: [[11, 13, 'Crash'], [13, 9, 'Crossfire'], [13, 9, 'Citystreets']] }
 ];
 
 
@@ -261,7 +262,12 @@ const STATS_FILES = {
 
   /* m58 - infinity eSports vs NoSweat, 27 Sep 2026*/
   'json/20260927_nosweat_vs_infeS_backlot.json':  ['m58', 'Backlot'],
-  'json/20260927_infeS_vs_nosweat_strike.json':   ['m58', 'Strike']
+  'json/20260927_infeS_vs_nosweat_strike.json':   ['m58', 'Strike'],
+
+  /* m60 - infinity eSports vs deox, 29 Sep 2026*/
+  'json/20260928_infeS_vs_deox_crash.json':       ['m60', 'Crash'],
+  'json/20260928_infeS_vs_deox_crossfire.json':   ['m60', 'Crossfire'],
+  'json/20260928_infeS_vs_deox_district.json':    ['m60', 'Citystreets'],
 };
 
 /* In-game names (clan tag included) mapped onto roster names. Every entry here
