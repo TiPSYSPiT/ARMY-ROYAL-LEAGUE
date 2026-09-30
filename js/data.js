@@ -13,7 +13,7 @@ const LEAGUE = {
 
   /* Date the results below were last updated (YYYY-MM-DD).
      Bump this whenever you add a match - it is shown in the header. */
-  updated: '2026-09-29',
+  updated: '2026-09-30',
 
   /* Each pairing is played twice, with its own map pool per leg.
      Leg 1 puts the alphabetically first team at home, leg 2 reverses that. */
@@ -190,7 +190,9 @@ const MATCHES = [
   { id: 'm57', home: 'bravo',    away: 'lafine',   maps: [[14, 16, 'Strike'], [8, 13, 'Backlot']] },
   { id: 'm58', home: 'nosweat',  away: 'infinity', maps: [[13, 5, 'Backlot'], [13, 11, 'Strike']] },
   { id: 'm59', home: 'lafine',   away: 'cas1',     maps: [[13, 7, 'Crossfire'], [13, 7, 'Citystreets']] },
-  { id: 'm60', home: 'infinity', away: 'deox',     maps: [[11, 13, 'Crash'], [13, 9, 'Crossfire'], [13, 9, 'Citystreets']] }
+  { id: 'm60', home: 'infinity', away: 'deox',     maps: [[11, 13, 'Crash'], [13, 9, 'Crossfire'], [13, 9, 'Citystreets']] },
+  { id: 'm61', home: 'lafine',   away: 'adhd',     maps: [[13, 8, 'Crossfire'], [13, 9, 'Crash']] },
+  { id: 'm62', home: 'cas1',     away: 'bravo',    maps: [[13, 8, 'Cash'], [13, 4, 'Crossfire']] }
 ];
 
 
