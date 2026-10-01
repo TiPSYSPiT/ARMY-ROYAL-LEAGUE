@@ -390,6 +390,9 @@ var ARL = (function () {
 
   function num(v) { return typeof v === 'number' && isFinite(v) ? v : 0; }
 
+  /* like num(), but a missing field stays null so it can be shown as a dash */
+  function optNum(v) { return typeof v === 'number' && isFinite(v) ? v : null; }
+
   /* Raw scoreboards keyed by path, filled in by loadScoreboards(). */
   var loadedBoards = {};
   var loadPromise = null;
@@ -463,10 +466,13 @@ var ARL = (function () {
        name) - those lines are merged, the headshot share weighted by kills */
     function addRow(rows, name, p) {
       var hs = (p.hsPercent === null || p.hsPercent === undefined) ? null : num(p.hsPercent);
+      /* teamKilled only exists in newer recordings: null keeps "no data" apart from 0 */
+      var tkd = optNum(p.teamKilled);
       var r = rows[name];
       if (!r) {
         rows[name] = { n: name, s: num(p.score), k: num(p.kills), a: num(p.assists), d: num(p.deaths),
-                       hs: hs, tk: num(p.tk), nadeKills: num(p.nadeKills), nadeDeaths: num(p.nadeDeaths),
+                       hs: hs, tk: num(p.tk), tkd: tkd,
+                       nadeKills: num(p.nadeKills), nadeDeaths: num(p.nadeDeaths),
                        plants: num(p.plants), defuses: num(p.defuses) };
         return;
       }
@@ -477,6 +483,7 @@ var ARL = (function () {
       r.s += num(p.score); r.k += num(p.kills); r.a += num(p.assists); r.d += num(p.deaths);
       r.tk += num(p.tk); r.nadeKills += num(p.nadeKills); r.nadeDeaths += num(p.nadeDeaths);
       r.plants += num(p.plants); r.defuses += num(p.defuses);
+      if (tkd !== null) r.tkd = (r.tkd || 0) + tkd;
     }
 
     Object.keys(STATS_FILES).forEach(function (path) {
@@ -569,6 +576,8 @@ var ARL = (function () {
             byName[p.n] = {
               n: p.n, maps: 0, s: 0, k: 0, a: 0, d: 0,
               hsWeighted: 0, hsKills: 0, tk: 0,
+              /* summed over the maps that report it; null if none does */
+              tkd: null,
               nadeKills: 0, nadeDeaths: 0, plants: 0, defuses: 0
             };
             order.push(p.n);
@@ -576,6 +585,7 @@ var ARL = (function () {
           var t = byName[p.n];
           t.maps++; t.s += p.s; t.k += p.k; t.a += p.a; t.d += p.d;
           t.tk += p.tk;
+          if (p.tkd !== null) t.tkd = (t.tkd || 0) + p.tkd;
           t.nadeKills += p.nadeKills;
           t.nadeDeaths += p.nadeDeaths;
           t.plants += p.plants;
@@ -602,6 +612,7 @@ var ARL = (function () {
   function mapExtraCells(p) {
     return '<td>' + (p.hs === null ? '&ndash;' : Math.round(p.hs) + '%') + '</td>' +
       '<td class="num-dim">' + p.tk + '</td>' +
+      '<td class="num-dim">' + (p.tkd === null ? '&ndash;' : p.tkd) + '</td>' +
       '<td class="num-dim">' + p.nadeKills + '</td>' +
       '<td class="num-dim">' + p.nadeDeaths + '</td>' +
       '<td class="num-dim">' + p.plants + '</td>' +
@@ -614,6 +625,7 @@ var ARL = (function () {
     var hs = p.hsKills > 0 ? (p.hsWeighted / p.hsKills).toFixed(1) + '%' : '&ndash;';
     return '<td>' + hs + '</td>' +
       '<td class="num-dim">' + p.tk + '</td>' +
+      '<td class="num-dim">' + (p.tkd === null ? '&ndash;' : p.tkd) + '</td>' +
       '<td class="num-dim">' + p.nadeKills + '</td>' +
       '<td class="num-dim">' + p.nadeDeaths + '</td>' +
       '<td class="num-dim">' + p.plants + '</td>' +
@@ -631,6 +643,7 @@ var ARL = (function () {
       '<th title="Kill / death ratio">K/D</th>' +
       '<th title="Share of kills that were headshots">HS%</th>' +
       '<th title="Team kills">TK</th>' +
+      '<th title="Teamkilled (killed by a teammate)">TKD</th>' +
       '<th title="Grenade kills">NADE K</th>' +
       '<th title="Deaths by grenade">NADE D</th>' +
       '<th title="Bombs planted">PLANTS</th>' +

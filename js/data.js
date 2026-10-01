@@ -238,8 +238,8 @@ const STATS_FILES = {
   'json/20260915_infeS_vs_ALPHA_strike.json':     ['m28', 'Strike'],
 
   /* m30 - infinity eSports vs Revolt, 16 Sep 2026*/
-  'json/20260916_RL_vs_infeS_strike.json':        ['m30', 'Strike'],
-  'json/20260916_RL_vs_infeS_backlot.json':       ['m30', 'Backlot'],
+  'json/20260916_infeS_vs_RL_strike.json':        ['m30', 'Strike'],
+  'json/20260915_RL_vs_infeS_backlot.json':       ['m30', 'Backlot'],
 
   /* m35 - infinity eSports vs myQuest, 17 Sep 2026 */
   'json/20260917_myQuest_vs_infeS_strike.json':   ['m35', 'Strike'],
