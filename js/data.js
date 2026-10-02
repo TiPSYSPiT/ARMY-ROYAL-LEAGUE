@@ -183,7 +183,7 @@ const MATCHES = [
   { id: 'm50', home: 'warz',     away: 'adhd',     maps: [[6, 13, 'Crash'], [6, 13, 'Crossfire']] },
   { id: 'm51', home: 'nosweat',  away: 'sag',      maps: [[2, 13, 'Strike'], [9, 13, 'Cluster']] },
   { id: 'm52', home: 'cas1',     away: 'sag',      maps: [[7, 13, 'Strike'], [7, 13, 'Backlot']] },
-  { id: 'm53', home: 'bravo',    away: 'infinity', maps: [[17, 19, 'Backlot'], [19, 17, 'Strike']], [8, 13, 'Cluster']] },
+  { id: 'm53', home: 'bravo',    away: 'infinity', maps: [[17, 19, 'Backlot'], [19, 17, 'Strike'], [8, 13, 'Cluster']] },
   { id: 'm54', home: 'deox',     away: 'lafine',   maps: [[10, 13, 'Strike'], [7, 13, 'Backlot']] },
   { id: 'm55', home: 'revolt',   away: 'alpha',    maps: [[8, 13, 'Citystreets'], [12, 16, 'Crossfire']] },
   { id: 'm56', home: 'cas1',     away: 'revolt',   maps: [[3, 13, 'Strike'], [3, 13, 'Backlot']] },
