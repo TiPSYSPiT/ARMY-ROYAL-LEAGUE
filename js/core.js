@@ -341,6 +341,27 @@ var ARL = (function () {
 
   /* ------------------------------------------------------- Map name check */
 
+  /* edit distance, for "did you mean" hints on typed-in names ('Cash' -> 'Crash') */
+  function editDistance(a, b) {
+    a = a.toLowerCase(); b = b.toLowerCase();
+    var prev = [], cur, i, j;
+    for (j = 0; j <= b.length; j++) prev[j] = j;
+    for (i = 1; i <= a.length; i++) {
+      cur = [i];
+      for (j = 1; j <= b.length; j++) {
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      }
+      prev = cur;
+    }
+    return prev[b.length];
+  }
+
+  /* the one known name within two edits, or nothing if none or several qualify */
+  function closestName(name, list) {
+    var hits = list.filter(function (k) { return editDistance(name, k) <= 2; });
+    return hits.length === 1 ? hits[0] : '';
+  }
+
   /* Map names are typed in by hand, so every problem is reported once in the
      console with the match id - nothing here ever hides a result. */
   function checkMapNames() {
@@ -372,9 +393,11 @@ var ARL = (function () {
         }
 
         if (!known[name]) {
-          var near = knownList.filter(function (k) { return k.toLowerCase() === name.toLowerCase(); });
+          /* only a suggestion - an unknown name is never rewritten silently */
+          var near = closestName(name, knownList);
           warn(m, i, 'unknown map "' + name + '"' +
-                     (near.length ? ' - did you mean "' + near[0] + '"?' : ' - expected one of ' + knownList.join(', ')));
+                     (near ? ' - did you mean "' + near + '"?' : ' - expected one of ' + knownList.join(', ')) +
+                     ' It is counted as a separate map until fixed.');
         } else if (pool.indexOf(name) === -1) {
           warn(m, i, '"' + name + '" is not in the ' + (legs[leg - 1].name || 'leg ' + leg) +
                      ' pool (' + pool.join(', ') + ')');

@@ -1582,7 +1582,7 @@ body.is-loading main .view { display: none !important; }
   align-items: center;
   justify-content: center;
   min-width: 66px;
-  height: 42px;
+  height: 56px;
   border-radius: 3px;
   line-height: 1.15;
 }
@@ -1609,4 +1609,25 @@ body.is-loading main .view { display: none !important; }
   border-radius: 2px;
   padding: 0 5px;
   white-space: nowrap;
+}
+
+/* ---------------- Map matrix: record in the cell, team column pinned ---------------- */
+
+.matrix-hint { margin: -4px 0 10px; }
+
+.mcell .mc-wl {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* On a narrow screen the matrix scrolls sideways; pinning the team column keeps
+   every row identifiable while Crash or Crossfire are in view. */
+.mapmatrix th.rowhead {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--panel-2);
+  box-shadow: 1px 0 0 var(--line-soft);
 }

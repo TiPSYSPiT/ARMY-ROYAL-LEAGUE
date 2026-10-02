@@ -431,8 +431,13 @@
         if (!r) return '<td><div class="mcell heat-na" title="' + esc(t.name + ' has not played ' + n) + '">&ndash;</div></td>';
         var title = t.name + ' on ' + n + ': ' + r.w + ' W, ' + (r.d ? r.d + ' D, ' : '') + r.l + ' L' +
                     ' of ' + r.played + ' played | rounds ' + r.rw + ':' + r.rl;
+        /* the record is printed in the cell itself - a title tooltip never
+           shows on touch screens, so it cannot be the only place for it */
+        var record = r.w + '–' + (r.d ? r.d + '–' : '') + r.l;
         return '<td><div class="mcell ' + heatClass(r.winPct) + '" title="' + esc(title) + '">' +
-          '<b>' + C.pct(r.winPct) + '</b><small>' + r.played + ' played</small></div></td>';
+          '<b>' + C.pct(r.winPct) + '</b>' +
+          '<span class="mc-wl">' + record + '</span>' +
+          '<small>' + r.played + ' played</small></div></td>';
       }).join('');
       return '<tr><th class="rowhead"><a href="' + teamMapLink(t) + '">' + esc(t.name) + '</a></th>' + cells + '</tr>';
     }).join('') + '</tbody>';

@@ -192,7 +192,7 @@ const MATCHES = [
   { id: 'm59', home: 'lafine',   away: 'cas1',     maps: [[13, 7, 'Crossfire'], [13, 7, 'Citystreets']] },
   { id: 'm60', home: 'infinity', away: 'deox',     maps: [[11, 13, 'Crash'], [13, 9, 'Crossfire'], [13, 9, 'Citystreets']] },
   { id: 'm61', home: 'lafine',   away: 'adhd',     maps: [[13, 8, 'Crossfire'], [13, 9, 'Crash']] },
-  { id: 'm62', home: 'cas1',     away: 'bravo',    maps: [[4, 13, 'Crossfire'], [8, 13, 'Cash']] },
+  { id: 'm62', home: 'cas1',     away: 'bravo',    maps: [[4, 13, 'Crossfire'], [8, 13, 'Crash']] },
   { id: 'm63', home: 'adhd',     away: 'cas1',     maps: [[13, 9, 'Cluster'], [13, 10, 'Strike']] },
   { id: 'm64', home: 'sag',      away: 'lafine',   maps: [[13, 11, 'Crash'], [5, 13, 'Citystreets'], [6, 13, 'Crossfire']] },
   { id: 'm65', home: 'cas1',     away: 'adhd',     maps: [[13, 8, 'Crossfire'], [8, 13, 'Citystreets'], [5, 13, 'Crash']] },
@@ -292,7 +292,6 @@ const PLAYER_ALIASES = {
   'inf.eS NATHZN':   'NATHZN',
   'inf.eS Basham':   'Basham',
   'inf.eS Lodie':    'Levitate',
-  'inf.eS NIGERian': 'EMPzY',
   "inf.eS b o ' AA": 'BOOBiO',
   'inf.eS BOBiO':    'BOOBiO'
 };
