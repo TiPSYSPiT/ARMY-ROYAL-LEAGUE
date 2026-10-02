@@ -196,7 +196,7 @@ const MATCHES = [
   { id: 'm63', home: 'adhd',     away: 'cas1',     maps: [[13, 9, 'Cluster'], [13, 10, 'Strike']] },
   { id: 'm64', home: 'sag',      away: 'lafine',   maps: [[13, 11, 'Crash'], [5, 13, 'Citystreets'], [6, 13, 'Crossfire']] },
   { id: 'm65', home: 'cas1',     away: 'adhd',     maps: [[13, 8, 'Crossfire'], [8, 13, 'Citystreets'], [5, 13, 'Crash']] },
-  { id: 'm66', home: 'infinity', away: 'bravo',    maps: [[13, 10, 'Citystreets'], [10, 13, 'Crash']], [14, 16, 'Crossfire']] }
+  { id: 'm66', home: 'infinity', away: 'bravo',    maps: [[13, 10, 'Citystreets'], [10, 13, 'Crash'], [14, 16, 'Crossfire']] }
 ];
 
 
