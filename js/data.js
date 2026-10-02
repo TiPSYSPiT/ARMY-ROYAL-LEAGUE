@@ -13,7 +13,7 @@ const LEAGUE = {
 
   /* Date the results below were last updated (YYYY-MM-DD).
      Bump this whenever you add a match - it is shown in the header. */
-  updated: '2026-10-01',
+  updated: '2026-10-02',
 
   /* Each pairing is played twice, with its own map pool per leg.
      Leg 1 puts the alphabetically first team at home, leg 2 reverses that. */
@@ -66,7 +66,7 @@ const TEAMS = [
   {
     id: 'infinity', name: 'infinity eSports', cc: 'EU', flag: '\u{1F1EA}\u{1F1FA}',
     players: [
-      { n: 'Basham', c: true }, { n: 'paramore', c: true }, { n: 'EMPzY' },
+      { n: 'Basham', c: true }, { n: 'paramore', c: true },
       { n: 'BOOBiO' }, { n: 'TiPSY' }, { n: 'Levitate' }, { n: 'NATHZN' }
     ]
   },
@@ -183,7 +183,7 @@ const MATCHES = [
   { id: 'm50', home: 'warz',     away: 'adhd',     maps: [[6, 13, 'Crash'], [6, 13, 'Crossfire']] },
   { id: 'm51', home: 'nosweat',  away: 'sag',      maps: [[2, 13, 'Strike'], [9, 13, 'Cluster']] },
   { id: 'm52', home: 'cas1',     away: 'sag',      maps: [[7, 13, 'Strike'], [7, 13, 'Backlot']] },
-  { id: 'm53', home: 'bravo',    away: 'infinity', maps: [[17, 19, 'Backlot'], [19, 17, 'Strike']] },
+  { id: 'm53', home: 'bravo',    away: 'infinity', maps: [[17, 19, 'Backlot'], [19, 17, 'Strike']], [8, 13, 'Cluster']] },
   { id: 'm54', home: 'deox',     away: 'lafine',   maps: [[10, 13, 'Strike'], [7, 13, 'Backlot']] },
   { id: 'm55', home: 'revolt',   away: 'alpha',    maps: [[8, 13, 'Citystreets'], [12, 16, 'Crossfire']] },
   { id: 'm56', home: 'cas1',     away: 'revolt',   maps: [[3, 13, 'Strike'], [3, 13, 'Backlot']] },
@@ -192,7 +192,11 @@ const MATCHES = [
   { id: 'm59', home: 'lafine',   away: 'cas1',     maps: [[13, 7, 'Crossfire'], [13, 7, 'Citystreets']] },
   { id: 'm60', home: 'infinity', away: 'deox',     maps: [[11, 13, 'Crash'], [13, 9, 'Crossfire'], [13, 9, 'Citystreets']] },
   { id: 'm61', home: 'lafine',   away: 'adhd',     maps: [[13, 8, 'Crossfire'], [13, 9, 'Crash']] },
-  { id: 'm62', home: 'cas1',     away: 'bravo',    maps: [[4, 13, 'Crossfire'], [8, 13, 'Cash']] }
+  { id: 'm62', home: 'cas1',     away: 'bravo',    maps: [[4, 13, 'Crossfire'], [8, 13, 'Cash']] },
+  { id: 'm63', home: 'adhd',     away: 'cas1',     maps: [[13, 9, 'Cluster'], [13, 10, 'Strike']] },
+  { id: 'm64', home: 'sag',      away: 'lafine',   maps: [[13, 11, 'Crash'], [5, 13, 'Citystreets'], [6, 13, 'Crossfire']] },
+  { id: 'm65', home: 'cas1',     away: 'adhd',     maps: [[13, 8, 'Crossfire'], [8, 13, 'Citystreets'], [5, 13, 'Crash']] },
+  { id: 'm66', home: 'infinity', away: 'bravo',    maps: [[13, 10, 'Citystreets'], [10, 13, 'Crash']], [14, 16, 'Crossfire']] }
 ];
 
 
@@ -261,6 +265,7 @@ const STATS_FILES = {
   /* m53 - ARMY BRAVO vs infinity eSports, 24 Sep 2026*/
   'json/20260924_BRAVO_vs_infeS_backlot.json':    ['m53', 'Backlot'],
   'json/20260924_BRAVO_vs_infeS_strike.json':     ['m53', 'Strike'],
+  'json/20261001_BRAVO_vs_infeS_cluster.json':    ['m53', 'Cluster'],
 
   /* m58 - infinity eSports vs NoSweat, 27 Sep 2026*/
   'json/20260927_nosweat_vs_infeS_backlot.json':  ['m58', 'Backlot'],
@@ -270,6 +275,11 @@ const STATS_FILES = {
   'json/20260928_infeS_vs_deox_crash.json':       ['m60', 'Crash'],
   'json/20260928_infeS_vs_deox_crossfire.json':   ['m60', 'Crossfire'],
   'json/20260928_infeS_vs_deox_district.json':    ['m60', 'Citystreets'],
+
+  /* m66 - infinity eSports vs bravo, 02 Oct 2026*/
+  'json/20261001_infeS_vs_BRAVO_district.json':   ['m66', 'Citystreets'],
+  'json/20261001_BRAVO_vs_infeS_crash.json':      ['m66', 'Crash'],
+  'json/20261001_infeS_vs_BRAVO_crossfire.json':  ['m66', 'Crossfire']
 };
 
 /* In-game names (clan tag included) mapped onto roster names. Every entry here

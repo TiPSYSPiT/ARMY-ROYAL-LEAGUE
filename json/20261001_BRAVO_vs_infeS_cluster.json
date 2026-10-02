@@ -1,0 +1,233 @@
+{
+  "map": "mp_cluster",
+  "recordDate": "20261001205820",
+  "recordDateSource": "g_mapStartTime",
+  "halves": [
+    {
+      "half": 1,
+      "score": "3:9",
+      "rounds": [
+        3,
+        9
+      ],
+      "complete": true
+    },
+    {
+      "half": 2,
+      "score": "5:4",
+      "rounds": [
+        5,
+        4
+      ],
+      "complete": true
+    }
+  ],
+  "teams": [
+    {
+      "clan": "BRAVO",
+      "roundsWon": 8,
+      "players": [
+        {
+          "name": "BRAVO Streaty",
+          "score": 91,
+          "kills": 17,
+          "assists": 2,
+          "deaths": 18,
+          "kd": 0.94,
+          "nadeKills": 0,
+          "nadeDeaths": 3,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 6,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "BRAVO dcl.",
+          "score": 89,
+          "kills": 16,
+          "assists": 0,
+          "deaths": 16,
+          "kd": 1,
+          "nadeKills": 3,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 6,
+          "plants": 2,
+          "defuses": 1
+        },
+        {
+          "name": "BRAVO jz '.'@",
+          "score": 79,
+          "kills": 14,
+          "assists": 2,
+          "deaths": 16,
+          "kd": 0.88,
+          "nadeKills": 1,
+          "nadeDeaths": 1,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 0,
+          "plants": 1,
+          "defuses": 0
+        },
+        {
+          "name": "BRAVO Shark",
+          "score": 67,
+          "kills": 11,
+          "assists": 2,
+          "deaths": 17,
+          "kd": 0.65,
+          "nadeKills": 1,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 0,
+          "plants": 1,
+          "defuses": 1
+        },
+        {
+          "name": "BRAVO neoz-",
+          "score": 45,
+          "kills": 9,
+          "assists": 0,
+          "deaths": 18,
+          "kd": 0.5,
+          "nadeKills": 0,
+          "nadeDeaths": 1,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 0,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "BRAVO STEP-PATIR",
+          "score": 0,
+          "kills": 0,
+          "assists": 0,
+          "deaths": 0,
+          "kd": 0,
+          "nadeKills": 0,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": null,
+          "plants": 0,
+          "defuses": 0
+        }
+      ],
+      "teamTotal": {
+        "score": 371,
+        "kills": 67,
+        "assists": 6,
+        "deaths": 85,
+        "kd": 0.79,
+        "nadeKills": 5,
+        "nadeDeaths": 5,
+        "tk": 0,
+        "teamKilled": 0,
+        "hsPercent": 3,
+        "plants": 4,
+        "defuses": 2
+      }
+    },
+    {
+      "clan": "inf.eS",
+      "roundsWon": 13,
+      "players": [
+        {
+          "name": "inf.eS Lodie",
+          "score": 108,
+          "kills": 21,
+          "assists": 0,
+          "deaths": 12,
+          "kd": 1.75,
+          "nadeKills": 0,
+          "nadeDeaths": 1,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 14,
+          "plants": 1,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS Basham",
+          "score": 103,
+          "kills": 17,
+          "assists": 3,
+          "deaths": 11,
+          "kd": 1.55,
+          "nadeKills": 1,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 24,
+          "plants": 2,
+          "defuses": 1
+        },
+        {
+          "name": "inf.eS TiPSY",
+          "score": 94,
+          "kills": 17,
+          "assists": 2,
+          "deaths": 16,
+          "kd": 1.06,
+          "nadeKills": 1,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "teamKilled": 1,
+          "hsPercent": 6,
+          "plants": 1,
+          "defuses": 0,
+          "pov": true
+        },
+        {
+          "name": "inf.eS paramore",
+          "score": 85,
+          "kills": 17,
+          "assists": 0,
+          "deaths": 15,
+          "kd": 1.13,
+          "nadeKills": 2,
+          "nadeDeaths": 1,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 6,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS NATHZN",
+          "score": 75,
+          "kills": 13,
+          "assists": 0,
+          "deaths": 14,
+          "kd": 0.93,
+          "nadeKills": 1,
+          "nadeDeaths": 3,
+          "tk": 1,
+          "teamKilled": 0,
+          "hsPercent": 0,
+          "plants": 5,
+          "defuses": 0
+        }
+      ],
+      "teamTotal": {
+        "score": 465,
+        "kills": 85,
+        "assists": 5,
+        "deaths": 68,
+        "kd": 1.25,
+        "nadeKills": 5,
+        "nadeDeaths": 5,
+        "tk": 1,
+        "teamKilled": 1,
+        "hsPercent": 11,
+        "plants": 9,
+        "defuses": 1
+      }
+    }
+  ]
+}
