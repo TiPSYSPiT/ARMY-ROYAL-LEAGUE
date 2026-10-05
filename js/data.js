@@ -13,7 +13,7 @@ const LEAGUE = {
 
   /* Date the results below were last updated (YYYY-MM-DD).
      Bump this whenever you add a match - it is shown in the header. */
-  updated: '2026-10-02',
+  updated: '2026-10-05',
 
   /* Each pairing is played twice, with its own map pool per leg.
      Leg 1 puts the alphabetically first team at home, leg 2 reverses that. */
@@ -196,7 +196,10 @@ const MATCHES = [
   { id: 'm63', home: 'adhd',     away: 'cas1',     maps: [[13, 9, 'Cluster'], [13, 10, 'Strike']] },
   { id: 'm64', home: 'sag',      away: 'lafine',   maps: [[13, 11, 'Crash'], [5, 13, 'Citystreets'], [6, 13, 'Crossfire']] },
   { id: 'm65', home: 'cas1',     away: 'adhd',     maps: [[13, 8, 'Crossfire'], [8, 13, 'Citystreets'], [5, 13, 'Crash']] },
-  { id: 'm66', home: 'infinity', away: 'bravo',    maps: [[13, 10, 'Citystreets'], [10, 13, 'Crash'], [14, 16, 'Crossfire']] }
+  { id: 'm66', home: 'infinity', away: 'bravo',    maps: [[13, 10, 'Citystreets'], [10, 13, 'Crash'], [14, 16, 'Crossfire']] },
+  { id: 'm67', home: 'deox',     away: 'adhd',     maps: [[13, 4, 'Crossfire'], [13, 11, 'Crash']] },
+  { id: 'm68', home: 'lafine',   away: 'alpha',    maps: [[9, 13, 'Citystreets'], [13, 7, 'Crash'], [9, 13, 'Crossfire']] },
+  { id: 'm69', home: 'cas1',     away: 'alpha',    maps: [[4, 13, 'Crash'], [2, 13, 'Crossfire']] }
 ];
 
 
