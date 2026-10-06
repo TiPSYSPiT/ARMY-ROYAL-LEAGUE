@@ -1,0 +1,238 @@
+{
+  "map": "mp_crash",
+  "recordDate": "20261005225945",
+  "recordDateSource": "g_mapStartTime",
+  "halves": [
+    {
+      "half": 1,
+      "score": "2:0",
+      "rounds": [
+        2,
+        0
+      ],
+      "complete": false
+    },
+    {
+      "half": 2,
+      "score": "5:7",
+      "rounds": [
+        5,
+        7
+      ],
+      "complete": true
+    },
+    {
+      "half": 3,
+      "score": "3:3",
+      "rounds": [
+        3,
+        3
+      ],
+      "complete": true
+    },
+    {
+      "half": 4,
+      "score": "4:1",
+      "rounds": [
+        4,
+        1
+      ],
+      "complete": true
+    }
+  ],
+  "recordingStartedAt": "5:5",
+  "halfNumberSource": "ruleset (MR/OT) and the score at the start of the recording",
+  "teams": [
+    {
+      "clan": "[SaG]",
+      "roundsWon": 19,
+      "players": [
+        {
+          "name": "[SaG]Ridk",
+          "score": 162,
+          "kills": 30,
+          "assists": 1,
+          "deaths": 22,
+          "kd": 1.36,
+          "nadeKills": 3,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 5,
+          "plants": 2,
+          "defuses": 0
+        },
+        {
+          "name": "[SaG]sasatory",
+          "score": 148,
+          "kills": 26,
+          "assists": 1,
+          "deaths": 25,
+          "kd": 1.04,
+          "nadeKills": 0,
+          "nadeDeaths": 1,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 14,
+          "plants": 5,
+          "defuses": 0
+        },
+        {
+          "name": "[SaG]BRAMBILLA",
+          "score": 137,
+          "kills": 25,
+          "assists": 3,
+          "deaths": 24,
+          "kd": 1.04,
+          "nadeKills": 4,
+          "nadeDeaths": 3,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 0,
+          "plants": 1,
+          "defuses": 0
+        },
+        {
+          "name": "[SaG]GARO",
+          "score": 137,
+          "kills": 25,
+          "assists": 3,
+          "deaths": 24,
+          "kd": 1.04,
+          "nadeKills": 2,
+          "nadeDeaths": 3,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 6,
+          "plants": 0,
+          "defuses": 1
+        },
+        {
+          "name": "[SaG]SECCO",
+          "score": 103,
+          "kills": 20,
+          "assists": 0,
+          "deaths": 25,
+          "kd": 0.8,
+          "nadeKills": 2,
+          "nadeDeaths": 2,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 9,
+          "plants": 1,
+          "defuses": 0
+        }
+      ],
+      "teamTotal": {
+        "score": 687,
+        "kills": 126,
+        "assists": 8,
+        "deaths": 120,
+        "kd": 1.05,
+        "nadeKills": 11,
+        "nadeDeaths": 9,
+        "tk": 0,
+        "teamKilled": 0,
+        "hsPercent": 7,
+        "plants": 9,
+        "defuses": 1
+      }
+    },
+    {
+      "clan": "inf.eS",
+      "roundsWon": 16,
+      "players": [
+        {
+          "name": "inf.eS emoLODIE",
+          "score": 208,
+          "kills": 39,
+          "assists": 1,
+          "deaths": 19,
+          "kd": 2.05,
+          "nadeKills": 6,
+          "nadeDeaths": 4,
+          "tk": 1,
+          "teamKilled": 0,
+          "hsPercent": 11,
+          "plants": 0,
+          "defuses": 3
+        },
+        {
+          "name": "inf.eS paramore",
+          "score": 151,
+          "kills": 29,
+          "assists": 1,
+          "deaths": 30,
+          "kd": 0.97,
+          "nadeKills": 2,
+          "nadeDeaths": 1,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 20,
+          "plants": 1,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS Basham",
+          "score": 122,
+          "kills": 22,
+          "assists": 1,
+          "deaths": 25,
+          "kd": 0.88,
+          "nadeKills": 1,
+          "nadeDeaths": 2,
+          "tk": 0,
+          "teamKilled": 1,
+          "hsPercent": 7,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS b o ' AA",
+          "score": 100,
+          "kills": 21,
+          "assists": 1,
+          "deaths": 27,
+          "kd": 0.78,
+          "nadeKills": 0,
+          "nadeDeaths": 0,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 18,
+          "plants": 0,
+          "defuses": 0
+        },
+        {
+          "name": "inf.eS TiPSY",
+          "score": 51,
+          "kills": 9,
+          "assists": 1,
+          "deaths": 26,
+          "kd": 0.35,
+          "nadeKills": 0,
+          "nadeDeaths": 4,
+          "tk": 0,
+          "teamKilled": 0,
+          "hsPercent": 14,
+          "plants": 1,
+          "defuses": 0,
+          "pov": true
+        }
+      ],
+      "teamTotal": {
+        "score": 640,
+        "kills": 120,
+        "assists": 5,
+        "deaths": 127,
+        "kd": 0.94,
+        "nadeKills": 9,
+        "nadeDeaths": 11,
+        "tk": 1,
+        "teamKilled": 1,
+        "hsPercent": 13,
+        "plants": 2,
+        "defuses": 3
+      }
+    }
+  ]
+}

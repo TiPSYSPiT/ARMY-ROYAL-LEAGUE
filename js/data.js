@@ -13,7 +13,7 @@ const LEAGUE = {
 
   /* Date the results below were last updated (YYYY-MM-DD).
      Bump this whenever you add a match - it is shown in the header. */
-  updated: '2026-10-05',
+  updated: '2026-10-06',
 
   /* Each pairing is played twice, with its own map pool per leg.
      Leg 1 puts the alphabetically first team at home, leg 2 reverses that. */
@@ -199,7 +199,8 @@ const MATCHES = [
   { id: 'm66', home: 'infinity', away: 'bravo',    maps: [[13, 10, 'Citystreets'], [10, 13, 'Crash'], [14, 16, 'Crossfire']] },
   { id: 'm67', home: 'deox',     away: 'adhd',     maps: [[13, 4, 'Crossfire'], [13, 11, 'Crash']] },
   { id: 'm68', home: 'lafine',   away: 'alpha',    maps: [[9, 13, 'Citystreets'], [13, 7, 'Crash'], [9, 13, 'Crossfire']] },
-  { id: 'm69', home: 'cas1',     away: 'alpha',    maps: [[4, 13, 'Crash'], [2, 13, 'Crossfire']] }
+  { id: 'm69', home: 'cas1',     away: 'alpha',    maps: [[4, 13, 'Crash'], [2, 13, 'Crossfire']] },
+  { id: 'm70', home: 'sag',      away: 'infinity', maps: [[16, 14, 'Citystreets'], [19, 16, 'Crash']] }
 ];
 
 
@@ -282,7 +283,11 @@ const STATS_FILES = {
   /* m66 - infinity eSports vs bravo, 02 Oct 2026*/
   'json/20261001_infeS_vs_BRAVO_district.json':   ['m66', 'Citystreets'],
   'json/20261001_BRAVO_vs_infeS_crash.json':      ['m66', 'Crash'],
-  'json/20261001_infeS_vs_BRAVO_crossfire.json':  ['m66', 'Crossfire']
+  'json/20261001_infeS_vs_BRAVO_crossfire.json':  ['m66', 'Crossfire'],
+
+  /* m70 - infinity eSports vs SaG, 05 Oct 2026*/
+  'json/20261005_infeS_vs_SaG_district.json':     ['m70', 'Citystreets'],
+  'json/20261005_SaG_vs_infeS_crash.json':        ['m70', 'Crash']
 };
 
 /* In-game names (clan tag included) mapped onto roster names. Every entry here
