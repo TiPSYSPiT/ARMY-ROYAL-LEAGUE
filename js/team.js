@@ -22,7 +22,7 @@
     document.title = 'Team not found — ARMY ROYAL LEAGUE';
 
     var known = C.teamsAlphabetical().map(function (t) {
-      return '<li><a href="' + C.esc(C.teamPageURL(t)) + '">' + C.esc(t.name) + '</a></li>';
+      return '<li><a href="' + C.esc(C.teamPageURL(t)) + '">' + C.teamName(t) + '</a></li>';
     }).join('');
 
     C.setHTML('#teamContent',

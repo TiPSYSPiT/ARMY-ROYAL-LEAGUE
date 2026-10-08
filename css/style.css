@@ -1631,3 +1631,81 @@ body.is-loading main .view { display: none !important; }
   background: var(--panel-2);
   box-shadow: 1px 0 0 var(--line-soft);
 }
+
+/* ---------------- Disputed teams and matches (DISPUTES in js/data.js) ---------------- */
+
+/* the team itself: dimmed wherever it is listed, but still clickable */
+article.team-disputed,
+tr.team-disputed > td,
+tr.team-disputed > th > * { opacity: 0.5; }
+article.team-disputed:hover,
+tr.team-disputed:hover > td,
+tr.team-disputed:hover > th > * { opacity: 0.8; }
+
+/* a lone name in running text; inside a dimmed row it is not dimmed twice */
+.tname-disputed { opacity: 0.55; }
+.team-disputed .tname-disputed { opacity: 1; }
+
+.dispute-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 5px;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  line-height: 16px;
+  text-transform: uppercase;
+  color: var(--txt-dim);
+  border: 1px dashed var(--txt-mute);
+  border-radius: 2px;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: help;
+}
+
+/* flex rows with their own gap need no extra margin */
+.team-cell .dispute-badge,
+.match .side .dispute-badge,
+.tc-head .dispute-badge { margin-left: 0; }
+
+/* form chip and schedule cell of a disputed match */
+.fb.fb-disputed { border-style: dashed; opacity: 0.75; cursor: help; }
+.cellwrap.cell-disputed { outline: 1px dashed var(--txt-mute); outline-offset: -3px; cursor: help; }
+.sq-disputed { background: var(--tile-hover); border: 1px dashed var(--txt-mute); }
+.dispute-legend:empty { display: none; }
+
+/* results list: the counted 0:0 on top, the maps actually played dimmed below */
+.dispute-line { margin-top: 6px; }
+.dispute-line .dispute-badge { margin-left: 0; }
+.dispute-text {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--txt-mute);
+}
+.maps.maps-orig span { opacity: 0.5; }
+
+/* popup and team page */
+.m-head-disputed h2 .tname-disputed { opacity: 0.6; }
+.m-match .m-dispute {
+  display: block;
+  font-size: 11px;
+  color: var(--txt-mute);
+}
+.dispute-note {
+  margin: -8px 0 18px;
+  padding: 9px 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--txt-dim);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+}
+.dispute-note .dispute-badge { margin: 0 8px 0 0; }
+.pstat-group h5 .dispute-badge { margin-left: 4px; }
+
+/* team card: the badge sits below the name, which keeps its full width */
+.tc-title { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
+.tc-title h3 { max-width: 100%; }

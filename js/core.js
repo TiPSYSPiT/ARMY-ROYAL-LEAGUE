@@ -122,8 +122,57 @@ var ARL = (function () {
     return '<span class="cc cc-' + team.cc + '" title="' + esc(COUNTRIES[team.cc] || team.cc) + '">' + team.cc + '</span>';
   }
 
-  function teamLabel(team) {
-    return ccChip(team) + '<span class="tname">' + esc(team.name) + '</span>';
+  /* ------------------------------------------------------------ Disputes */
+
+  /* DISPUTES in js/data.js: teamId -> { reason, awardPending }. Everything
+     reads it through the helpers here and scoreMatch() below, so the standings,
+     schedule, results and both team views always agree on how a disputed
+     match counts. */
+  var DISPUTE_BY_ID = (typeof DISPUTES !== 'undefined' && DISPUTES) ? DISPUTES : {};
+
+  function isDisputed(teamId) {
+    return !!(TEAM_BY_ID[teamId] && Object.prototype.hasOwnProperty.call(DISPUTE_BY_ID, teamId) &&
+              DISPUTE_BY_ID[teamId]);
+  }
+
+  function anyDisputes() {
+    return TEAMS.some(function (t) { return isDisputed(t.id); });
+  }
+
+  /* the disputed side of a match, or null */
+  function disputedSide(m) {
+    if (isDisputed(m.home)) return m.home;
+    if (isDisputed(m.away)) return m.away;
+    return null;
+  }
+
+  var DISPUTE_TEXT = 'Disputed – counted as 0:0';
+
+  function disputeTip(teamId, text) {
+    var d = DISPUTE_BY_ID[teamId] || {};
+    return (text || DISPUTE_TEXT) + (d.reason ? ' · ' + d.reason : '');
+  }
+
+  function disputeBadge(teamId, text, label) {
+    return '<span class="dispute-badge" title="' + esc(disputeTip(teamId, text)) + '">' +
+      (label || 'Disputed') + '</span>';
+  }
+
+  var TEAM_DISPUTE_TEXT = 'Disputed team – every match counts as a 0:0 loss';
+
+  /* a team name in running text, greyed out when the team is disputed */
+  function teamName(team) {
+    if (!isDisputed(team.id)) return esc(team.name);
+    return '<span class="tname-disputed" title="' + esc(disputeTip(team.id, TEAM_DISPUTE_TEXT)) + '">' +
+      esc(team.name) + '</span>';
+  }
+
+  /* noBadge: the caller marks the dispute itself (a result does so once, in
+     its centre, rather than next to the team as well) */
+  function teamLabel(team, noBadge) {
+    var d = isDisputed(team.id);
+    return ccChip(team) + '<span class="tname' + (d ? ' tname-disputed' : '') + '">' + esc(team.name) + '</span>' +
+      (d && !noBadge ? disputeBadge(team.id, TEAM_DISPUTE_TEXT) : '');
   }
 
   /* Alphabetical, case-insensitive. Names that do not begin with a letter or
@@ -234,9 +283,70 @@ var ARL = (function () {
     };
   }
 
+  /* Fixtures of a disputed team with awardPending that have not been played,
+     one per missing leg. They carry no maps and exist only to be scored - an
+     ordered home|away pair is exactly one leg (see isFirstLeg). */
+  var awardedCache = null;
+
+  function awardedMatches() {
+    if (awardedCache) return awardedCache;
+    awardedCache = [];
+
+    var taken = {};
+    getMatches().forEach(function (m) { taken[m.home + '|' + m.away] = true; });
+
+    teamsAlphabetical().forEach(function (t) {
+      if (!isDisputed(t.id) || !DISPUTE_BY_ID[t.id].awardPending) return;
+      teamsAlphabetical().forEach(function (o) {
+        if (o.id === t.id) return;
+        [[t.id, o.id], [o.id, t.id]].forEach(function (p) {
+          var key = p[0] + '|' + p[1];
+          if (taken[key]) return;
+          taken[key] = true;
+          awardedCache.push({ id: 'awarded-' + p[0] + '-' + p[1], home: p[0], away: p[1], maps: [], awarded: true });
+        });
+      });
+    });
+    return awardedCache;
+  }
+
+  /* everything that counts for the table: the played matches, then the
+     awarded ones */
+  function scoredMatches() {
+    return getMatches().concat(awardedMatches());
+  }
+
+  /* The result as it counts for the table. Same shape as evalMatch(); a
+     disputed match goes to the other side with 0:0 maps and rounds, the
+     original result rides along for display. Should both sides ever be
+     disputed, neither wins. */
+  function scoreMatch(m) {
+    var side = disputedSide(m);
+    if (!side) {
+      var r = evalMatch(m);
+      r.disputed = false;
+      return r;
+    }
+    var both = isDisputed(m.home) && isDisputed(m.away);
+    return {
+      mapsHome: 0, mapsAway: 0, roundsHome: 0, roundsAway: 0,
+      homeWon: !both && side === m.away,
+      awayWon: !both && side === m.home,
+      decider: false,
+      disputed: true,
+      team: side,
+      awarded: !!m.awarded,
+      original: m.awarded ? null : evalMatch(m)
+    };
+  }
+
   /* ---------------------------------------------------------- Standings */
 
-  function computeStandings() {
+  /* The table, scored with disputes applied. { original: true } instead counts
+     every played match by its real result - the Stats tab uses that, so its
+     figures stay comparable with the map and player statistics. */
+  function computeStandings(opts) {
+    var original = !!(opts && opts.original);
     var rows = {};
     TEAMS.forEach(function (t) {
       rows[t.id] = {
@@ -246,10 +356,10 @@ var ARL = (function () {
       };
     });
 
-    getMatches().forEach(function (m) {
+    (original ? getMatches() : scoredMatches()).forEach(function (m) {
       var h = rows[m.home], a = rows[m.away];
       if (!h || !a) return;
-      var r = evalMatch(m);
+      var r = original ? evalMatch(m) : scoreMatch(m);
 
       h.played++; a.played++;
       h.mapsW += r.mapsHome; h.mapsL += r.mapsAway;
@@ -257,15 +367,18 @@ var ARL = (function () {
       h.roundsW += r.roundsHome; h.roundsL += r.roundsAway;
       a.roundsW += r.roundsAway; a.roundsL += r.roundsHome;
 
-      if (r.homeWon) {
-        h.wins++; a.losses++;
-        h.points += LEAGUE.pointsWin; a.points += LEAGUE.pointsLoss;
-        h.form.push('W'); a.form.push('L');
-      } else {
-        a.wins++; h.losses++;
-        a.points += LEAGUE.pointsWin; h.points += LEAGUE.pointsLoss;
-        a.form.push('W'); h.form.push('L');
-      }
+      /* a played match without a map winner has always gone to the away side;
+         only a match between two disputed teams can be lost by both */
+      var homeWon = r.homeWon;
+      var awayWon = r.disputed ? r.awayWon : !r.homeWon;
+
+      [[h, homeWon], [a, awayWon]].forEach(function (x) {
+        var row = x[0], won = x[1];
+        if (won) { row.wins++; row.points += LEAGUE.pointsWin; }
+        else { row.losses++; row.points += LEAGUE.pointsLoss; }
+        /* form is about matches played - an awarded fixture has no place in it */
+        if (!r.awarded) row.form.push({ v: won ? 'W' : 'L', disputed: !!r.disputed, team: r.team || null });
+      });
 
       h.opponents[m.away] = true;
       a.opponents[m.home] = true;
@@ -278,8 +391,10 @@ var ARL = (function () {
       return r;
     });
 
+    /* a disputed team always goes to the bottom, whatever the tiebreakers say */
     list.sort(function (a, b) {
-      return b.points - a.points ||
+      return (original ? 0 : isDisputed(a.team.id) - isDisputed(b.team.id)) ||
+             b.points - a.points ||
              b.mapDiff - a.mapDiff ||
              b.roundDiff - a.roundDiff ||
              b.mapsW - a.mapsW ||
@@ -302,8 +417,8 @@ var ARL = (function () {
      pair is its own fixture. */
   function matchupIndex() {
     var idx = {};
-    getMatches().forEach(function (m) {
-      var r = evalMatch(m);
+    scoredMatches().forEach(function (m) {
+      var r = scoreMatch(m);
       idx[m.home + '|' + m.away] = {
         maps: r.mapsHome + ':' + r.mapsAway,
         won: r.homeWon,
@@ -330,13 +445,22 @@ var ARL = (function () {
      from the row team, so a row can be read straight across. */
   function legIndex(leg) {
     var idx = {};
-    getMatches().forEach(function (m) {
+    scoredMatches().forEach(function (m) {
       if ((isFirstLeg(m) ? 1 : 2) !== leg) return;
-      var r = evalMatch(m);
-      idx[m.home + '|' + m.away] = { maps: r.mapsHome + ':' + r.mapsAway, won: r.homeWon, atHome: true };
-      idx[m.away + '|' + m.home] = { maps: r.mapsAway + ':' + r.mapsHome, won: r.awayWon, atHome: false };
+      var r = scoreMatch(m);
+      var o = r.original;
+      var extra = { disputed: r.disputed, awarded: !!r.awarded, team: r.team || null };
+      idx[m.home + '|' + m.away] = mix({ maps: r.mapsHome + ':' + r.mapsAway, won: r.homeWon, atHome: true,
+        orig: o ? o.mapsHome + ':' + o.mapsAway : '' }, extra);
+      idx[m.away + '|' + m.home] = mix({ maps: r.mapsAway + ':' + r.mapsHome, won: r.awayWon, atHome: false,
+        orig: o ? o.mapsAway + ':' + o.mapsHome : '' }, extra);
     });
     return idx;
+  }
+
+  function mix(a, b) {
+    Object.keys(b).forEach(function (k) { a[k] = b[k]; });
+    return a;
   }
 
   /* ------------------------------------------------------- Map name check */
@@ -448,7 +572,10 @@ var ARL = (function () {
           console.warn('[ARL] skipping scoreboard "' + path + '": ' + err.message);
         });
     })).then(function () {
-      statsCache = null;   /* rebuilt on next access */
+      statsCache = null;
+      /* built right away rather than on first use, so a player who cannot be
+         matched to a roster is reported in the console on every page load */
+      playerStatsIndex();
       return loadedBoards;
     });
 
@@ -484,6 +611,10 @@ var ARL = (function () {
       TEAM_BY_ID[teamId].players.forEach(function (p) { r[p.n] = true; });
       return r;
     }
+
+    /* in-game names that played for a recognised side but resolve to nobody on
+       its roster - their numbers are left out, which used to happen silently */
+    var unknown = {};
 
     /* one roster name can appear twice on a map (a reconnect under another
        name) - those lines are merged, the headshot share weighted by kills */
@@ -541,11 +672,20 @@ var ARL = (function () {
           });
           var list = Object.keys(rows).map(function (n) { return rows[n]; });
           if (list.length && (!best || list.length > best.players.length)) {
-            best = { team: teamId, players: list };
+            best = { team: teamId, players: list, side: side };
           }
         });
       });
       if (!best) return;
+
+      var roster = rosterOf(best.team);
+      (best.side.players || []).forEach(function (p) {
+        if (roster[aliases[p.name] || p.name]) return;
+        if (!num(p.score) && !num(p.kills) && !num(p.deaths)) return;
+        var key = best.team + '|' + p.name;
+        (unknown[key] || (unknown[key] = { team: best.team, name: p.name, where: [] }))
+          .where.push(m.id + ' ' + label);
+      });
 
       /* a recording started late or cut short has fewer rounds than the result */
       var recorded = raw.teams.reduce(function (n, t) { return n + num(t.roundsWon); }, 0);
@@ -559,6 +699,14 @@ var ARL = (function () {
         players: best.players,
         partial: (recorded && recorded < official) ? { recorded: recorded, official: official } : null
       });
+    });
+
+    Object.keys(unknown).forEach(function (key) {
+      var u = unknown[key];
+      console.warn('[ARL] player "' + u.name + '" played for ' + TEAM_BY_ID[u.team].name +
+                   ' (' + u.where.join(', ') + ') but is not on the roster - add the name to ' +
+                   'PLAYER_ALIASES or the player to TEAMS in js/data.js; until then this ' +
+                   'player is missing from the player statistics');
     });
 
     /* maps in the order they were played */
@@ -735,9 +883,13 @@ var ARL = (function () {
           '</details>';
       }).join('');
 
+      /* the statistics keep the original result; a disputed match says so */
+      var ds = disputedSide(rec.match);
       return '<div class="pstat-group">' +
-        '<h5>vs ' + esc(opp.name) +
-          ' <span class="' + (won ? 'pos' : 'neg') + '">' + ownMaps + ':' + oppMaps + '</span></h5>' +
+        '<h5>vs ' + teamName(opp) +
+          ' <span class="' + (won ? 'pos' : 'neg') + '">' + ownMaps + ':' + oppMaps + '</span>' +
+          (ds ? ' ' + disputeBadge(ds, 'Original result - for the table this match counts 0:0') : '') +
+        '</h5>' +
         maps +
         '</div>';
     }).join('');
@@ -971,16 +1123,36 @@ var ARL = (function () {
         esc(p.n) + '</li>';
     }).join('');
 
-    var own = getMatches().filter(function (m) { return m.home === id || m.away === id; });
+    var own = scoredMatches().filter(function (m) { return m.home === id || m.away === id; });
     var matchRows = own.map(function (m) {
       var isHome = m.home === id;
       var opp = TEAM_BY_ID[isHome ? m.away : m.home];
-      var e = evalMatch(m);
+      var s = scoreMatch(m);
+
+      /* the disputed team itself keeps seeing what was played; everyone else
+         sees the result as it counts */
+      var e = (s.disputed && s.team === id && s.original) ? s.original : s;
       var won = isHome ? e.homeWon : e.awayWon;
       var mine = isHome ? e.mapsHome : e.mapsAway;
       var theirs = isHome ? e.mapsAway : e.mapsHome;
-      return '<div class="m-match"><span>' + esc(opp.name) + '</span>' +
-        '<span class="res ' + (won ? 'w' : 'l') + '">' + mine + ':' + theirs + '</span></div>';
+
+      var note = '', res = mine + ':' + theirs, cls = won ? 'w' : 'l';
+      if (s.awarded) {
+        won = isHome ? s.homeWon : s.awayWon;
+        cls = won ? 'w' : 'l';
+        res = '0:0';
+        note = '<small class="m-dispute">Not played – awarded to ' +
+               esc(TEAM_BY_ID[s.team === m.home ? m.away : m.home].name) + ', counted as 0:0</small>';
+      } else if (s.disputed) {
+        note = s.team === id
+          ? '<small class="m-dispute">' + esc(disputeTip(s.team)) + '</small>'
+          : '<small class="m-dispute">' + esc(disputeTip(s.team)) + ' · played ' +
+            (isHome ? s.original.mapsHome + ':' + s.original.mapsAway
+                    : s.original.mapsAway + ':' + s.original.mapsHome) + '</small>';
+      }
+
+      return '<div class="m-match' + (s.disputed ? ' is-dispute' : '') + '"><span>' + teamName(opp) + note + '</span>' +
+        '<span class="res ' + cls + '">' + res + '</span></div>';
     }).join('') || '<p class="m-open">No matches played yet.</p>';
 
     /* each pairing has two legs, so list the missing legs rather than the
@@ -989,18 +1161,31 @@ var ARL = (function () {
     var pending = [];
     teamsAlphabetical().forEach(function (x) {
       if (x.id === id) return;
-      if (!idx[id + '|' + x.id]) pending.push(esc(x.name) + ' <em>(home)</em>');
-      if (!idx[x.id + '|' + id]) pending.push(esc(x.name) + ' <em>(away)</em>');
+      if (!idx[id + '|' + x.id]) pending.push(teamName(x) + ' <em>(home)</em>');
+      if (!idx[x.id + '|' + id]) pending.push(teamName(x) + ' <em>(away)</em>');
     });
 
+    var awardedOwn = own.some(function (m) { return m.awarded; });
     var openHTML = pending.length
       ? '<div class="m-open">' + pending.join('<br>') + '</div>'
-      : '<p class="m-open">All fixtures played.</p>';
+      : '<p class="m-open">' + (awardedOwn ? 'No fixtures left.' : 'All fixtures played.') + '</p>';
 
-    return '<div class="m-head">' + ccChip(t) +
-        heading('h2', '', '', 'overview', t.name, esc(t.name), '', anchors) +
+    var disputed = isDisputed(id);
+    var notice = disputed
+      ? '<p class="dispute-note">' + disputeBadge(id, TEAM_DISPUTE_TEXT) +
+        'Every match of this team counts as disputed: the opponent gets the win and ' +
+        LEAGUE.pointsWin + ' points, scored 0:0 in maps and rounds' +
+        (DISPUTE_BY_ID[id].awardPending ? ', and fixtures not played yet are awarded to the opponent' : '') +
+        '. The results below show what was actually played; map and player statistics keep the original data.' +
+        (DISPUTE_BY_ID[id].reason ? ' Reason: ' + esc(DISPUTE_BY_ID[id].reason) + '.' : '') +
+        '</p>'
+      : '';
+
+    return '<div class="m-head' + (disputed ? ' m-head-disputed' : '') + '">' + ccChip(t) +
+        heading('h2', '', '', 'overview', t.name, teamName(t), '', anchors) +
       '</div>' +
       '<p class="m-sub">Rank ' + r.rank + ' &middot; ' + esc(COUNTRIES[t.cc] || t.cc) + '</p>' +
+      notice +
       '<div class="m-stats">' +
         '<div class="m-stat"><b>' + r.points + '</b><span>Points</span></div>' +
         '<div class="m-stat"><b>' + r.played + '</b><span>Matches</span></div>' +
@@ -1115,6 +1300,9 @@ var ARL = (function () {
     ccChip: ccChip, teamLabel: teamLabel, teamsAlphabetical: teamsAlphabetical,
     teamSlug: teamSlug, teamBySlug: teamBySlug, teamPageURL: teamPageURL,
     getMatches: getMatches, evalMatch: evalMatch, mapName: mapName,
+    scoredMatches: scoredMatches, scoreMatch: scoreMatch,
+    isDisputed: isDisputed, anyDisputes: anyDisputes, disputeTip: disputeTip,
+    disputeBadge: disputeBadge, teamName: teamName,
     mapOrder: mapOrder, mapTimesPlayed: mapTimesPlayed, teamMapRecord: teamMapRecord,
     mapLeader: mapLeader, MIN_MAPS_RANKED: MIN_MAPS_RANKED, pct: pct,
     enableSorting: enableSorting,

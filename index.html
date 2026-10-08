@@ -107,6 +107,7 @@
       <span><i class="dot dot-top"></i>Top 4</span>
       <span><i class="dot dot-mid"></i>Playoff race</span>
       <span><i class="dot dot-low"></i>Bottom half</span>
+      <span class="dispute-legend"></span>
     </div>
   </section>
 
@@ -141,6 +142,7 @@
       <span><i class="sq sq-w"></i>Win</span>
       <span><i class="sq sq-l"></i>Loss</span>
       <span><i class="sq sq-o"></i>Pending</span>
+      <span class="dispute-legend"></span>
       <span class="fl-note">Each cell shows the row team's result</span>
     </div>
 
@@ -169,7 +171,10 @@
 
   <!-- ============ STATS ============ -->
   <section class="panel view" id="view-stats">
-    <div class="panel-head"><h2>Stats</h2></div>
+    <div class="panel-head">
+      <h2>Stats</h2>
+      <p class="hint" id="statsHint"></p>
+    </div>
     <div id="statCards" class="stat-grid"></div>
     <h3 class="sub">Round differential by team</h3>
     <div id="roundChart" class="chart"></div>

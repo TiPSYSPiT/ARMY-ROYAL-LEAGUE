@@ -21,13 +21,15 @@
       var form = r.form.slice(-5);
       var badges = '';
       for (var i = 0; i < 5; i++) {
-        var v = form[i];
-        badges += v
-          ? '<i class="fb fb-' + v.toLowerCase() + '">' + v + '</i>'
+        var f = form[i];
+        badges += f
+          ? '<i class="fb fb-' + f.v.toLowerCase() + (f.disputed ? ' fb-disputed' : '') + '"' +
+            (f.disputed ? ' title="' + esc(C.disputeTip(f.team)) + '"' : '') + '>' + f.v + '</i>'
           : '<i class="fb fb-n">-</i>';
       }
 
-      return '<tr class="' + zone + '" data-team="' + r.team.id + '">' +
+      return '<tr class="' + zone + (C.isDisputed(r.team.id) ? ' team-disputed' : '') +
+        '" data-team="' + r.team.id + '">' +
         '<td class="c-rank">' + r.rank + '</td>' +
         '<td class="c-team"><span class="team-cell">' + C.teamLabel(r.team) + '</span></td>' +
         '<td class="num-dim">' + r.played + '</td>' +
@@ -43,16 +45,24 @@
     }).join('');
 
     $('#standingsBody').innerHTML = html;
+    $$('.dispute-legend').forEach(function (el) { el.innerHTML = disputeLegendHTML(); });
     $$('#standingsBody tr').forEach(function (tr) {
       tr.addEventListener('click', function () { openTeam(tr.dataset.team); });
     });
+  }
+
+  /* one legend entry, shown under the standings and the schedule only while
+     DISPUTES lists a team */
+  function disputeLegendHTML() {
+    if (!C.anyDisputes()) return '';
+    return '<i class="sq sq-disputed"></i>Disputed &ndash; counted as 0:0';
   }
 
   /* -------------------------------------------------------- Results */
 
   function matchHTML(m) {
     var h = TEAM_BY_ID[m.home], a = TEAM_BY_ID[m.away];
-    var r = C.evalMatch(m);
+    var r = C.scoreMatch(m);
 
     var maps = m.maps.map(function (map) {
       var cls = map[0] > map[1] ? 'mw' : 'ml';
@@ -62,9 +72,22 @@
         map[0] + ':' + map[1] + '</span>';
     }).join('');
 
-    return '<article class="match">' +
+    /* a disputed match shows the score that counts; the maps that were
+       actually played stay visible, dimmed, with the original in the tooltip */
+    var mapsBox = '<div class="maps">' + maps + '</div>';
+    if (r.awarded) {
+      mapsBox = '<div class="dispute-line">' +
+        C.disputeBadge(r.team, 'Not played – awarded to the opponent, counted as 0:0', 'Disputed') +
+        '<span class="dispute-text">Not played &ndash; awarded</span></div>';
+    } else if (r.disputed) {
+      mapsBox = '<div class="dispute-line">' + C.disputeBadge(r.team) + '</div>' +
+        '<div class="maps maps-orig" title="' +
+        esc('Played ' + r.original.mapsHome + ':' + r.original.mapsAway + ' - not counted') + '">' + maps + '</div>';
+    }
+
+    return '<article class="match' + (r.disputed ? ' is-dispute' : '') + '">' +
       '<div class="side home ' + (r.homeWon ? 'win' : 'lose') + '" data-team="' + h.id + '">' +
-        C.teamLabel(h) +
+        C.teamLabel(h, true) +
       '</div>' +
       '<div class="center">' +
         '<div class="score">' +
@@ -72,10 +95,10 @@
           '<span class="sep">:</span>' +
           '<span class="' + (r.awayWon ? 'w' : 'l') + '">' + r.mapsAway + '</span>' +
         '</div>' +
-        '<div class="maps">' + maps + '</div>' +
+        mapsBox +
       '</div>' +
       '<div class="side away ' + (r.awayWon ? 'win' : 'lose') + '" data-team="' + a.id + '">' +
-        C.teamLabel(a) +
+        C.teamLabel(a, true) +
       '</div>' +
       '</article>';
   }
@@ -83,10 +106,12 @@
   function renderMatches() {
     var filter = $('#matchFilter').value;
     var desc = $('#matchOrder').dataset.order === 'desc';
-    var list = C.getMatches().filter(function (m) {
-      return filter === 'all' || m.home === filter || m.away === filter;
-    });
+    function wanted(m) { return filter === 'all' || m.home === filter || m.away === filter; }
+    var list = C.getMatches().filter(wanted);
     if (desc) list = list.slice().reverse();
+    /* awarded fixtures were never played, so they have no place in the time
+       order - they always come last */
+    list = list.concat(C.scoredMatches().filter(function (m) { return m.awarded && wanted(m); }));
 
     var box = $('#matchList');
     box.innerHTML = list.length
@@ -111,9 +136,14 @@
           esc(p.n) + '</li>';
       }).join('');
 
-      return '<article class="team-card" data-team="' + t.id + '">' +
+      var disputed = C.isDisputed(t.id);
+      return '<article class="team-card' + (disputed ? ' team-disputed' : '') + '" data-team="' + t.id + '">' +
         '<div class="tc-head">' + C.ccChip(t) +
-          '<h3>' + esc(t.name) + '</h3>' +
+          /* the badge goes below the name, which would otherwise be cut short */
+          (disputed
+            ? '<div class="tc-title"><h3>' + esc(t.name) + '</h3>' +
+              C.disputeBadge(t.id, 'Disputed team – every match counts as a 0:0 loss') + '</div>'
+            : '<h3>' + esc(t.name) + '</h3>') +
           '<span class="tc-rank">#' + r.rank + '</span>' +
         '</div>' +
         '<ul class="roster">' + roster + '</ul>' +
@@ -134,7 +164,7 @@
 
   function matrixHTML(order, idx) {
     var head = '<thead><tr><th class="rowhead corner">Team</th>' +
-      order.map(function (t) { return '<th class="colhead">' + esc(t.name) + '</th>'; }).join('') +
+      order.map(function (t) { return '<th class="colhead">' + C.teamName(t) + '</th>'; }).join('') +
       '</tr></thead>';
 
     var body = '<tbody>' + order.map(function (row) {
@@ -149,10 +179,13 @@
 
         var venue = res.atHome ? row.name : col.name;
         var title = row.name + ' ' + res.maps + ' ' + col.name + ' | ' + venue + ' at home';
+        if (res.awarded) title += ' | ' + C.disputeTip(res.team, 'Not played – awarded, counted as 0:0');
+        else if (res.disputed) title += ' | ' + C.disputeTip(res.team) + ' (played ' + res.orig + ')';
         return '<td><div class="cellwrap ' + (res.won ? 'cell-w' : 'cell-l') +
+          (res.disputed ? ' cell-disputed' : '') +
           '" title="' + esc(title) + '">' + res.maps + '</div></td>';
       }).join('');
-      return '<tr><th class="rowhead">' + esc(row.name) + '</th>' + cells + '</tr>';
+      return '<tr><th class="rowhead">' + C.teamName(row) + '</th>' + cells + '</tr>';
     }).join('') + '</tbody>';
 
     return head + body;
@@ -162,8 +195,10 @@
     var order = C.teamsAlphabetical();
 
     var played = C.getMatches().length;
+    var awarded = C.scoredMatches().length - played;
     $('#fixtureHint').textContent =
-      'Double round robin · ' + played + ' of ' + C.totalFixtures() + ' fixtures played';
+      'Double round robin · ' + played + ' of ' + C.totalFixtures() + ' fixtures played' +
+      (awarded ? ' · ' + awarded + ' awarded (disputed)' : '');
 
     var legs = (LEAGUE.legs && LEAGUE.legs.length) ? LEAGUE.legs : [
       { name: 'First leg', maps: [] },
@@ -195,7 +230,12 @@
 
   function renderStats() {
     var matches = C.getMatches();
-    var st = C.computeStandings();
+    /* every played match by its real result, like the map and player stats */
+    var st = C.computeStandings({ original: true });
+
+    $('#statsHint').textContent = C.anyDisputes()
+      ? 'Based on the results as played, disputed matches included'
+      : '';
 
     var totalMaps = 0, totalRounds = 0, deciders = 0, sweeps = 0;
     matches.forEach(function (m) {
@@ -233,7 +273,7 @@
         ? 'left:50%;width:' + pct + '%;'
         : 'right:50%;width:' + pct + '%;';
       return '<div class="bar-row">' +
-        '<span class="bn">' + esc(r.team.name) + '</span>' +
+        '<span class="bn">' + C.teamName(r.team) + '</span>' +
         '<span class="bar-track"><span class="bar-mid"></span><span class="bar-fill" style="' + style + '"></span></span>' +
         '<span class="bar-val">' + r.roundsW + ':' + r.roundsL + ' (' + sign(r.roundDiff) + ')</span>' +
         '</div>';
@@ -261,15 +301,15 @@
     var mostMaps = played.slice().sort(function (a, b) { return b.mapsW - a.mapsW; })[0];
     var mostRounds = played.slice().sort(function (a, b) { return b.roundsW - a.roundsW; })[0];
 
-    function nm(id) { return esc(TEAM_BY_ID[id].name); }
+    function nm(id) { return C.teamName(TEAM_BY_ID[id]); }
 
     var recs = [];
     if (best) recs.push(['Biggest map win', nm(best.w) + ' <b>' + best.score + '</b> ' + nm(best.l)]);
     if (closest) recs.push(['Closest map', nm(closest.w) + ' <b>' + closest.score + '</b> ' + nm(closest.l)]);
     if (longest) recs.push(['Longest map', nm(longest.w) + ' <b>' + longest.score + '</b> ' + nm(longest.l) + ' (' + longest.tot + ' rounds)']);
-    if (bestRate) recs.push(['Best round ratio', esc(bestRate.team.name) + ' <b>' + Math.round(bestRate.roundsW / (bestRate.roundsW + bestRate.roundsL) * 100) + '%</b>']);
-    if (mostMaps) recs.push(['Most map wins', esc(mostMaps.team.name) + ' <b>' + mostMaps.mapsW + '</b>']);
-    if (mostRounds) recs.push(['Most rounds won', esc(mostRounds.team.name) + ' <b>' + mostRounds.roundsW + '</b>']);
+    if (bestRate) recs.push(['Best round ratio', C.teamName(bestRate.team) + ' <b>' + Math.round(bestRate.roundsW / (bestRate.roundsW + bestRate.roundsL) * 100) + '%</b>']);
+    if (mostMaps) recs.push(['Most map wins', C.teamName(mostMaps.team) + ' <b>' + mostMaps.mapsW + '</b>']);
+    if (mostRounds) recs.push(['Most rounds won', C.teamName(mostRounds.team) + ' <b>' + mostRounds.roundsW + '</b>']);
 
     $('#records').innerHTML = recs.length
       ? recs.map(function (r) {
@@ -372,7 +412,9 @@
 
   function fillSelects() {
     var opts = C.teamsAlphabetical()
-      .map(function (t) { return '<option value="' + t.id + '">' + esc(t.name) + '</option>'; }).join('');
+      .map(function (t) {
+        return '<option value="' + t.id + '">' + esc(t.name) + (C.isDisputed(t.id) ? ' (disputed)' : '') + '</option>';
+      }).join('');
 
     $('#matchFilter').innerHTML = '<option value="all">All teams</option>' + opts;
   }
@@ -412,7 +454,7 @@
     $('#mapCards').innerHTML = maps.map(function (name) {
       var top = C.mapLeader(name);
       var topHTML = top
-        ? '<a href="' + teamMapLink(top.team) + '">' + esc(top.team.name) + '</a>' +
+        ? '<a href="' + teamMapLink(top.team) + '">' + C.teamName(top.team) + '</a>' +
           '<span class="mc-rec">' + top.w + '&ndash;' + top.l + ' &middot; ' + C.pct(top.winPct) + '</span>'
         : '<span class="mc-none">no team with ' + min + '+ maps yet</span>';
       return '<div class="map-card">' +
@@ -439,7 +481,7 @@
           '<span class="mc-wl">' + record + '</span>' +
           '<small>' + r.played + ' played</small></div></td>';
       }).join('');
-      return '<tr><th class="rowhead"><a href="' + teamMapLink(t) + '">' + esc(t.name) + '</a></th>' + cells + '</tr>';
+      return '<tr' + (C.isDisputed(t.id) ? ' class="team-disputed"' : '') + '><th class="rowhead"><a href="' + teamMapLink(t) + '">' + C.teamName(t) + '</a></th>' + cells + '</tr>';
     }).join('') + '</tbody>';
 
     $('#mapMatrix').innerHTML = head + body;

@@ -67,7 +67,7 @@ const TEAMS = [
     id: 'infinity', name: 'infinity eSports', cc: 'EU', flag: '\u{1F1EA}\u{1F1FA}',
     players: [
       { n: 'Basham', c: true }, { n: 'paramore', c: true },
-      { n: 'BOOBiO' }, { n: 'TiPSY' }, { n: 'Levitate' }, { n: 'NATHZN' }
+      { n: 'BOOBiO' }, { n: 'TiPSY' }, { n: 'Levitate' }, { n: 'NATHZN' }, { n: 'EMPzY' }
     ]
   },
   {
@@ -203,6 +203,25 @@ const MATCHES = [
   { id: 'm70', home: 'sag',      away: 'infinity', maps: [[16, 14, 'Citystreets'], [19, 16, 'Crash']] }
 ];
 
+/* =========================================================================
+   Disputes
+
+   A team listed here has every match scored as disputed: the opponent gets the
+   win and LEAGUE.pointsWin, the team itself LEAGUE.pointsLoss, and the match
+   counts 0:0 in maps and rounds. MATCHES above stays untouched - the original
+   results are still shown on the team's own page and still feed the map and
+   player statistics. Delete the entry to undo everything.
+
+     reason:       optional text, shown in the "Disputed" tooltips
+     awardPending: true  =>  fixtures not played yet are awarded to the
+                             opponent right away (shown as "not played")
+   ========================================================================= */
+
+const DISPUTES = {
+  infinity: { reason: '', awardPending: true }
+};
+
+
 
 /* =========================================================================
    Scoreboard sources  <<< ADD NEW MATCHES HERE
@@ -290,16 +309,19 @@ const STATS_FILES = {
   'json/20261005_SaG_vs_infeS_crash.json':        ['m70', 'Crash']
 };
 
-/* In-game names (clan tag included) mapped onto roster names. Every entry here
-   was verified by matching the scoreboard's score/kills/assists/deaths against
-   PLAYER_STATS, except the two BOBiO lines, which were confirmed manually. */
+/* In-game names (clan tag included) mapped onto roster names. A name that is
+   neither listed here nor on the roster is not counted - the browser console
+   then reports it ("... is not on the roster"), so add it here or to TEAMS.
+   Confirmed by hand: NIGERian = EMPzY, emoLODIE = Levitate (Oct 2026). */
 const PLAYER_ALIASES = {
   'inf.eS TiPSY':    'TiPSY',
   '-o__/ TiPSY':     'TiPSY',
   'inf.eS paramore': 'paramore',
   'inf.eS NATHZN':   'NATHZN',
   'inf.eS Basham':   'Basham',
+  'inf.eS NIGERian': 'EMPzY',
   'inf.eS Lodie':    'Levitate',
+  'inf.eS emoLODIE': 'Levitate',
   "inf.eS b o ' AA": 'BOOBiO',
   'inf.eS BOBiO':    'BOOBiO'
 };
