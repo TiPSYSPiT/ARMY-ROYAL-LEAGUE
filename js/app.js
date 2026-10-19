@@ -24,7 +24,7 @@
         var f = form[i];
         badges += f
           ? '<i class="fb fb-' + f.v.toLowerCase() + (f.disputed ? ' fb-disputed' : '') + '"' +
-            (f.disputed ? ' title="' + esc(C.disputeTip(f.team)) + '"' : '') + '>' + f.v + '</i>'
+            (f.disputed ? ' title="' + esc(f.tip) + '"' : '') + '>' + f.v + '</i>'
           : '<i class="fb fb-n">-</i>';
       }
 
@@ -77,10 +77,10 @@
     var mapsBox = '<div class="maps">' + maps + '</div>';
     if (r.awarded) {
       mapsBox = '<div class="dispute-line">' +
-        C.disputeBadge(r.team, 'Not played – awarded to the opponent, counted as 0:0', 'Disputed') +
-        '<span class="dispute-text">Not played &ndash; awarded</span></div>';
+        C.disputeBadge(null, r.tip) +
+        '<span class="dispute-text">Not played &ndash; ' + (r.both ? 'no winner' : 'awarded') + '</span></div>';
     } else if (r.disputed) {
-      mapsBox = '<div class="dispute-line">' + C.disputeBadge(r.team) + '</div>' +
+      mapsBox = '<div class="dispute-line">' + C.disputeBadge(null, r.tip) + '</div>' +
         '<div class="maps maps-orig" title="' +
         esc('Played ' + r.original.mapsHome + ':' + r.original.mapsAway + ' - not counted') + '">' + maps + '</div>';
     }
@@ -179,8 +179,8 @@
 
         var venue = res.atHome ? row.name : col.name;
         var title = row.name + ' ' + res.maps + ' ' + col.name + ' | ' + venue + ' at home';
-        if (res.awarded) title += ' | ' + C.disputeTip(res.team, 'Not played – awarded, counted as 0:0');
-        else if (res.disputed) title += ' | ' + C.disputeTip(res.team) + ' (played ' + res.orig + ')';
+        if (res.awarded) title += ' | ' + res.tip;
+        else if (res.disputed) title += ' | ' + res.tip + ' (played ' + res.orig + ')';
         return '<td><div class="cellwrap ' + (res.won ? 'cell-w' : 'cell-l') +
           (res.disputed ? ' cell-disputed' : '') +
           '" title="' + esc(title) + '">' + res.maps + '</div></td>';

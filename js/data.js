@@ -13,7 +13,7 @@ const LEAGUE = {
 
   /* Date the results below were last updated (YYYY-MM-DD).
      Bump this whenever you add a match - it is shown in the header. */
-  updated: '2026-10-16',
+  updated: '2026-10-19',
 
   /* Each pairing is played twice, with its own map pool per leg.
      Leg 1 puts the alphabetically first team at home, leg 2 reverses that. */
@@ -159,7 +159,7 @@ const MATCHES = [
   { id: 'm26', home: 'bravo',    away: 'warz',     maps: [[13, 5, 'Strike'], [13, 7, 'Backlot']] },
   { id: 'm27', home: 'warz',     away: 'bravo',    maps: [[7, 13, 'Crossfire'], [4, 13, 'Citystreets']] },
   { id: 'm28', home: 'alpha',    away: 'infinity', maps: [[13, 8, 'Cluster'], [13, 8, 'Strike']] },
-  { id: 'm29', home: 'lafine',   away: 'cas1',     maps: [[13, 4, 'Backlot'], [16, 13, 'Strike']] },
+  { id: 'm29', home: 'cas1',     away: 'lafine',   maps: [[4, 13, 'Backlot'], [13, 16, 'Strike']] },
   { id: 'm30', home: 'infinity', away: 'revolt',   maps: [[13, 6, 'Strike'], [13, 9, 'Backlot']] },
   { id: 'm31', home: 'myquest',  away: 'deox',     maps: [[13, 11, 'Crash'], [13, 7, 'Citystreets']] },
   { id: 'm32', home: 'nosweat',  away: 'myquest',  maps: [[5, 13, 'Strike'], [9, 13, 'Cluster']] },
@@ -213,7 +213,9 @@ const MATCHES = [
   { id: 'm80', home: 'myquest',  away: 'adhd',     maps: [[13, 5, 'Crash'], [16, 14, 'Citystreets']] },
   { id: 'm81', home: 'alpha',    away: 'warz',     maps: [[13, 5, 'Cluster'], [13, 6, 'Backlot']] },
   { id: 'm82', home: 'nosweat',  away: 'deox',     maps: [[13, 1, 'Crash'], [13, 4, 'Crossfire']] },
-  { id: 'm83', home: 'bravo',    away: 'sag',      maps: [[11, 13, 'Strike'], [13, 11, 'Backlot'], [13, 9, 'Cluster']] }
+  { id: 'm83', home: 'bravo',    away: 'sag',      maps: [[11, 13, 'Strike'], [13, 11, 'Backlot'], [13, 9, 'Cluster']] },
+  { id: 'm84', home: 'adhd',     away: 'nosweat',  maps: [[7, 13, 'Strike'], [16, 14, 'Backlot'], [7, 13, 'Cluster']] },
+  { id: 'm85', home: 'nosweat',  away: 'alpha',    maps: [[13, 11, 'Crossfire'], [11, 13, 'Crash'], [13, 10, 'Citystreets']] }
 ];
 
 /* =========================================================================
@@ -231,7 +233,8 @@ const MATCHES = [
    ========================================================================= */
 
 const DISPUTES = {
-  infinity: { reason: '', awardPending: true }
+  infinity: { reason: '', awardPending: true },
+  lafine:   { reason: '', awardPending: true }
 };
 
 

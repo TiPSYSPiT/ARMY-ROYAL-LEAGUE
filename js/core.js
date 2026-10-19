@@ -158,7 +158,22 @@ var ARL = (function () {
       (label || 'Disputed') + '</span>';
   }
 
-  var TEAM_DISPUTE_TEXT = 'Disputed team – every match counts as a 0:0 loss';
+  /* Tooltip for one disputed match. Covers both sides at once, so a match
+     between two disputed teams says that nobody wins it and carries the
+     reasons of both. Not tied to a team: use it as disputeBadge(null, tip). */
+  function matchDisputeTip(m, text) {
+    var ids = [m.home, m.away].filter(isDisputed);
+    var both = ids.length > 1;
+    var base = text || (m.awarded
+      ? (both ? 'Not played – both teams disputed, no winner, counted as 0:0'
+              : 'Not played – awarded to the opponent, counted as 0:0')
+      : (both ? 'Disputed (both teams) – no winner, counted as 0:0' : DISPUTE_TEXT));
+    var reasons = ids.map(function (id) { return DISPUTE_BY_ID[id].reason; })
+      .filter(function (x) { return x; });
+    return base + (reasons.length ? ' · ' + reasons.join(' · ') : '');
+  }
+
+  var TEAM_DISPUTE_TEXT ='Disputed team – every match counts as a 0:0 loss';
 
   /* a team name in running text, greyed out when the team is disputed */
   function teamName(team) {
@@ -318,8 +333,8 @@ var ARL = (function () {
 
   /* The result as it counts for the table. Same shape as evalMatch(); a
      disputed match goes to the other side with 0:0 maps and rounds, the
-     original result rides along for display. Should both sides ever be
-     disputed, neither wins. */
+     original result rides along for display. Between two disputed teams
+     neither wins: both take the loss and LEAGUE.pointsLoss. */
   function scoreMatch(m) {
     var side = disputedSide(m);
     if (!side) {
@@ -335,7 +350,9 @@ var ARL = (function () {
       decider: false,
       disputed: true,
       team: side,
+      both: both,
       awarded: !!m.awarded,
+      tip: matchDisputeTip(m),
       original: m.awarded ? null : evalMatch(m)
     };
   }
@@ -377,7 +394,7 @@ var ARL = (function () {
         if (won) { row.wins++; row.points += LEAGUE.pointsWin; }
         else { row.losses++; row.points += LEAGUE.pointsLoss; }
         /* form is about matches played - an awarded fixture has no place in it */
-        if (!r.awarded) row.form.push({ v: won ? 'W' : 'L', disputed: !!r.disputed, team: r.team || null });
+        if (!r.awarded) row.form.push({ v: won ? 'W' : 'L', disputed: !!r.disputed, tip: r.tip || '' });
       });
 
       h.opponents[m.away] = true;
@@ -449,7 +466,7 @@ var ARL = (function () {
       if ((isFirstLeg(m) ? 1 : 2) !== leg) return;
       var r = scoreMatch(m);
       var o = r.original;
-      var extra = { disputed: r.disputed, awarded: !!r.awarded, team: r.team || null };
+      var extra = { disputed: r.disputed, awarded: !!r.awarded, tip: r.tip || '' };
       idx[m.home + '|' + m.away] = mix({ maps: r.mapsHome + ':' + r.mapsAway, won: r.homeWon, atHome: true,
         orig: o ? o.mapsHome + ':' + o.mapsAway : '' }, extra);
       idx[m.away + '|' + m.home] = mix({ maps: r.mapsAway + ':' + r.mapsHome, won: r.awayWon, atHome: false,
@@ -884,11 +901,12 @@ var ARL = (function () {
       }).join('');
 
       /* the statistics keep the original result; a disputed match says so */
-      var ds = disputedSide(rec.match);
+      var ds = !!disputedSide(rec.match);
       return '<div class="pstat-group">' +
         '<h5>vs ' + teamName(opp) +
           ' <span class="' + (won ? 'pos' : 'neg') + '">' + ownMaps + ':' + oppMaps + '</span>' +
-          (ds ? ' ' + disputeBadge(ds, 'Original result - for the table this match counts 0:0') : '') +
+          (ds ? ' ' + disputeBadge(null, matchDisputeTip(rec.match,
+                 'Original result - for the table this match counts 0:0')) : '') +
         '</h5>' +
         maps +
         '</div>';
@@ -1129,9 +1147,9 @@ var ARL = (function () {
       var opp = TEAM_BY_ID[isHome ? m.away : m.home];
       var s = scoreMatch(m);
 
-      /* the disputed team itself keeps seeing what was played; everyone else
+      /* a disputed team keeps seeing what it actually played; everyone else
          sees the result as it counts */
-      var e = (s.disputed && s.team === id && s.original) ? s.original : s;
+      var e = (s.disputed && isDisputed(id) && s.original) ? s.original : s;
       var won = isHome ? e.homeWon : e.awayWon;
       var mine = isHome ? e.mapsHome : e.mapsAway;
       var theirs = isHome ? e.mapsAway : e.mapsHome;
@@ -1141,12 +1159,13 @@ var ARL = (function () {
         won = isHome ? s.homeWon : s.awayWon;
         cls = won ? 'w' : 'l';
         res = '0:0';
-        note = '<small class="m-dispute">Not played – awarded to ' +
-               esc(TEAM_BY_ID[s.team === m.home ? m.away : m.home].name) + ', counted as 0:0</small>';
+        note = '<small class="m-dispute">' + esc(s.both ? s.tip
+          : 'Not played – awarded to ' + TEAM_BY_ID[s.homeWon ? m.home : m.away].name + ', counted as 0:0') +
+          '</small>';
       } else if (s.disputed) {
-        note = s.team === id
-          ? '<small class="m-dispute">' + esc(disputeTip(s.team)) + '</small>'
-          : '<small class="m-dispute">' + esc(disputeTip(s.team)) + ' · played ' +
+        note = isDisputed(id)
+          ? '<small class="m-dispute">' + esc(s.tip) + '</small>'
+          : '<small class="m-dispute">' + esc(s.tip) + ' · played ' +
             (isHome ? s.original.mapsHome + ':' + s.original.mapsAway
                     : s.original.mapsAway + ':' + s.original.mapsHome) + '</small>';
       }
@@ -1176,6 +1195,8 @@ var ARL = (function () {
         'Every match of this team counts as disputed: the opponent gets the win and ' +
         LEAGUE.pointsWin + ' points, scored 0:0 in maps and rounds' +
         (DISPUTE_BY_ID[id].awardPending ? ', and fixtures not played yet are awarded to the opponent' : '') +
+        (own.some(function (m) { return isDisputed(m.home) && isDisputed(m.away); })
+          ? '. Against another disputed team nobody wins: both sides take the loss' : '') +
         '. The results below show what was actually played; map and player statistics keep the original data.' +
         (DISPUTE_BY_ID[id].reason ? ' Reason: ' + esc(DISPUTE_BY_ID[id].reason) + '.' : '') +
         '</p>'
